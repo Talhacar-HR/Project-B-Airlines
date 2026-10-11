@@ -16,7 +16,7 @@ public class AccountsLogic
 
     }
 
-    public AccountModel CheckLogin(string email, string password)
+    public AccountModel? CheckLogin(string email, string password)
     {
 
 
