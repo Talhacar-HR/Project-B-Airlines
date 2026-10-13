@@ -156,19 +156,22 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="esoMrSb-yyyQPKYTjenh-49" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Gebruikers" vertex="1">
-          <mxGeometry height="150" width="140" x="1080" y="320" as="geometry" />
+          <mxGeometry height="180" width="140" x="1080" y="320" as="geometry" />
         </mxCell>
         <mxCell id="esoMrSb-yyyQPKYTjenh-50" parent="esoMrSb-yyyQPKYTjenh-49" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="ID Primary" vertex="1">
           <mxGeometry height="30" width="140" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="esoMrSb-yyyQPKYTjenh-51" parent="esoMrSb-yyyQPKYTjenh-49" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="Email" vertex="1">
+        <mxCell id="bpBMFvMLrMwiWRBiUDVf-1" parent="esoMrSb-yyyQPKYTjenh-49" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="Admin" vertex="1">
           <mxGeometry height="30" width="140" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="esoMrSb-yyyQPKYTjenh-52" parent="esoMrSb-yyyQPKYTjenh-49" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="Gebruikersnaam" vertex="1">
+        <mxCell id="esoMrSb-yyyQPKYTjenh-51" parent="esoMrSb-yyyQPKYTjenh-49" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="Email" vertex="1">
           <mxGeometry height="30" width="140" y="90" as="geometry" />
         </mxCell>
-        <mxCell id="esoMrSb-yyyQPKYTjenh-57" parent="esoMrSb-yyyQPKYTjenh-49" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="Wachtwoord" vertex="1">
+        <mxCell id="esoMrSb-yyyQPKYTjenh-52" parent="esoMrSb-yyyQPKYTjenh-49" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="Gebruikersnaam" vertex="1">
           <mxGeometry height="30" width="140" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="esoMrSb-yyyQPKYTjenh-57" parent="esoMrSb-yyyQPKYTjenh-49" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="Wachtwoord" vertex="1">
+          <mxGeometry height="30" width="140" y="150" as="geometry" />
         </mxCell>
         <mxCell id="esoMrSb-yyyQPKYTjenh-53" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="ReserveringsStoel" vertex="1">
           <mxGeometry height="150" width="140" x="450" y="450" as="geometry" />
