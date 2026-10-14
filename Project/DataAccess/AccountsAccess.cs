@@ -1,7 +1,5 @@
 using Microsoft.Data.Sqlite;
-
 using Dapper;
-
 
 public class AccountsAccess
 {
@@ -32,7 +30,4 @@ public class AccountsAccess
         string sql = $"DELETE FROM {Table} WHERE id = @Id";
         _connection.Execute(sql, new { Id = account.Id });
     }
-
-
-
 }

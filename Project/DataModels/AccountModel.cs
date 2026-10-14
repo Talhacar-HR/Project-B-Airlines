@@ -1,7 +1,7 @@
 ﻿public class AccountModel
 {
-
     public Int64 Id { get; set; }
+    
     public string EmailAddress { get; set; }
 
     public string Password { get; set; }
@@ -15,9 +15,4 @@
         Password = password;
         FullName = fullname;
     }
-
-
 }
-
-
-
