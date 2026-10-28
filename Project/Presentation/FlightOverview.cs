@@ -1,6 +1,6 @@
 static class FlightOverview
 {
-    static private FlightsLogic flightsLogic = new FlightsLogic();
+    static private FlightLogic flightLogic = new FlightLogic();
 
 
     public static void Start()

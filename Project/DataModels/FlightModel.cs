@@ -9,6 +9,9 @@ public class FlightModel
     public string DepartureDate { get; set; }
 
     public string DepartureTime { get; set; }
+    public FlightModel()
+    {
+    }
 
     public FlightModel(Int64 flightNumber, string origin, string destination, string departureDate, string departureTime)
     {
