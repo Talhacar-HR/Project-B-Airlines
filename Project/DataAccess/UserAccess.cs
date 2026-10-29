@@ -3,7 +3,7 @@ using Microsoft.Data.Sqlite;
 
 public class UserAccess
 {
-    private string Table = "Users";
+    private string Table = "Gebruikers";
  
     public void AddUser(UserModel user)
     {
