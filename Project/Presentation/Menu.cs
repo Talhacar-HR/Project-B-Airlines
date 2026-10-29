@@ -37,11 +37,7 @@ static class Menu
             }
             else if (input == "2")
             {
-                UserRegistration.Start();
-            }
-            else if (input == "2")
-            {
-                if (currentAccount != null)
+                if (currentAccount == null)
                     UserRegistration.Start();
                 else
                     FlightOverview.Start();
