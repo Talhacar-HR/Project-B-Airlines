@@ -1,27 +1,32 @@
 static class UserLogin
 {
-    static private AccountsLogic accountsLogic = new AccountsLogic();
-
-
+    static private UserLogic userLogic = new UserLogic();
+ 
+ 
     public static void Start()
     {
-        Console.WriteLine("Welcome to the login page");
-        Console.WriteLine("Please enter your email address");
+        Console.WriteLine("Inloggen");
+        Console.WriteLine("Voer je e-mailadres in:");
         string email = Console.ReadLine();
-        Console.WriteLine("Please enter your password");
+        Console.WriteLine("Voer je wachtwoord in:");
         string password = Console.ReadLine();
-        AccountModel acc = accountsLogic.CheckLogin(email, password);
-        if (acc != null)
+ 
+        bool success = userLogic.Login(email, password);
+ 
+        if (success)
         {
-            Console.WriteLine("Welcome back " + acc.FullName);
-            Console.WriteLine("Your email number is " + acc.EmailAddress);
-
-            //Write some code to go back to the menu
-            //Menu.Start();
+            Console.WriteLine("Welkom, " + UserLogic.CurrentUser.Email + "!");
         }
         else
         {
-            Console.WriteLine("No account found with that email and password");
+            Console.WriteLine("E-mail of wachtwoord is onjuist");
+            Console.WriteLine("Wil je het opnieuw proberen? (j/n)");
+            string answer = Console.ReadLine();
+ 
+            if (answer == "j")
+            {
+                Start();
+            }
         }
     }
 }
