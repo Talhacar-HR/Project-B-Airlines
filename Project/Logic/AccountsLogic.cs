@@ -18,7 +18,7 @@ public class AccountsLogic
 
     public AccountModel? CheckLogin(string email, string password)
     {
-        AccountModel acc = _access.GetByEmail(email);
+        AccountModel? acc = _access.GetByEmail(email);
         if (acc != null && acc.Password == password)
         {
             CurrentAccount = acc;

@@ -8,11 +8,14 @@
 
     public string FullName { get; set; }
 
-    public AccountModel(Int64 id, string email, string password, string fullname)
+    public Int64 IsAdmin { get; set; }
+
+    public AccountModel(Int64 id, string email, string password, string fullname, Int64 isAdmin = 0)
     {
         Id = id;
         EmailAddress = email;
         Password = password;
         FullName = fullname;
+        IsAdmin = isAdmin;
     }
 }
