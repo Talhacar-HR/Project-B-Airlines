@@ -1,8 +1,8 @@
 static class UserLogin
 {
-    static private UserLogic userLogic = new UserLogic();
- 
- 
+    static private AccountsLogic accountsLogic = new AccountsLogic();
+
+
     public static void Start()
     {
         Console.WriteLine("");
@@ -23,4 +23,3 @@ static class UserLogin
             Console.WriteLine("Geen account gevonden met dit e-mailadres en wachtwoord.");
         }
     }
-}
