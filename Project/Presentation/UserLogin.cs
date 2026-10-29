@@ -5,28 +5,22 @@ static class UserLogin
  
     public static void Start()
     {
-        Console.WriteLine("Inloggen");
-        Console.WriteLine("Voer je e-mailadres in:");
-        string email = Console.ReadLine();
-        Console.WriteLine("Voer je wachtwoord in:");
-        string password = Console.ReadLine();
- 
-        bool success = userLogic.Login(email, password);
- 
-        if (success)
+        Console.WriteLine("");
+        Console.WriteLine("Welkom op de inlogpagina.");
+        Console.WriteLine("Voer uw e-mailadres in.");
+        string email = Console.ReadLine() ?? "";
+        Console.WriteLine("Voer uw wachtwoord in.");
+        string password = Console.ReadLine() ?? "";
+        Console.WriteLine("");
+        AccountModel acc = accountsLogic.CheckLogin(email, password);
+        if (acc != null)
         {
-            Console.WriteLine("Welkom, " + UserLogic.CurrentUser.Email + "!");
+            Console.WriteLine($"Welkom terug, {acc.FullName}.");
+            Console.WriteLine($"Uw e-mailadres is {acc.EmailAddress}.");
         }
         else
         {
-            Console.WriteLine("E-mail of wachtwoord is onjuist");
-            Console.WriteLine("Wil je het opnieuw proberen? (j/n)");
-            string answer = Console.ReadLine();
- 
-            if (answer == "j")
-            {
-                Start();
-            }
+            Console.WriteLine("Geen account gevonden met dit e-mailadres en wachtwoord.");
         }
     }
 }

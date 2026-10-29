@@ -1,18 +1,14 @@
-using Microsoft.Data.Sqlite;
- 
 using Dapper;
- 
- 
+using Microsoft.Data.Sqlite;
+
 public class UserAccess
 {
-    private string _connectionString = "Data Source=DataSources/ApplicatieDB.db";
- 
     private string Table = "Users";
  
     public void AddUser(UserModel user)
     {
         // "using" sluit de verbinding automatisch weer als de methode klaar is
-        using (SqliteConnection connection = new SqliteConnection(_connectionString))
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
         {
             connection.Open();
  
@@ -23,7 +19,7 @@ public class UserAccess
  
     public UserModel? GetUserByEmail(string email)
     {
-        using (SqliteConnection connection = new SqliteConnection(_connectionString))
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
         {
             connection.Open();
  
