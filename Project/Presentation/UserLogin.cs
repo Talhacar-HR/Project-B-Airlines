@@ -1,8 +1,8 @@
 static class UserLogin
 {
-    static private AccountsLogic accountsLogic = new AccountsLogic();
-
-
+    static private UserLogic userLogic = new UserLogic();
+ 
+ 
     public static void Start()
     {
         Console.WriteLine("");
