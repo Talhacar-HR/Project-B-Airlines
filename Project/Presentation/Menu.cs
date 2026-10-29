@@ -20,6 +20,7 @@ static class Menu
             else
             {
                 Console.WriteLine("1 - Inloggen");
+                Console.WriteLine("2 - Registreren");
             }
             Console.WriteLine("0 - Programma afsluiten");
             string input = Console.ReadLine() ?? "";
@@ -27,11 +28,15 @@ static class Menu
 
             if (input == "1")
             {
-                UserLogin.Start();
+                if (currentAccount == null)
+                    UserLogin.Start();
+                else
+                    // Uitloggen
+                    Console.WriteLine("Deze functie is nog niet beschikbaar.");
             }
             else if (input == "2")
             {
-                Console.WriteLine("Deze functie is nog niet beschikbaar.");
+                UserRegistration.Start();
             }
             else if (input == "8" && currentAccount != null)
             {

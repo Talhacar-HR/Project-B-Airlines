@@ -5,6 +5,7 @@ static class UserRegistration
  
     public static void Start()
     {
+        Console.WriteLine("");
         Console.WriteLine("Registreren");
         Console.WriteLine("Voer je e-mailadres in:");
         string email = Console.ReadLine();
