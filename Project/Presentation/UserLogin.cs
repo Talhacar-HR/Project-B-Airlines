@@ -1,27 +1,26 @@
 static class UserLogin
 {
-    static private AccountsLogic accountsLogic = new AccountsLogic();
-
-
+    static private UserLogic userLogic = new UserLogic();
+ 
+ 
     public static void Start()
     {
-        Console.WriteLine("Welcome to the login page");
-        Console.WriteLine("Please enter your email address");
-        string email = Console.ReadLine();
-        Console.WriteLine("Please enter your password");
-        string password = Console.ReadLine();
+        Console.WriteLine("");
+        Console.WriteLine("Welkom op de inlogpagina.");
+        Console.WriteLine("Voer uw e-mailadres in.");
+        string email = Console.ReadLine() ?? "";
+        Console.WriteLine("Voer uw wachtwoord in.");
+        string password = Console.ReadLine() ?? "";
+        Console.WriteLine("");
         AccountModel acc = accountsLogic.CheckLogin(email, password);
         if (acc != null)
         {
-            Console.WriteLine("Welcome back " + acc.FullName);
-            Console.WriteLine("Your email number is " + acc.EmailAddress);
-
-            //Write some code to go back to the menu
-            //Menu.Start();
+            Console.WriteLine($"Welkom terug, {acc.FullName}.");
+            Console.WriteLine($"Uw e-mailadres is {acc.EmailAddress}.");
         }
         else
         {
-            Console.WriteLine("No account found with that email and password");
+            Console.WriteLine("Geen account gevonden met dit e-mailadres en wachtwoord.");
         }
     }
 }

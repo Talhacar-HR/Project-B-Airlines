@@ -8,19 +8,20 @@ public sealed class Test1
 
 
     [DataTestMethod]
-    [DataRow("kevin@kevin.nl", "kevin")]
+    [DataRow("admin@admin.com", "adm123")]
     public void LoginValidCredentials(string m, string p)
     {
         // arrange
         AccountsLogic l = new();
         AccountsAccess access = new();
         // act 
-        AccountModel result = l.CheckLogin(m, p);
+        AccountModel? result = l.CheckLogin(m, p);
 
         // assert
         Assert.IsNotNull(result);
         Assert.AreEqual(m, result.EmailAddress);
         Assert.AreEqual(p, result.Password);
+        Assert.AreEqual(1L, result.IsAdmin);
     }
 
     [DataTestMethod]
@@ -35,7 +36,7 @@ public sealed class Test1
         AccountsLogic l = new();
 
         // act 
-        AccountModel result = l.CheckLogin(m, p);
+        AccountModel? result = l.CheckLogin(m, p);
 
         // assert
         Assert.IsNull(result);

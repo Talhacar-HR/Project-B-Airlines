@@ -1,26 +1,56 @@
 static class Menu
 {
-
     static public void Start()
     {
-        Console.WriteLine("Enter 1 to login");
-        Console.WriteLine("Enter 2 for Beschikbare vluchten bekijken");
+        bool menuRunning = true;
+        while (menuRunning)
+        {
+            AccountModel? currentAccount = AccountsLogic.CurrentAccount;
+            Console.WriteLine("");
+            Console.WriteLine("Wat wilt u doen?");
+            if (currentAccount != null)
+            {
+                Console.WriteLine("1 - Uitloggen");
+                Console.WriteLine("8 - Check gebruiker");
+                if (currentAccount.IsAdmin != 0)
+                {
+                    Console.WriteLine("9 - Gegevens beheren");
+                }
+            }
+            else
+            {
+                Console.WriteLine("1 - Inloggen");
+            }
+            Console.WriteLine("0 - Programma afsluiten");
+            string input = Console.ReadLine() ?? "";
+            Console.WriteLine("");
 
-        string input = Console.ReadLine();
-        if (input == "1")
-        {
-            UserLogin.Start();
+            if (input == "1")
+            {
+                UserLogin.Start();
+            }
+            else if (input == "2")
+            {
+                Console.WriteLine("Deze functie is nog niet beschikbaar.");
+            }
+            else if (input == "8" && currentAccount != null)
+            {
+                Console.WriteLine($"Gebruikersnaam: {currentAccount.FullName}");
+                Console.WriteLine($"Gebruikers Email: {currentAccount.EmailAddress}");
+            }
+            else if (input == "9" && currentAccount != null && currentAccount.IsAdmin != 0)
+            {
+                DataMenu.Start();
+            }
+            else if (input == "0")
+            {
+                Console.WriteLine("Programma wordt afgesloten...");
+                menuRunning = false;
+            }
+            else
+            {
+                Console.WriteLine("Ongeldige invoer.");
+            }
         }
-        else if (input == "2")
-        {
-            FlightOverview.Start();
-            Start();
-        }
-        else
-        {
-            Console.WriteLine("Invalid input");
-            Start();
-        }
-
     }
 }

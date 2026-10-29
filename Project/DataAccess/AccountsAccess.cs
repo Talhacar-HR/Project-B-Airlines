@@ -1,33 +1,52 @@
 using Microsoft.Data.Sqlite;
+
 using Dapper;
 
 public class AccountsAccess
 {
-    private SqliteConnection _connection = new SqliteConnection($"Data Source=DataSources/project.db");
-
-    private string Table = "Accounts";
+    private string Table = "Gebruikers";
 
     public void Write(AccountModel account)
     {
-        string sql = $"INSERT INTO {Table} (email, password, fullname) VALUES (@EmailAddress, @Password, @FullName)";
-        _connection.Execute(sql, account);
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
+        {
+            connection.Open();
+
+            string sql = $"INSERT INTO {Table} (Email, Wachtwoord, Gebruikersnaam) VALUES (@EmailAddress, @Password, @FullName)";
+            connection.Execute(sql, account);
+        }
     }
 
-    public AccountModel GetByEmail(string email)
+    public AccountModel? GetByEmail(string email)
     {
-        string sql = $"SELECT * FROM {Table} WHERE email = @Email";
-        return _connection.QueryFirstOrDefault<AccountModel>(sql, new { Email = email });
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
+        {
+            connection.Open();
+
+            string sql = $"SELECT ID AS Id, Email, Wachtwoord AS Password, Gebruikersnaam AS FullName, Admin AS IsAdmin FROM {Table} WHERE Email = @Email";
+            return connection.QueryFirstOrDefault<AccountModel>(sql, new { Email = email });
+        }
     }
 
     public void Update(AccountModel account)
     {
-        string sql = $"UPDATE {Table} SET email = @EmailAddress, password = @Password, fullname = @FullName WHERE id = @Id";
-        _connection.Execute(sql, account);
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
+        {
+            connection.Open();
+
+            string sql = $"UPDATE {Table} SET Email = @EmailAddress, Wachtwoord = @Password, Gebruikersnaam = @FullName WHERE ID = @Id";
+            connection.Execute(sql, account);
+        }
     }
 
     public void Delete(AccountModel account)
     {
-        string sql = $"DELETE FROM {Table} WHERE id = @Id";
-        _connection.Execute(sql, new { Id = account.Id });
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
+        {
+            connection.Open();
+
+            string sql = $"DELETE FROM {Table} WHERE ID = @Id";
+            connection.Execute(sql, new { Id = account.Id });
+        }
     }
 }
