@@ -1,19 +1,27 @@
 static class Menu
 {
-
-    //This shows the menu. You can call back to this method to show the menu again
-    //after another presentation method is completed.
-    //You could edit this to show different menus depending on the user's role
     static public void Start()
     {
-        AccountModel? currentAccount = AccountsLogic.CurrentAccount;
+        bool menuRunning = true;
+        while (menuRunning)
         {
-            Console.WriteLine("Welcome to Project B Airlines.");
+            AccountModel? currentAccount = AccountsLogic.CurrentAccount;
             Console.WriteLine("");
-            Console.WriteLine("What would you like to do?");
-            Console.WriteLine("Enter 1 to login");
-            Console.WriteLine("Enter 2 to do something else in the future");
-            Console.WriteLine("Enter 0 to exit program");
+            Console.WriteLine("Wat wilt u doen?");
+            if (currentAccount != null)
+            {
+                Console.WriteLine("1 - Uitloggen");
+                Console.WriteLine("8 - Check gebruiker");
+                if (currentAccount.IsAdmin != 0)
+                {
+                    Console.WriteLine("9 - Gegevens beheren");
+                }
+            }
+            else
+            {
+                Console.WriteLine("1 - Inloggen");
+            }
+            Console.WriteLine("0 - Programma afsluiten");
             string input = Console.ReadLine() ?? "";
             Console.WriteLine("");
 
@@ -23,16 +31,25 @@ static class Menu
             }
             else if (input == "2")
             {
-                Console.WriteLine("This feature is not yet implemented");
+                Console.WriteLine("Deze functie is nog niet beschikbaar.");
+            }
+            else if (input == "8" && currentAccount != null)
+            {
+                Console.WriteLine($"Gebruikersnaam: {currentAccount.FullName}");
+                Console.WriteLine($"Gebruikers Email: {currentAccount.EmailAddress}");
+            }
+            else if (input == "9" && currentAccount != null && currentAccount.IsAdmin != 0)
+            {
+                DataMenu.Start();
             }
             else if (input == "0")
             {
-                Console.WriteLine("Shutting down...");
+                Console.WriteLine("Programma wordt afgesloten...");
+                menuRunning = false;
             }
             else
             {
-                Console.WriteLine("Invalid input");
-                Start();
+                Console.WriteLine("Ongeldige invoer.");
             }
         }
     }

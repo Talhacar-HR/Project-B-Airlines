@@ -5,21 +5,22 @@ static class UserLogin
 
     public static void Start()
     {
-        Console.WriteLine("Welcome to the login page");
-        Console.WriteLine("Please enter your email address");
+        Console.WriteLine("");
+        Console.WriteLine("Welkom op de inlogpagina.");
+        Console.WriteLine("Voer uw e-mailadres in.");
         string email = Console.ReadLine() ?? "";
-        Console.WriteLine("Please enter your password");
+        Console.WriteLine("Voer uw wachtwoord in.");
         string password = Console.ReadLine() ?? "";
+        Console.WriteLine("");
         AccountModel acc = accountsLogic.CheckLogin(email, password);
         if (acc != null)
         {
-            Console.WriteLine($"Welcome back, {acc.FullName}.");
-            Console.WriteLine($"Your email number is {acc.EmailAddress}.");
+            Console.WriteLine($"Welkom terug, {acc.FullName}.");
+            Console.WriteLine($"Uw e-mailadres is {acc.EmailAddress}.");
         }
         else
         {
-            Console.WriteLine("No account found with that email and password");
+            Console.WriteLine("Geen account gevonden met dit e-mailadres en wachtwoord.");
         }
-        Menu.Start();
     }
 }
