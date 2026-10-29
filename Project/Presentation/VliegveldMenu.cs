@@ -62,7 +62,7 @@ static class VliegveldMenu
                     Console.Write("Nieuwe afkorting: ");
                     string afkorting = Console.ReadLine() ?? "";
 
-                    if (long.TryParse(idInput, out long id))
+                    if (int.TryParse(idInput, out int id))
                     {
                         VliegveldModel airport = new(id, naam, stad, land, afkorting);
                         vliegveldLogic.Update(airport);

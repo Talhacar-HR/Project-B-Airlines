@@ -16,7 +16,7 @@ public class VliegveldAccess
         }
     }
 
-    public bool Exists(long id)
+    public bool Exists(int id)
     {
         using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
         {
