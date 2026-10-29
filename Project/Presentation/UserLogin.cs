@@ -5,11 +5,13 @@ static class UserLogin
 
     public static void Start()
     {
+        Console.WriteLine("");
         Console.WriteLine("Welkom op de inlogpagina.");
         Console.WriteLine("Voer uw e-mailadres in.");
         string email = Console.ReadLine() ?? "";
         Console.WriteLine("Voer uw wachtwoord in.");
         string password = Console.ReadLine() ?? "";
+        Console.WriteLine("");
         AccountModel acc = accountsLogic.CheckLogin(email, password);
         if (acc != null)
         {
