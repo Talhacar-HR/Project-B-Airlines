@@ -1,12 +1,12 @@
 public class VluchtModel
 {
-    public Int64 ID { get; set; }
+    public int ID { get; set; }
 
-    public Int64 VliegtuigID { get; set; }
+    public int VliegtuigID { get; set; }
 
-    public Int64 VertrekLocatie { get; set; }
+    public int VertrekLocatie { get; set; }
 
-    public Int64 AankomstLocatie { get; set; }
+    public int AankomstLocatie { get; set; }
 
     public string VertreksTijd { get; set; }
 
@@ -18,7 +18,7 @@ public class VluchtModel
     {
     }
 
-    public VluchtModel(Int64 id, Int64 vliegtuigID, Int64 vertrekLocatie, Int64 aankomstLocatie,
+    public VluchtModel(int id, int vliegtuigID, int vertrekLocatie, int aankomstLocatie,
         string vertreksTijd, string vertraging, int vluchtNummer)
     {
         ID = id;

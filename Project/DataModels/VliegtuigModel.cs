@@ -1,6 +1,6 @@
 public class VliegtuigModel
 {
-    public Int64 ID { get; set; }
+    public int ID { get; set; }
 
     public int BaggageRuimte { get; set; }
 
@@ -12,7 +12,7 @@ public class VliegtuigModel
     {
     }
 
-    public VliegtuigModel(Int64 id, int baggageRuimte, string model, string merk)
+    public VliegtuigModel(int id, int baggageRuimte, string model, string merk)
     {
         ID = id;
         BaggageRuimte = baggageRuimte;

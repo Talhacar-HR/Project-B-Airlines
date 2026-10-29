@@ -1,6 +1,6 @@
 public class VliegveldModel
 {
-    public Int64 ID { get; set; }
+    public int ID { get; set; }
 
     public string Naam { get; set; }
 
@@ -14,7 +14,7 @@ public class VliegveldModel
     {
     }
 
-    public VliegveldModel(Int64 id, string naam, string stad, string land, string afkorting)
+    public VliegveldModel(int id, string naam, string stad, string land, string afkorting)
     {
         ID = id;
         Naam = naam;
