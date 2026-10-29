@@ -11,6 +11,7 @@ static class Menu
             if (currentAccount != null)
             {
                 Console.WriteLine("1 - Uitloggen");
+                Console.WriteLine("2 - Vluchten checken");
                 Console.WriteLine("8 - Check gebruiker");
                 if (currentAccount.IsAdmin != 0)
                 {
@@ -37,6 +38,13 @@ static class Menu
             else if (input == "2")
             {
                 UserRegistration.Start();
+            }
+            else if (input == "2")
+            {
+                if (currentAccount != null)
+                    UserRegistration.Start();
+                else
+                    FlightOverview.Start();
             }
             else if (input == "8" && currentAccount != null)
             {
