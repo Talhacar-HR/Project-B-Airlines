@@ -1,5 +1,6 @@
 using Microsoft.Data.Sqlite;
 using Dapper;
+using SQLitePCL;
 
 public class FlightAccess
 {
@@ -20,4 +21,28 @@ public class FlightAccess
 
         return _connection.Query<FlightModel>(sql).ToList();
     }
+
+    public FlightModel? getById(int id)
+    {
+        string sql = @"Select vlucht.ID as ID, vlucht.VluchtNummer as FlightNumber, 
+        vertrek.Stad as Origin, Aankomst.Stad as Destination, date(vlucht.VertreksTijd) as DepartureDate,
+        strftime('%H:%M', Vlucht.VertreksTijd) as DepartureTime 
+        From vlucht
+        Join Vliegveld AS Vertrek ON vlucht.VertrekLocatie = Vertrek.ID
+        JOIN Vliegveld AS Aankomst ON Vlucht.AankomstLocatie = Aankomst.ID
+        WHERE Vlucht.ID = @Id";
+
+        return _connection.QueryFirstOrDefault<FlightModel> (sql, new {Id = id}); 
+        // QueryFirstOrDefault zoekt eerste resultaat of geeft null als er niks wordt gevonden.
+    }
+
+
+
+
+
+
+
+
+
 }
+
