@@ -1,7 +1,5 @@
 using Microsoft.Data.Sqlite;
-
 using Dapper;
-
 
 public class FlightAccess
 {
@@ -10,7 +8,7 @@ public class FlightAccess
     public List<FlightModel> GetAllFlights()
     {
         string sql = @"
-            SELECT
+            SELECT vlucht.ID as ID,
                 Vlucht.VluchtNummer AS FlightNumber,
                 Vertrek.Stad AS Origin,
                 Aankomst.Stad AS Destination,
