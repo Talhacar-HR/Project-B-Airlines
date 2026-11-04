@@ -24,7 +24,7 @@ public class FlightAccess
 
     public FlightModel? getById(int id)
     {
-        string sql = @"Select vlucht.ID as ID, vlucht.VluchtNummer as FlightNumber, 
+        string sql = @"Select vlucht.ID as ID, vlucht.VluchtNummer as FlightNumber, Vlucht.Prijs as Price,
         vertrek.Stad as Origin, Aankomst.Stad as Destination, date(vlucht.VertreksTijd) as DepartureDate,
         strftime('%H:%M', Vlucht.VertreksTijd) as DepartureTime 
         From vlucht
