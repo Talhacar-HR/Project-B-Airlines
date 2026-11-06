@@ -66,6 +66,7 @@ public class FlightLogic
 
     public bool SelectFlight(int id)
     {
+        SelectedFlight = null; // wist de vorige opgeslagen data, zodat je opnieuw kan selecteren.
         FlightModel? flight = _access.getById(id);
         if (flight == null)
             return false;
