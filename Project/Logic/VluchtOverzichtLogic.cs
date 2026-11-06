@@ -1,6 +1,7 @@
 public class FlightLogic
 {
     private FlightAccess _access = new();
+    public FlightModel? SelectedFlight {get; private set;} // private zodat alleen flightlogic vlucht mag wijzigen
 
     public List<FlightModel> GetAvailableFlights()
     {
@@ -68,8 +69,11 @@ public class FlightLogic
         FlightModel? flight = _access.getById(id);
         if (flight == null)
             return false;
-        else
-            return true;
+        if (GetDepartureMoment(flight) <= DateTime.Now) // checkt of de vlucht is vertrokken.
+            return false;
+
+        SelectedFlight = flight; // als het niet is vertokken sla je de vlucht op.
+        return true;
     }
 
     public List<FlightModel> SortFlights(List<FlightModel> flights, string sortby)
