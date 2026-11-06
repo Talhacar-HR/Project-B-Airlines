@@ -25,6 +25,11 @@ public class FlightLogic
         return DateTime.Parse(flight.DepartureDate + " " + flight.DepartureTime);
     }
 
+    private int CompareByPrice(FlightModel flight1, FlightModel flight2)
+    {
+        throw new NotImplementedException();
+    }
+
     private int CompareByDeparture(FlightModel flight1, FlightModel flight2)
     {
         return GetDepartureMoment(flight1).CompareTo(GetDepartureMoment(flight2));
