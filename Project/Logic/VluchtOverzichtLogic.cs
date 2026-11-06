@@ -29,4 +29,9 @@ public class FlightLogic
     {
         return GetDepartureMoment(flight1).CompareTo(GetDepartureMoment(flight2));
     }
+
+    public List<FlightModel> FlightFilter(string departureDate, string origin, string destination)
+    {
+        throw new NotImplementedException();
+    }
 }
