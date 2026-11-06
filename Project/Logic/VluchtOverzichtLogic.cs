@@ -52,4 +52,17 @@ public class FlightLogic
         }
         return filteredFlights;
     }
+
+    public List<FlightModel> SortFlights(List<FlightModel> flights, string sortby)
+    {
+        if (sortby == "price")
+        {
+            flights.Sort(CompareByPrice);
+        }
+        else if (sortby == "departure")
+        {
+            flights.Sort(CompareByDeparture);
+        }
+        return flights;
+    }
 }
