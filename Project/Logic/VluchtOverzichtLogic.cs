@@ -27,7 +27,9 @@ public class FlightLogic
 
     private int CompareByPrice(FlightModel flight1, FlightModel flight2)
     {
-        throw new NotImplementedException();
+        return flight1.Price.CompareTo(flight2.Price);
+        // Icompareable is niet nodig, omdat price al een Compare methode heeft.
+        // we vergelijken namelijk de prijzen niet de objecten zelf.
     }
 
     private int CompareByDeparture(FlightModel flight1, FlightModel flight2)
