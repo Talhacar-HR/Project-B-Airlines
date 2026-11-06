@@ -32,6 +32,17 @@ public class FlightLogic
 
     public List<FlightModel> FlightFilter(string departureDate, string origin, string destination)
     {
-        throw new NotImplementedException();
+        List<FlightModel> availableFlights = GetAvailableFlights();
+        List<FlightModel> filteredFlights = [];
+
+        foreach(FlightModel flight in availableFlights)
+        {
+           if (flight.DepartureDate == departureDate && flight.Origin == origin 
+           && flight.Destination == destination)
+            {
+                filteredFlights.Add(flight);
+            }
+        }
+        return filteredFlights;
     }
 }
