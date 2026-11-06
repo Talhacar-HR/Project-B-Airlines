@@ -63,6 +63,15 @@ public class FlightLogic
         return filteredFlights;
     }
 
+    public bool SelectFlight(int id)
+    {
+        FlightModel? flight = _access.getById(id);
+        if (flight == null)
+            return false;
+        else
+            return true;
+    }
+
     public List<FlightModel> SortFlights(List<FlightModel> flights, string sortby)
     {
         if (sortby == "price")
