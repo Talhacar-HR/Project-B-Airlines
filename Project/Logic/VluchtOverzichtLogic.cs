@@ -32,9 +32,19 @@ public class FlightLogic
         // we vergelijken namelijk de prijzen niet de objecten zelf.
     }
 
+    private int CompareByPriceDescending(FlightModel flight1, FlightModel flight2)
+    {
+        return flight2.Price.CompareTo(flight1.Price);
+    }
+
     private int CompareByDeparture(FlightModel flight1, FlightModel flight2)
     {
         return GetDepartureMoment(flight1).CompareTo(GetDepartureMoment(flight2));
+    }
+
+    private int CompareByDepartureDescending(FlightModel flight1, FlightModel flight2)
+    {
+        return GetDepartureMoment(flight2).CompareTo(GetDepartureMoment(flight1));
     }
 
     public List<FlightModel> FlightFilter(string departureDate, string origin, string destination)
@@ -59,9 +69,17 @@ public class FlightLogic
         {
             flights.Sort(CompareByPrice);
         }
+        else if (sortby == "price_desc")
+        {
+            flights.Sort(CompareByPriceDescending);
+        }
         else if (sortby == "departure")
         {
             flights.Sort(CompareByDeparture);
+        }
+        else if (sortby == "departure_desc")
+        {
+            flights.Sort(CompareByDepartureDescending);
         }
         return flights;
     }
