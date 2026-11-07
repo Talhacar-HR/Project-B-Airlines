@@ -36,6 +36,11 @@ public class FlightAccess
         // QueryFirstOrDefault zoekt eerste resultaat of geeft null als er niks wordt gevonden.
     }
 
+    public bool HasAvailableSeats(int flightId)
+    {
+        throw new NotImplementedException();
+    }
+
 
 
 
