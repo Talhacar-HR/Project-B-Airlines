@@ -33,6 +33,17 @@ static class FlightOverview
         }
         else
         {
+            Console.WriteLine("Hoe wil je sorteren?");
+            Console.WriteLine("1. Prijs (laag naar hoog)");
+            Console.WriteLine("2. Vertrektijd (vroeg naar laat)");
+
+            var keuze  = Console.ReadLine();
+
+            if (keuze == "1")
+                flights = flightLogic.SortFlights(flights, "price");
+            else if (keuze == "2")
+                flights = flightLogic.SortFlights(flights, "departure");
+
             // Kop van de tabel
             Console.WriteLine("Vluchtnummer | Vertrek | Bestemming | Datum | Vertrektijd");
             Console.WriteLine("-------------------------------------------------------");
