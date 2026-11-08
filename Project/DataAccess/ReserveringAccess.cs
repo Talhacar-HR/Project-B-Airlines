@@ -70,4 +70,17 @@ public class ReserveringAccess
             return connection.Query<int>(sql, new { VluchtID = vluchtId }).AsList();
         }
     }
+
+        public bool BestaatBoekingsCode(int boekingsCode)
+    {
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
+        {
+            connection.Open();
+
+            string sql = "SELECT COUNT(*) FROM Reservering WHERE BoekingsCode = @BoekingsCode";
+            int aantal = connection.ExecuteScalar<int>(sql, new { BoekingsCode = boekingsCode });
+
+            return aantal > 0;
+        }
+    }
 }
