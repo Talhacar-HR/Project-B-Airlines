@@ -69,7 +69,7 @@ static class FlightOverview
                     break;
                 }
                 if (flag == false)
-                    Console.WriteLine("ongeldig vluchtnummer.")
+                    Console.WriteLine("ongeldig vluchtnummer.");
                     
             }
         }
