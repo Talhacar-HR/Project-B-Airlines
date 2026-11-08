@@ -9,7 +9,22 @@ static class FlightOverview
 
     public static void Start()
     {
-        List<FlightModel> flights = flightLogic.GetAvailableFlights();
+        Console.WriteLine("Vertrekdatum (yyyy-MM-dd): ");
+        var departureDate = Console.ReadLine(); // var omdat het ook null kan terugegeven als ik string gebruik.
+
+        Console.WriteLine("Vertrekplaats: ");
+        var origin = Console.ReadLine();
+
+        Console.WriteLine("Bestemming: ");
+        var destination = Console.ReadLine();
+
+        if (departureDate == null || origin == null || destination == null)
+        {
+            Console.WriteLine("Ongeldige invoer.");
+            return;
+        }
+
+        List<FlightModel> flights = flightLogic.FlightFilter(departureDate, origin, destination);
 
         Console.WriteLine();
         if (flights.Count == 0)
