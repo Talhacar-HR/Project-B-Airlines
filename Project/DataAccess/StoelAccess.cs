@@ -16,6 +16,18 @@ public class StoelAccess
         }
     }
 
+    // Haalt 1 stoel op, of null als die niet bestaat.
+    public StoelModel? GetById(int id)
+    {
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
+        {
+            connection.Open();
+
+            string sql = $"SELECT ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse FROM {Table} WHERE ID = @ID";
+            return connection.QueryFirstOrDefault<StoelModel>(sql, new { ID = id });
+        }
+    }
+
     public void Add(StoelModel seat)
     {
         using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))

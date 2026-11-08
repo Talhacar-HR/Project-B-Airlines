@@ -16,6 +16,18 @@ public class VluchtAccess
         }
     }
 
+    // Haalt 1 vlucht op, of null als die niet bestaat.
+    public VluchtModel? GetById(int id)
+    {
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
+        {
+            connection.Open();
+
+            string sql = $"SELECT ID, VliegtuigID, VertrekLocatie, AankomstLocatie, VertreksTijd, Vertraging, VluchtNummer, Prijs FROM {Table} WHERE ID = @ID";
+            return connection.QueryFirstOrDefault<VluchtModel>(sql, new { ID = id });
+        }
+    }
+
     public void Add(VluchtModel flight)
     {
         using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
