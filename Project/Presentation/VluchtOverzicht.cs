@@ -52,6 +52,26 @@ static class FlightOverview
             {
                 ShowFlight(flight);
             }
+            Console.WriteLine("welk vluchtnummer wil je selecteren?");
+            var flightNumber = Console.ReadLine();
+
+            bool flag = false;
+
+            foreach(FlightModel flight in flights)
+            {
+                if (flight.FlightNumber.ToString() == flightNumber)
+                    flag = true;
+                if (flightLogic.SelectFlight(flight.ID))
+                    Console.WriteLine("Vlucht geselecteerd.");
+                else
+                {
+                    Console.WriteLine("Deze vlucht is niet beschikbaar.");
+                    break;
+                }
+                if (flag == false)
+                    Console.WriteLine("ongeldig vluchtnummer.")
+                    
+            }
         }
     }
 }
