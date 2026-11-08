@@ -12,11 +12,11 @@ public class FlightLogic
         {
             if (GetDepartureMoment(flight) > DateTime.Now && _access.HasAvailableSeats(flight.ID)) // extra check.
             {
-                availableFlights.Add(flight);
+                availableFlights.Add(flight); 
             }
         }
 
-        availableFlights.Sort(CompareByDeparture);
+        availableFlights.Sort(CompareByDeparture);// sort van vroeg naar laat.
 
         return availableFlights;
     }
