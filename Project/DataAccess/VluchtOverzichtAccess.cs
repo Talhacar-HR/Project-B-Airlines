@@ -1,6 +1,7 @@
 using Microsoft.Data.Sqlite;
 using Dapper;
 using SQLitePCL;
+using System.Data.Common;
 
 public class FlightAccess
 {
@@ -24,10 +25,10 @@ public class FlightAccess
 
     public FlightModel? getById(int id)
     {
-        string sql = @"Select vlucht.ID as ID, vlucht.VluchtNummer as FlightNumber, Vlucht.Prijs as Price,
-        vertrek.Stad as Origin, Aankomst.Stad as Destination, date(vlucht.VertreksTijd) as DepartureDate,
-        strftime('%H:%M', Vlucht.VertreksTijd) as DepartureTime 
-        From vlucht
+        string sql = @"SELECT vlucht.ID as ID, vlucht.VluchtNummer AS FlightNumber, Vlucht.Prijs AS Price,
+        vertrek.Stad AS Origin, Aankomst.Stad AS Destination, date(vlucht.VertreksTijd) AS DepartureDate,
+        strftime('%H:%M', Vlucht.VertreksTijd) AS DepartureTime 
+        FROM vlucht
         Join Vliegveld AS Vertrek ON vlucht.VertrekLocatie = Vertrek.ID
         JOIN Vliegveld AS Aankomst ON Vlucht.AankomstLocatie = Aankomst.ID
         WHERE Vlucht.ID = @Id";
@@ -38,16 +39,24 @@ public class FlightAccess
 
     public bool HasAvailableSeats(int flightId)
     {
-        throw new NotImplementedException();
+        // telt alle stoelen van het vliegtuig
+        string sql = @"SELECT COUNT(*) FROM Stoel 
+        JOIN Vlucht ON Stoel.VliegtuigID = Vlucht.VliegtuigID
+        WHERE Vlucht.ID = @Id";
+        int totaleStoelen = _connection.ExecuteScalar<int>(sql, new {Id = flightId}); // slaat aanal stoelen op. flightId wordt doorgegeven aan @Id
+
+         // telt hoeveel verschillende stoelen zijn geresveeerd op een spcifieke (DISTINCT) vlucht.
+        string sql2 = @"SELECT COUNT(DISTINCT ReserveringsStoel.StoelID) FROM ReserveringsStoel
+        JOIN Reservering ON ReserveringsStoel.ReserveringID = Reservering.ID
+        WHERE Reservering.VluchtID = @Id";
+        int gereserveerdeStoelen = _connection.ExecuteScalar<int>(sql2, new {Id = flightId});
+
+        if (totaleStoelen > gereserveerdeStoelen)
+            return true;
+        else
+            return false;
+        
+        
     }
-
-
-
-
-
-
-
-
-
 }
 
