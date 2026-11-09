@@ -30,6 +30,7 @@ static class Menu
             if (input == "1")
             {
                 if (currentAccount == null)
+                // Inloggen
                     UserLogin.Start();
                 else
                     // Uitloggen
@@ -38,8 +39,10 @@ static class Menu
             else if (input == "2")
             {
                 if (currentAccount == null)
+                    // Registeren
                     UserRegistration.Start();
                 else
+                    // Vluchten Bekijken
                     FlightOverview.Start();
             }
             else if (input == "8" && currentAccount != null)

@@ -73,6 +73,7 @@ static class FlightOverview
                 if (flight.FlightNumber.ToString() == flightNumber)
                     flag = true;
                 if (flightLogic.SelectFlight(flight.ID))
+                    // ???
                     VluchtBoeken.Start(flight.ID);
                 else
                 {
