@@ -9,6 +9,17 @@ static class FlightOverview
 
     public static void Start()
     {
+        // temp test
+        List<FlightModel> availableFlights = flightLogic.GetAvailableFlights();
+        Console.WriteLine("Beschikbare vluchten:");
+        Console.WriteLine("Vluchtnummer | Vertrek | Bestemming | Datum | Vertrektijd");
+        Console.WriteLine("---------------------------------------------------------");
+        foreach (FlightModel flight in availableFlights)
+        {
+            ShowFlight(flight);
+        }
+        // temp test
+
         Console.WriteLine("Vertrekdatum (yyyy-MM-dd): ");
         var departureDate = Console.ReadLine(); // var omdat het ook null kan terugegeven als ik string gebruik.
 
@@ -62,14 +73,14 @@ static class FlightOverview
                 if (flight.FlightNumber.ToString() == flightNumber)
                     flag = true;
                 if (flightLogic.SelectFlight(flight.ID))
-                    Console.WriteLine("Vlucht geselecteerd.");
+                    BoekVlucht.Start(flight.ID);
                 else
                 {
                     Console.WriteLine("Deze vlucht is niet beschikbaar.");
                     break;
                 }
                 if (flag == false)
-                    Console.WriteLine("ongeldig vluchtnummer.");
+                    Console.WriteLine("Ongeldig vluchtnummer.");
                     
             }
         }
