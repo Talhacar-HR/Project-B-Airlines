@@ -100,10 +100,9 @@ static class VluchtMenu
                     Console.Write($"Nieuw vluchtnummer (huidig: {currentFlight.VluchtNummer}): ");
                     string vluchtNummerInput = Console.ReadLine() ?? "";
 
-                    if (long.TryParse(idInput, out long id) &&
-                        long.TryParse(vliegtuigIDInput, out long vliegtuigID) &&
-                        long.TryParse(vertrekLocatieInput, out long vertrekLocatie) &&
-                        long.TryParse(aankomstLocatieInput, out long aankomstLocatie) &&
+                    if (int.TryParse(vliegtuigIDInput, out int vliegtuigID) &&
+                        int.TryParse(vertrekLocatieInput, out int vertrekLocatie) &&
+                        int.TryParse(aankomstLocatieInput, out int aankomstLocatie) &&
                         int.TryParse(vluchtNummerInput, out int vluchtNummer))
                     {
                         VluchtModel flight = new(id, vliegtuigID, vertrekLocatie, aankomstLocatie, vertrekDatum, vertrekTijd, vertraging, vluchtNummer);
