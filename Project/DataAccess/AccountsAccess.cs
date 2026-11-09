@@ -23,7 +23,7 @@ public class AccountsAccess
         {
             connection.Open();
 
-            string sql = $"SELECT ID AS Id, Email, Wachtwoord AS Password, Gebruikersnaam AS FullName, Admin AS IsAdmin FROM {Table} WHERE Email = @Email";
+            string sql = $"SELECT ID AS Id, Email AS EmailAddress, Wachtwoord AS Password, Gebruikersnaam AS FullName, Admin AS IsAdmin FROM {Table} WHERE Email = @Email";
             return connection.QueryFirstOrDefault<AccountModel>(sql, new { Email = email });
         }
     }

@@ -1,5 +1,3 @@
-using System.Globalization;
-
 public class FlightLogic
 {
     private FlightAccess _access = new();
@@ -14,21 +12,18 @@ public class FlightLogic
         {
             if (GetDepartureMoment(flight) > DateTime.Now && _access.HasAvailableSeats(flight.ID)) // extra check.
             {
-                availableFlights.Add(flight);
+                availableFlights.Add(flight); 
             }
         }
 
-        availableFlights.Sort(CompareByDeparture);
+        availableFlights.Sort(CompareByDeparture);// sort van vroeg naar laat.
 
         return availableFlights;
     }
 
     private DateTime GetDepartureMoment(FlightModel flight)
     {
-        return DateTime.ParseExact(
-            flight.DepartureDate + " " + flight.DepartureTime,
-            "yyyy-MM-dd HH:mm",
-            CultureInfo.InvariantCulture);
+        return DateTime.Parse(flight.DepartureDate + " " + flight.DepartureTime);
     }
 
     private int CompareByPrice(FlightModel flight1, FlightModel flight2)

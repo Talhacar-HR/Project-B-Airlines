@@ -59,7 +59,7 @@ static class VliegtuigMenu
                 Console.Write("Nieuw merk: ");
                 string merk = Console.ReadLine() ?? "";
 
-                if (long.TryParse(idInput, out long id) &&
+                if (int.TryParse(idInput, out int id) &&
                     int.TryParse(baggageRuimteInput, out int baggageRuimte))
                 {
                     VliegtuigModel plane = new(id, baggageRuimte, model, merk);

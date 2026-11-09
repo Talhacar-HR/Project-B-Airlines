@@ -11,6 +11,7 @@ static class Menu
             if (currentAccount != null)
             {
                 Console.WriteLine("1 - Uitloggen");
+                Console.WriteLine("2 - Vluchten checken");
                 Console.WriteLine("8 - Check gebruiker");
                 if (currentAccount.IsAdmin != 0)
                 {
@@ -20,6 +21,7 @@ static class Menu
             else
             {
                 Console.WriteLine("1 - Inloggen");
+                Console.WriteLine("2 - Registreren");
             }
             Console.WriteLine("0 - Programma afsluiten");
             string input = Console.ReadLine() ?? "";
@@ -27,11 +29,21 @@ static class Menu
 
             if (input == "1")
             {
-                UserLogin.Start();
+                if (currentAccount == null)
+                // Inloggen
+                    UserLogin.Start();
+                else
+                    // Uitloggen
+                    Console.WriteLine("Deze functie is nog niet beschikbaar.");
             }
             else if (input == "2")
             {
-                Console.WriteLine("Deze functie is nog niet beschikbaar.");
+                if (currentAccount == null)
+                    // Registeren
+                    UserRegistration.Start();
+                else
+                    // Vluchten Bekijken
+                    FlightOverview.Start();
             }
             else if (input == "8" && currentAccount != null)
             {

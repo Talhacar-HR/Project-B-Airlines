@@ -1,8 +1,8 @@
 public class StoelModel
 {
-    public Int64 ID { get; set; }
+    public int ID { get; set; }
 
-    public Int64 VliegtuigID { get; set; }
+    public int VliegtuigID { get; set; }
 
     public string StoelNummer { get; set; }
 
@@ -14,7 +14,7 @@ public class StoelModel
     {
     }
 
-    public StoelModel(Int64 id, Int64 vliegtuigID, string stoelNummer, string rijNummer, int stoelKlasse)
+    public StoelModel(int id, int vliegtuigID, string stoelNummer, string rijNummer, int stoelKlasse)
     {
         ID = id;
         VliegtuigID = vliegtuigID;

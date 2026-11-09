@@ -40,7 +40,7 @@ static class StoelMenu
                     Console.Write("Stoelklasse: ");
                     string stoelKlasseInput = Console.ReadLine() ?? "";
 
-                    if (long.TryParse(vliegtuigIDInput, out long vliegtuigID) &&
+                    if (int.TryParse(vliegtuigIDInput, out int vliegtuigID) &&
                         int.TryParse(stoelKlasseInput, out int stoelKlasse))
                     {
                         StoelModel seat = new(0, vliegtuigID, stoelNummer, rijNummer, stoelKlasse);
@@ -64,8 +64,8 @@ static class StoelMenu
                     Console.Write("Nieuwe stoelklasse: ");
                     string stoelKlasseInput = Console.ReadLine() ?? "";
 
-                    if (long.TryParse(idInput, out long id) &&
-                        long.TryParse(vliegtuigIDInput, out long vliegtuigID) &&
+                    if (int.TryParse(idInput, out int id) &&
+                        int.TryParse(vliegtuigIDInput, out int vliegtuigID) &&
                         int.TryParse(stoelKlasseInput, out int stoelKlasse))
                     {
                         StoelModel seat = new(id, vliegtuigID, stoelNummer, rijNummer, stoelKlasse);
