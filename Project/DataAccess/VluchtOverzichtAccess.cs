@@ -7,22 +7,7 @@ public class FlightAccess
 {
     private SqliteConnection _connection = new SqliteConnection($"Data Source=DataSources/ApplicatieDB.db");
 
-    public FlightModel? getById(int id)
-    {
-        string sql = @"SELECT vlucht.ID as ID, vlucht.VluchtNummer AS FlightNumber,
-        vertrek.Stad AS Origin, 
-        Aankomst.Stad AS Destination, 
-        date(Vlucht.VertreksTijd) AS DepartureDate,
-        strftime('%H:%M', Vlucht.VertreksTijd) AS DepartureTime,
-        Vlucht.Prijs AS Price
-        FROM vlucht
-        Join Vliegveld AS Vertrek ON vlucht.VertrekLocatie = Vertrek.ID
-        JOIN Vliegveld AS Aankomst ON Vlucht.AankomstLocatie = Aankomst.ID
-        WHERE Vlucht.ID = @Id";
-
-        return _connection.QueryFirstOrDefault<FlightModel> (sql, new {Id = id}); 
-        // QueryFirstOrDefault zoekt eerste resultaat of geeft null als er niks wordt gevonden.
-    }
+    
 
     public bool HasAvailableSeats(int flightId)
     {
