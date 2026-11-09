@@ -10,12 +10,13 @@ public class FlightAccess
     public List<FlightModel> GetAllFlights()
     {
         string sql = @"
-            SELECT vlucht.ID as ID,
+            SELECT vlucht.ID AS ID,
                 Vlucht.VluchtNummer AS FlightNumber,
                 Vertrek.Stad AS Origin,
                 Aankomst.Stad AS Destination,
-                Vlucht.VertrekDatum AS DepartureDate,
-                Vlucht.VertrekTijd AS DepartureTime
+                date(Vlucht.VertreksTijd) AS DepartureDate,
+                strftime('%H:%M', Vlucht.VertreksTijd) AS DepartureTime,
+                Vlucht.Prijs As Price
             FROM Vlucht
             JOIN Vliegveld AS Vertrek ON Vlucht.VertrekLocatie = Vertrek.ID
             JOIN Vliegveld AS Aankomst ON Vlucht.AankomstLocatie = Aankomst.ID";
@@ -26,8 +27,11 @@ public class FlightAccess
     public FlightModel? getById(int id)
     {
         string sql = @"SELECT vlucht.ID as ID, vlucht.VluchtNummer AS FlightNumber,
-        vertrek.Stad AS Origin, Aankomst.Stad AS Destination, vlucht.VertrekDatum AS DepartureDate,
-        vlucht.VertrekTijd AS DepartureTime
+        vertrek.Stad AS Origin, 
+        Aankomst.Stad AS Destination, 
+        date(Vlucht.VertreksTijd) AS DepartureDate,
+        strftime('%H:%M', Vlucht.VertreksTijd) AS DepartureTime,
+        Vlucht.Prijs AS Price
         FROM vlucht
         Join Vliegveld AS Vertrek ON vlucht.VertrekLocatie = Vertrek.ID
         JOIN Vliegveld AS Aankomst ON Vlucht.AankomstLocatie = Aankomst.ID
