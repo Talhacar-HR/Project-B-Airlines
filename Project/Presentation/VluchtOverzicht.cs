@@ -63,7 +63,7 @@ static class FlightOverview
             {
                 ShowFlight(flight);
             }
-            Console.WriteLine("welk vluchtnummer wil je selecteren?");
+            Console.WriteLine("Welk vluchtnummer wil je selecteren?");
             var flightNumber = Console.ReadLine();
 
             bool flag = false;
@@ -73,7 +73,7 @@ static class FlightOverview
                 if (flight.FlightNumber.ToString() == flightNumber)
                     flag = true;
                 if (flightLogic.SelectFlight(flight.ID))
-                    BoekVlucht.Start(flight.ID);
+                    VluchtBoeken.Start(flight.ID);
                 else
                 {
                     Console.WriteLine("Deze vlucht is niet beschikbaar.");
