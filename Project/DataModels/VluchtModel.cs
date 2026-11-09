@@ -8,7 +8,9 @@ public class VluchtModel
 
     public int AankomstLocatie { get; set; }
 
-    public string VertreksTijd { get; set; }
+    public string VertrekDatum { get; set; }
+
+    public string VertrekTijd { get; set; }
 
     public string Vertraging { get; set; }
 
@@ -19,13 +21,14 @@ public class VluchtModel
     }
 
     public VluchtModel(int id, int vliegtuigID, int vertrekLocatie, int aankomstLocatie,
-        string vertreksTijd, string vertraging, int vluchtNummer)
+        string vertrekDatum, string vertrekTijd, string vertraging, int vluchtNummer)
     {
         ID = id;
         VliegtuigID = vliegtuigID;
         VertrekLocatie = vertrekLocatie;
         AankomstLocatie = aankomstLocatie;
-        VertreksTijd = vertreksTijd;
+        VertrekDatum = vertrekDatum;
+        VertrekTijd = vertrekTijd;
         Vertraging = vertraging;
         VluchtNummer = vluchtNummer;
     }

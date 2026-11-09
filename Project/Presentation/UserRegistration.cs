@@ -8,9 +8,9 @@ static class UserRegistration
         Console.WriteLine("");
         Console.WriteLine("Registreren");
         Console.WriteLine("Voer je e-mailadres in:");
-        string email = Console.ReadLine();
+        string email = Console.ReadLine() ?? "";
         Console.WriteLine("Voer je wachtwoord in:");
-        string password = Console.ReadLine();
+        string password = Console.ReadLine() ?? "";
  
         bool success = userLogic.Register(email, password);
  
