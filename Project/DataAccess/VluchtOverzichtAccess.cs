@@ -7,23 +7,6 @@ public class FlightAccess
 {
     private SqliteConnection _connection = new SqliteConnection($"Data Source=DataSources/ApplicatieDB.db");
 
-    public List<FlightModel> GetAllFlights()
-    {
-        string sql = @"
-            SELECT vlucht.ID AS ID,
-                Vlucht.VluchtNummer AS FlightNumber,
-                Vertrek.Stad AS Origin,
-                Aankomst.Stad AS Destination,
-                date(Vlucht.VertreksTijd) AS DepartureDate,
-                strftime('%H:%M', Vlucht.VertreksTijd) AS DepartureTime,
-                Vlucht.Prijs As Price
-            FROM Vlucht
-            JOIN Vliegveld AS Vertrek ON Vlucht.VertrekLocatie = Vertrek.ID
-            JOIN Vliegveld AS Aankomst ON Vlucht.AankomstLocatie = Aankomst.ID";
-
-        return _connection.Query<FlightModel>(sql).ToList();
-    }
-
     public FlightModel? getById(int id)
     {
         string sql = @"SELECT vlucht.ID as ID, vlucht.VluchtNummer AS FlightNumber,
