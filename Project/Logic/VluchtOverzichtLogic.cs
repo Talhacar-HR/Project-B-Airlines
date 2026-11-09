@@ -1,6 +1,9 @@
 public class FlightLogic
 {
     private VluchtAccess _access = new();
+    private StoelLogic _stoelLogic = new(); // geeft totale aantal stoelen
+    private ReserveringLogic _reserveringLogic = new(); // geeft totaal bezette stoelen
+
     public FlightModel? SelectedFlight {get; private set;} // private zodat alleen flightlogic vlucht mag wijzigen
 
     public List<FlightModel> GetAvailableFlights()
@@ -10,7 +13,7 @@ public class FlightLogic
 
         foreach (FlightModel flight in allFlights)
         {
-            if (GetDepartureMoment(flight) > DateTime.Now && _access.HasAvailableSeats(flight.ID)) // extra check.
+            if (GetDepartureMoment(flight) > DateTime.Now && HasAvailableSeats(flight)) // extra check.
             {
                 availableFlights.Add(flight); 
             }
@@ -24,6 +27,17 @@ public class FlightLogic
     private DateTime GetDepartureMoment(FlightModel flight)
     {
         return DateTime.Parse(flight.DepartureDate + " " + flight.DepartureTime);
+    }
+
+    private bool HasAvailableSeats(FlightModel flight)
+    {
+        int totaleStoelen = _stoelLogic.GetTotalSeats(flight.VliegtuigID);
+        int gereserveerdeStoelen = _reserveringLogic.GetAantalBezetteStoelen(flight.ID);
+
+        if (totaleStoelen > gereserveerdeStoelen)
+            return true;
+        else
+            return false;
     }
 
     private int CompareByPrice(FlightModel flight1, FlightModel flight2)
@@ -72,7 +86,7 @@ public class FlightLogic
             return false;
         if (GetDepartureMoment(flight) <= DateTime.Now) // checkt of de vlucht is vertrokken.
             return false;
-        if (!_access.HasAvailableSeats(id))
+        if (!HasAvailableSeats(flight))
             return false;
 
         SelectedFlight = flight; // als het niet is vertokken sla je de vlucht op.
