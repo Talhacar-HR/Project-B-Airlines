@@ -1,3 +1,5 @@
+using System.Globalization;
+
 public class VluchtLogic
 {
     private VluchtAccess _access = new();
@@ -57,10 +59,19 @@ public class VluchtLogic
             throw new ArgumentException("De vertrek- en aankomstluchthaven moeten verschillend zijn.", nameof(flight));
         }
 
-        if (string.IsNullOrWhiteSpace(flight.VertreksTijd) ||
-            string.IsNullOrWhiteSpace(flight.Vertraging))
+        if (!DateOnly.TryParseExact(flight.VertrekDatum, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
         {
-            throw new ArgumentException("Vertrektijd en vertraging zijn verplicht.", nameof(flight));
+            throw new ArgumentException("De vertrekdatum moet geldig zijn en het formaat yyyy-MM-dd hebben.", nameof(flight));
+        }
+
+        if (!TimeOnly.TryParseExact(flight.VertrekTijd, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+        {
+            throw new ArgumentException("De vertrektijd moet geldig zijn en het formaat HH:mm hebben.", nameof(flight));
+        }
+
+        if (!TimeOnly.TryParseExact(flight.Vertraging, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+        {
+            throw new ArgumentException("De vertraging moet geldig zijn en het formaat HH:mm hebben.", nameof(flight));
         }
 
         if (flight.VluchtNummer <= 0)
