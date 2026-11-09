@@ -83,4 +83,19 @@ public class ReserveringAccess
             return aantal > 0;
         }
     }
+
+        public List<ReserveringsStoelModel> GetStoelenByReserveringId(int reserveringId)
+    {
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
+        {
+            connection.Open();
+
+            string sql = @"
+                SELECT ID, PassagierID, ReserveringID, StoelID
+                FROM ReserveringsStoel
+                WHERE ReserveringID = @ReserveringID";
+
+            return connection.Query<ReserveringsStoelModel>(sql, new { ReserveringID = reserveringId }).AsList();
+        }
+    }
 }
