@@ -11,7 +11,7 @@ public class VluchtAccess
         {
             connection.Open();
 
-            string sql = $"SELECT ID, VliegtuigID, VertrekLocatie, AankomstLocatie, VertreksTijd, Vertraging, VluchtNummer, Prijs FROM {Table} ORDER BY ID";
+            string sql = $"SELECT ID, VliegtuigID, VertrekLocatie, AankomstLocatie, VertrekDatum, VertrekTijd, Vertraging, VluchtNummer, Prijs FROM {Table} ORDER BY ID";
             return connection.Query<VluchtModel>(sql).AsList();
         }
     }
@@ -22,7 +22,7 @@ public class VluchtAccess
         {
             connection.Open();
 
-            string sql = $"INSERT INTO {Table} (VliegtuigID, VertrekLocatie, AankomstLocatie, VertreksTijd, Vertraging, VluchtNummer, Prijs) VALUES (@VliegtuigID, @VertrekLocatie, @AankomstLocatie, @VertreksTijd, @Vertraging, @VluchtNummer, @Prijs)";
+            string sql = $"INSERT INTO {Table} (VliegtuigID, VertrekLocatie, AankomstLocatie, VertrekDatum, VertrekTijd, Vertraging, VluchtNummer, Prijs) VALUES (@VliegtuigID, @VertrekLocatie, @AankomstLocatie, @VertrekDatum, @VertrekTijd, @Vertraging, @VluchtNummer, @Prijs)";
             connection.Execute(sql, flight);
         }
     }
@@ -33,7 +33,7 @@ public class VluchtAccess
         {
             connection.Open();
 
-            string sql = $"UPDATE {Table} SET VliegtuigID = @VliegtuigID, VertrekLocatie = @VertrekLocatie, AankomstLocatie = @AankomstLocatie, VertreksTijd = @VertreksTijd, Vertraging = @Vertraging, VluchtNummer = @VluchtNummer, Prijs = @Prijs WHERE ID = @ID";
+            string sql = $"UPDATE {Table} SET VliegtuigID = @VliegtuigID, VertrekLocatie = @VertrekLocatie, AankomstLocatie = @AankomstLocatie, VertrekDatum = @VertrekDatum, VertrekTijd = @VertrekTijd, Vertraging = @Vertraging, VluchtNummer = @VluchtNummer, Prijs = @Prijs WHERE ID = @ID";
             return connection.Execute(sql, flight) > 0;
         }
     }

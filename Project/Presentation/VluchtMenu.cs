@@ -26,7 +26,7 @@ static class VluchtMenu
 
                     foreach (VluchtModel flight in flights)
                     {
-                        Console.WriteLine($"ID: {flight.ID}, Vliegtuig-ID: {flight.VliegtuigID}, Vertrekluchthaven-ID: {flight.VertrekLocatie}, Aankomstluchthaven-ID: {flight.AankomstLocatie}, Vertrektijd: {flight.VertreksTijd}, Vertraging: {flight.Vertraging}, Vluchtnummer: {flight.VluchtNummer}");
+                        Console.WriteLine($"ID: {flight.ID}, Vliegtuig-ID: {flight.VliegtuigID}, Vertrekluchthaven-ID: {flight.VertrekLocatie}, Aankomstluchthaven-ID: {flight.AankomstLocatie}, Vertrek datum: {flight.VertrekDatum}, Vertrek tijd: {flight.VertrekTijd}, Vertraging (HH:mm): {flight.Vertraging}, Vluchtnummer: {flight.VluchtNummer}");
                     }
                 }
                 else if (input == "2")
@@ -37,9 +37,11 @@ static class VluchtMenu
                     string vertrekLocatieInput = Console.ReadLine() ?? "";
                     Console.Write("Aankomstluchthaven-ID: ");
                     string aankomstLocatieInput = Console.ReadLine() ?? "";
-                    Console.Write("Vertrektijd: ");
-                    string vertreksTijd = Console.ReadLine() ?? "";
-                    Console.Write("Vertraging: ");
+                    Console.Write("Vertrek datum (yyyy-MM-dd): ");
+                    string vertrekDatum = Console.ReadLine() ?? "";
+                    Console.Write("Vertrek tijd (HH:mm): ");
+                    string vertrekTijd = Console.ReadLine() ?? "";
+                    Console.Write("Vertraging (HH:mm): ");
                     string vertraging = Console.ReadLine() ?? "";
                     Console.Write("Vluchtnummer: ");
                     string vluchtNummerInput = Console.ReadLine() ?? "";
@@ -49,8 +51,16 @@ static class VluchtMenu
                         int.TryParse(aankomstLocatieInput, out int aankomstLocatie) &&
                         int.TryParse(vluchtNummerInput, out int vluchtNummer))
                     {
-                        VluchtModel flight = new(0, vliegtuigID, vertrekLocatie, aankomstLocatie, vertreksTijd, vertraging, vluchtNummer);
-                        vluchtLogic.Add(flight);
+                        VluchtModel flight = new(0, vliegtuigID, vertrekLocatie, aankomstLocatie, vertrekDatum, vertrekTijd, vertraging, vluchtNummer);
+                        try
+                        {
+                            vluchtLogic.Add(flight);
+                            Console.WriteLine("Vlucht toegevoegd.");
+                        }
+                        catch (ArgumentException exception)
+                        {
+                            Console.WriteLine(exception.Message);
+                        }
                     }
                     else
                     {
@@ -61,27 +71,54 @@ static class VluchtMenu
                 {
                     Console.Write("ID van de vlucht: ");
                     string idInput = Console.ReadLine() ?? "";
-                    Console.Write("Nieuw vliegtuig-ID: ");
+
+                    if (!int.TryParse(idInput, out int id))
+                    {
+                        Console.WriteLine("Ongeldige invoer.");
+                        continue;
+                    }
+
+                    VluchtModel? currentFlight = vluchtLogic.GetAll().Find(flight => flight.ID == id);
+                    if (currentFlight is null)
+                    {
+                        Console.WriteLine($"Er bestaat geen vlucht met ID {id}.");
+                        continue;
+                    }
+
+                    Console.Write($"Nieuw vliegtuig-ID (huidig: {currentFlight.VliegtuigID}): ");
                     string vliegtuigIDInput = Console.ReadLine() ?? "";
-                    Console.Write("Nieuw vertrekluchthaven-ID: ");
+                    Console.Write($"Nieuw vertrekluchthaven-ID (huidig: {currentFlight.VertrekLocatie}): ");
                     string vertrekLocatieInput = Console.ReadLine() ?? "";
-                    Console.Write("Nieuw aankomstluchthaven-ID: ");
+                    Console.Write($"Nieuw aankomstluchthaven-ID (huidig: {currentFlight.AankomstLocatie}): ");
                     string aankomstLocatieInput = Console.ReadLine() ?? "";
-                    Console.Write("Nieuwe vertrektijd: ");
-                    string vertreksTijd = Console.ReadLine() ?? "";
-                    Console.Write("Nieuwe vertraging: ");
+                    Console.Write($"Nieuwe vertrek datum (huidig: {currentFlight.VertrekDatum}, yyyy-MM-dd): ");
+                    string vertrekDatum = Console.ReadLine() ?? "";
+                    Console.Write($"Nieuwe vertrek tijd (huidig: {currentFlight.VertrekTijd}, HH:mm): ");
+                    string vertrekTijd = Console.ReadLine() ?? "";
+                    Console.Write($"Nieuwe vertraging (huidig: {currentFlight.Vertraging}, HH:mm): ");
                     string vertraging = Console.ReadLine() ?? "";
-                    Console.Write("Nieuw vluchtnummer: ");
+                    Console.Write($"Nieuw vluchtnummer (huidig: {currentFlight.VluchtNummer}): ");
                     string vluchtNummerInput = Console.ReadLine() ?? "";
 
-                    if (int.TryParse(idInput, out int id) &&
-                        int.TryParse(vliegtuigIDInput, out int vliegtuigID) &&
+                    if (int.TryParse(vliegtuigIDInput, out int vliegtuigID) &&
                         int.TryParse(vertrekLocatieInput, out int vertrekLocatie) &&
                         int.TryParse(aankomstLocatieInput, out int aankomstLocatie) &&
                         int.TryParse(vluchtNummerInput, out int vluchtNummer))
                     {
-                        VluchtModel flight = new(id, vliegtuigID, vertrekLocatie, aankomstLocatie, vertreksTijd, vertraging, vluchtNummer);
-                        vluchtLogic.Update(flight);
+                        VluchtModel flight = new(id, vliegtuigID, vertrekLocatie, aankomstLocatie, vertrekDatum, vertrekTijd, vertraging, vluchtNummer);
+                        try
+                        {
+                            vluchtLogic.Update(flight);
+                            Console.WriteLine("Vlucht aangepast.");
+                        }
+                        catch (ArgumentException exception)
+                        {
+                            Console.WriteLine(exception.Message);
+                        }
+                        catch (KeyNotFoundException exception)
+                        {
+                            Console.WriteLine(exception.Message);
+                        }
                     }
                     else
                     {

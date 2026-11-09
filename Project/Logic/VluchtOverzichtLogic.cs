@@ -10,13 +10,13 @@ public class FlightLogic
 
         foreach (FlightModel flight in allFlights)
         {
-            if (GetDepartureMoment(flight) > DateTime.Now)
+            if (GetDepartureMoment(flight) > DateTime.Now && _access.HasAvailableSeats(flight.ID)) // extra check.
             {
-                availableFlights.Add(flight);
+                availableFlights.Add(flight); 
             }
         }
 
-        availableFlights.Sort(CompareByDeparture);
+        availableFlights.Sort(CompareByDeparture);// sort van vroeg naar laat.
 
         return availableFlights;
     }
@@ -71,6 +71,8 @@ public class FlightLogic
         if (flight == null)
             return false;
         if (GetDepartureMoment(flight) <= DateTime.Now) // checkt of de vlucht is vertrokken.
+            return false;
+        if (!_access.HasAvailableSeats(id))
             return false;
 
         SelectedFlight = flight; // als het niet is vertokken sla je de vlucht op.
