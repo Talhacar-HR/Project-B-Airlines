@@ -1,6 +1,6 @@
 public class FlightLogic
 {
-    private FlightAccess _access = new();
+    private VluchtAccess _access = new();
     public FlightModel? SelectedFlight {get; private set;} // private zodat alleen flightlogic vlucht mag wijzigen
 
     public List<FlightModel> GetAvailableFlights()

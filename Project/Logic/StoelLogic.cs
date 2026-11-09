@@ -19,6 +19,11 @@ public class StoelLogic
         _access.Add(seat);
     }
 
+    public int GetTotalSeats(int vliegtuigID)
+    {
+        return _access.GetTotalSeats(vliegtuigID);
+    }
+
     public void Update(StoelModel seat)
     {
         ArgumentNullException.ThrowIfNull(seat);

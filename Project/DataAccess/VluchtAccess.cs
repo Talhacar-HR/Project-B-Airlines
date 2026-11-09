@@ -23,7 +23,7 @@ public class VluchtAccess
         {
             connection.Open();
         string sql = @"
-            SELECT vlucht.ID AS ID,
+            SELECT Vlucht.ID AS ID, Vlucht.VliegtuigID AS VliegtuigID,
                 Vlucht.VluchtNummer AS FlightNumber,
                 Vertrek.Stad AS Origin,
                 Aankomst.Stad AS Destination,
@@ -44,7 +44,7 @@ public class VluchtAccess
         using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
         {
             connection.Open();
-            string sql = @"SELECT vlucht.ID as ID, vlucht.VluchtNummer AS FlightNumber,
+            string sql = @"SELECT vlucht.ID as ID, Vlucht.VliegtuigID AS VliegtuigID, vlucht.VluchtNummer AS FlightNumber,
         vertrek.Stad AS Origin, 
         Aankomst.Stad AS Destination, 
         date(Vlucht.VertreksTijd) AS DepartureDate,
