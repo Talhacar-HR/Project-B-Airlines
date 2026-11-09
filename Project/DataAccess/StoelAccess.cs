@@ -16,6 +16,18 @@ public class StoelAccess
         }
     }
 
+    public int GetTotalSeats(int VliegtuigID)
+    {
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
+        {
+            connection.Open();
+
+            string sql = "SELECT COUNT(*) FROM Stoel WHERE vliegtuigID = @VliegtuigID";
+
+            return connection.ExecuteScalar<int>(sql, new{VliegtuigID = VliegtuigID});
+        }
+    }
+
     public void Add(StoelModel seat)
     {
         using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))

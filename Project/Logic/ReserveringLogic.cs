@@ -99,6 +99,12 @@ public class ReserveringLogic
         return bezetteStoelIds.Contains(stoelId);
     }
 
+    public int GetAantalBezetteStoelen(int vluchtID)
+    {
+        List<int> bezetteStoelIds = _reserveringAccess.GetBezetteStoelIds(vluchtID);
+        return bezetteStoelIds.Count;
+    }
+
     // Maakt een willekeurige code van 6 cijfers die nog niet bestaat
     private int MaakBoekingsCode()
     {
