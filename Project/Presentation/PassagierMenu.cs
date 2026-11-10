@@ -40,6 +40,9 @@ static class VluchtBoeken
                 PaspoortVerloopDatum = paspoortVerloopDatum
             };
 
+            if (!CheckPassagier(passagier))
+                continue;
+
             passagierLogic.Add(passagier);
             Console.WriteLine("Passagier toegevoegd.");
 
@@ -50,5 +53,54 @@ static class VluchtBoeken
                 meerPassagiers = false;
             }
         }
+    }
+
+    private static bool CheckPassagier(PassagierModel passagier)
+    {
+        bool isValid = true;
+
+        if (!passagierLogic.IsValidNaam(passagier.Naam))
+        {
+            Console.WriteLine("Voornaam bevat ongeldige tekens.");
+            isValid = false;
+        }
+
+        if (!passagierLogic.IsValidAchternaam(passagier.Achternaam))
+        {
+            Console.WriteLine("Achternaam bevat ongeldige tekens.");
+            isValid = false;
+        }
+
+        if (!passagierLogic.IsValidEmail(passagier.Email))
+        {
+            Console.WriteLine("Het e-mailadres is ongeldig.");
+            isValid = false;
+        }
+
+        if (!passagierLogic.IsValidPaspoortNummer(passagier.PaspoortNummer))
+        {
+            Console.WriteLine("Het paspoortnummer moet 5-20 letters of cijfers bevatten.");
+            isValid = false;
+        }
+
+        if (!passagierLogic.IsValidGeboorteDatum(passagier.GeboorteDatum))
+        {
+            Console.WriteLine("De geboortedatum moet een geldige datum in het verleden zijn (yyyy-MM-dd).");
+            isValid = false;
+        }
+
+        if (!passagierLogic.IsValidTelefoonnummer(passagier.Telefoonnummer))
+        {
+            Console.WriteLine("Het telefoonnummer moet 7-15 cijfers bevatten.");
+            isValid = false;
+        }
+
+        if (!passagierLogic.IsValidPaspoortVerloopDatum(passagier.PaspoortVerloopDatum))
+        {
+            Console.WriteLine("De paspoortverloopdatum moet een geldige datum in de toekomst zijn (yyyy-MM-dd).");
+            isValid = false;
+        }
+
+        return isValid;
     }
 }
