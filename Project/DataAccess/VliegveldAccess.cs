@@ -4,59 +4,56 @@ using Microsoft.Data.Sqlite;
 public class VliegveldAccess
 {
     private string Table = "Vliegveld";
+    private static readonly string DatabaseLoc = Path.Combine(AppContext.BaseDirectory, "DataSources", "ApplicatieDB.db");
 
     public List<VliegveldModel> GetAll()
     {
-        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
-        {
-            connection.Open();
+        string sql = $"SELECT ID, Naam, Stad, Land, Afkorting FROM {Table} ORDER BY ID";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
-            string sql = $"SELECT ID, Naam, Stad, Land, Afkorting FROM {Table} ORDER BY ID";
-            return connection.Query<VliegveldModel>(sql).AsList();
-        }
+        List<VliegveldModel> airports = connection.Query<VliegveldModel>(sql).ToList();
+
+        return airports;
     }
 
     public bool Exists(int id)
     {
-        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
-        {
-            connection.Open();
+        string sql = $"SELECT EXISTS(SELECT 1 FROM {Table} WHERE ID = @Id)";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
-            string sql = $"SELECT EXISTS(SELECT 1 FROM {Table} WHERE ID = @Id)";
-            return connection.ExecuteScalar<bool>(sql, new { Id = id });
-        }
+        int count = connection.QueryFirst<int>(sql, new { Id = id });
+
+        return count > 0;
     }
 
     public VliegveldModel? GetById(int id)
     {
-        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
-        {
-            connection.Open();
+        string sql = $"SELECT ID, Naam, Stad, Land, Afkorting FROM {Table} WHERE ID = @Id";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
-            string sql = $"SELECT ID, Naam, Stad, Land, Afkorting FROM {Table} WHERE ID = @Id";
-            return connection.QueryFirstOrDefault<VliegveldModel>(sql, new { Id = id });
-        }
+        List<VliegveldModel> airports = connection.Query<VliegveldModel>(sql, new { Id = id }).ToList();
+
+        if (airports.Count == 0)
+            return null;
+
+        return airports[0];
     }
 
     public void Add(VliegveldModel airport)
     {
-        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
-        {
-            connection.Open();
+        string sql = $"INSERT INTO {Table} (Naam, Stad, Land, Afkorting) VALUES (@Naam, @Stad, @Land, @Afkorting)";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
-            string sql = $"INSERT INTO {Table} (Naam, Stad, Land, Afkorting) VALUES (@Naam, @Stad, @Land, @Afkorting)";
-            connection.Execute(sql, airport);
-        }
+        connection.Execute(sql, airport);
     }
 
     public bool Update(VliegveldModel airport)
     {
-        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
-        {
-            connection.Open();
+        string sql = $"UPDATE {Table} SET Naam = @Naam, Stad = @Stad, Land = @Land, Afkorting = @Afkorting WHERE ID = @ID";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
-            string sql = $"UPDATE {Table} SET Naam = @Naam, Stad = @Stad, Land = @Land, Afkorting = @Afkorting WHERE ID = @ID";
-            return connection.Execute(sql, airport) > 0;
-        }
+        int rowsAffected = connection.Execute(sql, airport);
+
+        return rowsAffected >= 1;
     }
 }

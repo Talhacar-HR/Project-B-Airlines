@@ -4,60 +4,56 @@ using Microsoft.Data.Sqlite;
 public class StoelAccess
 {
     private string Table = "Stoel";
+    private static readonly string DatabaseLoc = Path.Combine(AppContext.BaseDirectory, "DataSources", "ApplicatieDB.db");
 
     public List<StoelModel> GetAll()
     {
-        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
-        {
-            connection.Open();
+        string sql = $"SELECT ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse FROM {Table} ORDER BY ID";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
-            string sql = $"SELECT ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse FROM {Table} ORDER BY ID";
-            return connection.Query<StoelModel>(sql).ToList();
-        }
+        List<StoelModel> seats = connection.Query<StoelModel>(sql).ToList();
+
+        return seats;
     }
 
     public StoelModel? GetById(int id)
     {
-        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
-        {
-            connection.Open();
+        string sql = $"SELECT ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse FROM {Table} WHERE ID = @Id";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
-            string sql = $"SELECT ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse FROM {Table} WHERE ID = @Id";
-            return connection.QueryFirstOrDefault<StoelModel>(sql, new { Id = id });
-        }
+        List<StoelModel> seats = connection.Query<StoelModel>(sql, new { Id = id }).ToList();
+
+        if (seats.Count == 0)
+            return null;
+
+        return seats[0];
     }
 
     public int GetTotalSeats(int VliegtuigID)
     {
-        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
-        {
-            connection.Open();
+        string sql = "SELECT COUNT(*) FROM Stoel WHERE vliegtuigID = @VliegtuigID";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
-            string sql = "SELECT COUNT(*) FROM Stoel WHERE vliegtuigID = @VliegtuigID";
+        int totalSeats = connection.QueryFirst<int>(sql, new { VliegtuigID = VliegtuigID });
 
-            return connection.QueryFirst<int>(sql, new{VliegtuigID = VliegtuigID});
-        }
+        return totalSeats;
     }
 
     public void Add(StoelModel seat)
     {
-        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
-        {
-            connection.Open();
+        string sql = $"INSERT INTO {Table} (VliegtuigID, StoelNummer, RijNummer, StoelKlasse) VALUES (@VliegtuigID, @StoelNummer, @RijNummer, @StoelKlasse)";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
-            string sql = $"INSERT INTO {Table} (VliegtuigID, StoelNummer, RijNummer, StoelKlasse) VALUES (@VliegtuigID, @StoelNummer, @RijNummer, @StoelKlasse)";
-            connection.Execute(sql, seat);
-        }
+        connection.Execute(sql, seat);
     }
 
     public bool Update(StoelModel seat)
     {
-        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
-        {
-            connection.Open();
+        string sql = $"UPDATE {Table} SET VliegtuigID = @VliegtuigID, StoelNummer = @StoelNummer, RijNummer = @RijNummer, StoelKlasse = @StoelKlasse WHERE ID = @ID";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
-            string sql = $"UPDATE {Table} SET VliegtuigID = @VliegtuigID, StoelNummer = @StoelNummer, RijNummer = @RijNummer, StoelKlasse = @StoelKlasse WHERE ID = @ID";
-            return connection.Execute(sql, seat) > 0;
-        }
+        int rowsAffected = connection.Execute(sql, seat);
+
+        return rowsAffected >= 1;
     }
 }
