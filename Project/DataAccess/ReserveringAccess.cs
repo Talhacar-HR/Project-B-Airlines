@@ -24,8 +24,8 @@ public class ReserveringAccess
 
             // Sla elke stoel op met het ID van de reservering
             string sqlStoel = @"
-                INSERT INTO ReserveringsStoel (PassagierID, ReserveringID, StoelID)
-                VALUES (@PassagierID, @ReserveringID, @StoelID)";
+                INSERT INTO ReserveringsStoel (PassagierID, ReserveringID, StoelID, ExtraBagage)
+                VALUES (@PassagierID, @ReserveringID, @StoelID, @ExtraBagage)";
 
             foreach (ReserveringsStoelModel stoel in reservering.Stoelen)
             {
@@ -80,7 +80,7 @@ public class ReserveringAccess
     public List<ReserveringsStoelModel> GetStoelenByReserveringId(int reserveringId)
     {
         string sql = @"
-            SELECT ID, PassagierID, ReserveringID, StoelID
+            SELECT ID, PassagierID, ReserveringID, StoelID, ExtraBagage
             FROM ReserveringsStoel
             WHERE ReserveringID = @ReserveringID";
         SqliteConnection connection = new($"Data Source={DatabaseLoc}");
