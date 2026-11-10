@@ -46,7 +46,7 @@ public class VluchtAccess
 
     public List<VluchtModel> GetAll()
     {
-        string sql = $"SELECT ID, VliegtuigID, AankomstLocatie, VertrekLocatie, VertrekDatum, VertrekTijd, Vertraging, VluchtNummer FROM {Table} ORDER BY ID";
+        string sql = $"SELECT ID, VliegtuigID, AankomstLocatie, VertrekLocatie, VertrekDatum, VertrekTijd, Vertraging, VluchtNummer, Prijs FROM {Table} ORDER BY ID";
         SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
         List<VluchtModel> flights = connection.Query<VluchtModel>(sql).ToList();
@@ -56,7 +56,7 @@ public class VluchtAccess
 
     public VluchtModel? GetById(int id)
     {
-        string sql = $"SELECT ID, VliegtuigID, AankomstLocatie, VertrekLocatie, VertrekDatum, VertrekTijd, Vertraging, VluchtNummer FROM {Table} WHERE ID = @Id";
+        string sql = $"SELECT ID, VliegtuigID, AankomstLocatie, VertrekLocatie, VertrekDatum, VertrekTijd, Vertraging, VluchtNummer, Prijs FROM {Table} WHERE ID = @Id";
         SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
         List<VluchtModel> flights = connection.Query<VluchtModel>(sql, new { Id = id }).ToList();
