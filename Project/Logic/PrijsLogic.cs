@@ -3,10 +3,10 @@ public class PrijsLogic
     // Vaste prijs voor extra bagage per passagier
     public const double ExtraBagagePrijs = 50;
 
-    private ReserveringAccess _reserveringAccess = new();
-    private VluchtAccess _vluchtAccess = new();
-    private StoelAccess _stoelAccess = new();
-    private StoelKlasseAccess _stoelKlasseAccess = new();
+    private ReserveringLogic _reserveringLogic = new();
+    private VluchtLogic _vluchtLogic = new();
+    private StoelLogic _stoelLogic = new();
+    private StoelKlasseLogic _stoelKlasseLogic = new();
 
     public PrijsLogic()
     {
@@ -39,19 +39,19 @@ public class PrijsLogic
     // Een onbekende reservering of een reservering zonder passagiers geeft 0 terug (geen crash).
     public double BerekenTotaalprijs(int reserveringId)
     {
-        ReserveringModel? reservering = _reserveringAccess.GetById(reserveringId);
+        ReserveringModel? reservering = _reserveringLogic.GetById(reserveringId);
         if (reservering == null)
         {
             return 0;
         }
 
-        VluchtModel? vlucht = _vluchtAccess.GetById(reservering.VluchtID);
+        VluchtModel? vlucht = _vluchtLogic.GetById(reservering.VluchtID);
         if (vlucht == null)
         {
             return 0;
         }
 
-        List<ReserveringsStoelModel> passagiers = _reserveringAccess.GetStoelenByReserveringId(reserveringId);
+        List<ReserveringsStoelModel> passagiers = _reserveringLogic.GetStoelenByReserveringId(reserveringId);
 
         double totaal = 0;
         foreach (ReserveringsStoelModel passagier in passagiers)
@@ -67,13 +67,13 @@ public class PrijsLogic
     // Bestaat de stoel of stoelklasse niet, dan is de toeslag 0.
     private double GetStoelToeslag(int stoelId)
     {
-        StoelModel? stoel = _stoelAccess.GetById(stoelId);
+        StoelModel? stoel = _stoelLogic.GetById(stoelId);
         if (stoel == null)
         {
             return 0;
         }
 
-        StoelKlasseModel? stoelKlasse = _stoelKlasseAccess.GetById(stoel.StoelKlasse);
+        StoelKlasseModel? stoelKlasse = _stoelKlasseLogic.GetById(stoel.StoelKlasse);
         if (stoelKlasse == null)
         {
             return 0;

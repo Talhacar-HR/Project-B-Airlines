@@ -82,6 +82,16 @@ public class ReserveringLogic
         return _reserveringAccess.GetByGebruikerId(gebruiker.Id);
     }
 
+    public ReserveringModel? GetById(int id)
+    {
+        return _reserveringAccess.GetById(id);
+    }
+
+    public List<ReserveringsStoelModel> GetStoelenByReserveringId(int reserveringId)
+    {
+        return _reserveringAccess.GetStoelenByReserveringId(reserveringId);
+    }
+
     public bool IsStoelBezet(int vluchtId, int stoelId)
     {
         List<int> bezetteStoelIds = _reserveringAccess.GetBezetteStoelIds(vluchtId);
