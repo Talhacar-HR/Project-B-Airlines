@@ -4,26 +4,28 @@ using Microsoft.Data.Sqlite;
 public class StoelKlasseAccess
 {
     private string Table = "StoelKlasse";
+    private static readonly string DatabaseLoc = Path.Combine(AppContext.BaseDirectory, "DataSources", "ApplicatieDB.db");
 
     public List<StoelKlasseModel> GetAll()
     {
-        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
-        {
-            connection.Open();
+        string sql = $"SELECT ID, Naam, Toeslag FROM {Table} ORDER BY ID";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
-            string sql = $"SELECT ID, Naam, Toeslag FROM {Table} ORDER BY ID";
-            return connection.Query<StoelKlasseModel>(sql).AsList();
-        }
+        List<StoelKlasseModel> klassen = connection.Query<StoelKlasseModel>(sql).ToList();
+
+        return klassen;
     }
 
     public StoelKlasseModel? GetById(int id)
     {
-        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
-        {
-            connection.Open();
+        string sql = $"SELECT ID, Naam, Toeslag FROM {Table} WHERE ID = @Id";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
-            string sql = $"SELECT ID, Naam, Toeslag FROM {Table} WHERE ID = @ID";
-            return connection.QueryFirstOrDefault<StoelKlasseModel>(sql, new { ID = id });
-        }
+        List<StoelKlasseModel> klassen = connection.Query<StoelKlasseModel>(sql, new { Id = id }).ToList();
+
+        if (klassen.Count == 0)
+            return null;
+
+        return klassen[0];
     }
 }

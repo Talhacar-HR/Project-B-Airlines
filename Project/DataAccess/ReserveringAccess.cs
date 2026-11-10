@@ -3,31 +3,103 @@ using Microsoft.Data.Sqlite;
 
 public class ReserveringAccess
 {
-    private string Table = "Reservering";
-    private string StoelTable = "ReserveringsStoel";
+    private static readonly string DatabaseLoc = Path.Combine(AppContext.BaseDirectory, "DataSources", "ApplicatieDB.db");
 
-    // Haalt 1 reservering op, of null als die niet bestaat.
     public ReserveringModel? GetById(int id)
     {
-        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
-        {
-            connection.Open();
+        string sql = "SELECT ID, GebruikersID, VluchtID, Status, BoekingsCode, AanmaakDatum, LaatsteWijziging FROM Reservering WHERE ID = @Id";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
-            string sql = $"SELECT ID, GebruikersID, VluchtID, Status, BoekingsCode, AanmaakDatum, LaatsteWijziging FROM {Table} WHERE ID = @ID";
-            return connection.QueryFirstOrDefault<ReserveringModel>(sql, new { ID = id });
+        List<ReserveringModel> reserveringen = connection.Query<ReserveringModel>(sql, new { Id = id }).ToList();
+
+        if (reserveringen.Count == 0)
+            return null;
+
+        return reserveringen[0];
+    }
+
+    public void Add(ReserveringModel reservering)
+    {
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
+        connection.Open();
+
+        // Een transaction zorgt ervoor dat alles samen wordt opgeslagen.
+        // Gaat er iets mis, dan wordt er niets opgeslagen.
+        using (SqliteTransaction transaction = connection.BeginTransaction())
+        {
+            // Sla de reservering op en vraag het nieuwe ID op
+            string sqlReservering = @"
+                INSERT INTO Reservering (GebruikersID, VluchtID, Status, BoekingsCode, AanmaakDatum, LaatsteWijziging)
+                VALUES (@GebruikersID, @VluchtID, @Status, @BoekingsCode, @AanmaakDatum, @LaatsteWijziging)";
+
+            connection.Execute(sqlReservering, reservering, transaction);
+            int reserveringId = connection.QueryFirst<int>("SELECT last_insert_rowid()", transaction: transaction);
+
+            // Sla elke stoel op met het ID van de reservering
+            string sqlStoel = @"
+                INSERT INTO ReserveringsStoel (PassagierID, ReserveringID, StoelID, ExtraBagage)
+                VALUES (@PassagierID, @ReserveringID, @StoelID, @ExtraBagage)";
+
+            foreach (ReserveringsStoelModel stoel in reservering.Stoelen)
+            {
+                stoel.ReserveringID = reserveringId;
+                connection.Execute(sqlStoel, stoel, transaction);
+            }
+
+            // Alles is gelukt, dus nu echt opslaan
+            transaction.Commit();
         }
     }
 
-    // Haalt alle stoelen (met passagier en extra bagage) op die bij 1 reservering horen.
-    // Hier geen berekeningen: prijs + toeslag + bagagekosten gaat in de logic layer.
+    public List<ReserveringModel> GetByGebruikerId(int gebruikerId)
+    {
+        string sql = @"
+            SELECT ID, GebruikersID, VluchtID, Status, BoekingsCode, AanmaakDatum, LaatsteWijziging
+            FROM Reservering
+            WHERE GebruikersID = @GebruikersID";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
+
+        List<ReserveringModel> reservations = connection.Query<ReserveringModel>(sql, new { GebruikersID = gebruikerId }).ToList();
+
+        return reservations;
+    }
+
+    public List<int> GetBezetteStoelIds(int vluchtId)
+    {
+        // Alleen stoelen van deze vlucht, en alleen van reserveringen die niet geannuleerd zijn
+        string sql = @"
+            SELECT ReserveringsStoel.StoelID
+            FROM ReserveringsStoel
+            JOIN Reservering ON ReserveringsStoel.ReserveringID = Reservering.ID
+            WHERE Reservering.VluchtID = @VluchtID
+            AND Reservering.Status != 'Geannuleerd'";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
+
+        List<int> seatIds = connection.Query<int>(sql, new { VluchtID = vluchtId }).ToList();
+
+        return seatIds;
+    }
+
+    public bool BestaatBoekingsCode(int boekingsCode)
+    {
+        string sql = "SELECT COUNT(*) FROM Reservering WHERE BoekingsCode = @BoekingsCode";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
+
+        int aantal = connection.QueryFirst<int>(sql, new { BoekingsCode = boekingsCode });
+
+        return aantal > 0;
+    }
+
     public List<ReserveringsStoelModel> GetStoelenByReserveringId(int reserveringId)
     {
-        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
-        {
-            connection.Open();
+        string sql = @"
+            SELECT ID, PassagierID, ReserveringID, StoelID, ExtraBagage
+            FROM ReserveringsStoel
+            WHERE ReserveringID = @ReserveringID";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
-            string sql = $"SELECT ID, PassagierID, ReserveringID, StoelID, ExtraBagage FROM {StoelTable} WHERE ReserveringID = @ReserveringID";
-            return connection.Query<ReserveringsStoelModel>(sql, new { ReserveringID = reserveringId }).AsList();
-        }
+        List<ReserveringsStoelModel> seats = connection.Query<ReserveringsStoelModel>(sql, new { ReserveringID = reserveringId }).ToList();
+
+        return seats;
     }
 }

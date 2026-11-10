@@ -14,18 +14,9 @@ public class ReserveringModel
 
     public string LaatsteWijziging { get; set; }
 
+    public List<ReserveringsStoelModel> Stoelen { get; set; } = new List<ReserveringsStoelModel>();
+
     public ReserveringModel()
     {
-    }
-
-    public ReserveringModel(int id, int gebruikersID, int vluchtID, string status, int boekingsCode, string aanmaakDatum, string laatsteWijziging)
-    {
-        ID = id;
-        GebruikersID = gebruikersID;
-        VluchtID = vluchtID;
-        Status = status;
-        BoekingsCode = boekingsCode;
-        AanmaakDatum = aanmaakDatum;
-        LaatsteWijziging = laatsteWijziging;
     }
 }

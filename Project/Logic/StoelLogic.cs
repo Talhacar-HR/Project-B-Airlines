@@ -1,7 +1,7 @@
 public class StoelLogic
 {
     private StoelAccess _access = new();
-    private VliegtuigAccess _vliegtuigAccess = new();
+    private VliegtuigLogic _vliegtuigLogic = new();
 
     public StoelLogic()
     {
@@ -12,43 +12,43 @@ public class StoelLogic
         return _access.GetAll();
     }
 
+    public StoelModel? GetById(int id)
+    {
+        return _access.GetById(id);
+    }
+
     public void Add(StoelModel seat)
     {
-        ArgumentNullException.ThrowIfNull(seat);
-        Validate(seat);
         _access.Add(seat);
     }
 
-    public void Update(StoelModel seat)
+    public int GetTotalSeats(int vliegtuigID)
     {
-        ArgumentNullException.ThrowIfNull(seat);
-        if (seat.ID <= 0)
-        {
-            throw new ArgumentException("Het stoel-ID moet groter zijn dan nul.", nameof(seat));
-        }
-
-        Validate(seat);
-        if (!_access.Update(seat))
-        {
-            throw new KeyNotFoundException($"Er bestaat geen stoel met ID {seat.ID}.");
-        }
+        return _access.GetTotalSeats(vliegtuigID);
     }
 
-    private void Validate(StoelModel seat)
+    public bool Update(StoelModel seat)
     {
-        if (seat.VliegtuigID <= 0 || !_vliegtuigAccess.Exists(seat.VliegtuigID))
-        {
-            throw new ArgumentException($"Er bestaat geen vliegtuig met ID {seat.VliegtuigID}.", nameof(seat));
-        }
+        return _access.Update(seat);
+    }
 
-        if (string.IsNullOrWhiteSpace(seat.StoelNummer) || string.IsNullOrWhiteSpace(seat.RijNummer))
-        {
-            throw new ArgumentException("Stoelnummer en rijnummer zijn verplicht.", nameof(seat));
-        }
+    public bool IsValidVliegtuigID(int vliegtuigID)
+    {
+        return _vliegtuigLogic.Exists(vliegtuigID);
+    }
 
-        if (seat.StoelKlasse <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(seat), "De stoelklasse moet groter zijn dan nul.");
-        }
+    public bool IsValidStoelNummer(string stoelNummer)
+    {
+        return !string.IsNullOrWhiteSpace(stoelNummer);
+    }
+
+    public bool IsValidRijNummer(string rijNummer)
+    {
+        return !string.IsNullOrWhiteSpace(rijNummer);
+    }
+
+    public bool IsValidStoelKlasse(int stoelKlasse)
+    {
+        return stoelKlasse > 0;
     }
 }

@@ -1,8 +1,8 @@
 public class VluchtLogic
 {
     private VluchtAccess _access = new();
-    private VliegtuigAccess _vliegtuigAccess = new();
-    private VliegveldAccess _vliegveldAccess = new();
+    private VliegtuigLogic _vliegtuigLogic = new();
+    private VliegveldLogic _vliegveldLogic = new();
 
     public VluchtLogic()
     {
@@ -13,59 +13,63 @@ public class VluchtLogic
         return _access.GetAll();
     }
 
+    public VluchtModel? GetById(int id)
+    {
+        return _access.GetById(id);
+    }
+
     public void Add(VluchtModel flight)
     {
-        ArgumentNullException.ThrowIfNull(flight);
-        Validate(flight);
         _access.Add(flight);
     }
 
-    public void Update(VluchtModel flight)
+    public bool Update(VluchtModel flight)
     {
-        ArgumentNullException.ThrowIfNull(flight);
-        if (flight.ID <= 0)
-        {
-            throw new ArgumentException("Het vlucht-ID moet groter zijn dan nul.", nameof(flight));
-        }
-
-        Validate(flight);
-        if (!_access.Update(flight))
-        {
-            throw new KeyNotFoundException($"Er bestaat geen vlucht met ID {flight.ID}.");
-        }
+        return _access.Update(flight);
     }
 
-    private void Validate(VluchtModel flight)
+    public bool IsValidId(int id)
     {
-        if (flight.VliegtuigID <= 0 || !_vliegtuigAccess.Exists(flight.VliegtuigID))
-        {
-            throw new ArgumentException($"Er bestaat geen vliegtuig met ID {flight.VliegtuigID}.", nameof(flight));
-        }
+        return _access.Exists(id);
+    }
 
-        if (flight.VertrekLocatie <= 0 || !_vliegveldAccess.Exists(flight.VertrekLocatie))
-        {
-            throw new ArgumentException($"Er bestaat geen vertrekluchthaven met ID {flight.VertrekLocatie}.", nameof(flight));
-        }
+    public bool IsValidVliegtuigID(int vliegtuigID)
+    {
+        return _vliegtuigLogic.Exists(vliegtuigID);
+    }
 
-        if (flight.AankomstLocatie <= 0 || !_vliegveldAccess.Exists(flight.AankomstLocatie))
-        {
-            throw new ArgumentException($"Er bestaat geen aankomstluchthaven met ID {flight.AankomstLocatie}.", nameof(flight));
-        }
+    public bool IsValidVertrekLocatie(int vertrekLocatie)
+    {
+        return _vliegveldLogic.Exists(vertrekLocatie);
+    }
 
-        if (flight.VertrekLocatie == flight.AankomstLocatie)
-        {
-            throw new ArgumentException("De vertrek- en aankomstluchthaven moeten verschillend zijn.", nameof(flight));
-        }
+    public bool IsValidAankomstLocatie(int aankomstLocatie)
+    {
+        return _vliegveldLogic.Exists(aankomstLocatie);
+    }
 
-        if (string.IsNullOrWhiteSpace(flight.VertreksTijd) ||
-            string.IsNullOrWhiteSpace(flight.Vertraging))
-        {
-            throw new ArgumentException("Vertrektijd en vertraging zijn verplicht.", nameof(flight));
-        }
+    public bool AreDifferentLocations(int vertrekLocatie, int aankomstLocatie)
+    {
+        return vertrekLocatie != aankomstLocatie;
+    }
 
-        if (flight.VluchtNummer <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(flight), "Het vluchtnummer moet groter zijn dan nul.");
-        }
+    public bool IsValidVertrekDatum(string vertrekDatum)
+    {
+        return DateOnly.TryParseExact(vertrekDatum, "yyyy-MM-dd", out _);
+    }
+
+    public bool IsValidVertrekTijd(string vertrekTijd)
+    {
+        return TimeOnly.TryParseExact(vertrekTijd, "HH:mm", out _);
+    }
+
+    public bool IsValidVertraging(string vertraging)
+    {
+        return TimeOnly.TryParseExact(vertraging, "HH:mm", out _);
+    }
+
+    public bool IsValidVluchtNummer(int vluchtNummer, int id)
+    {
+        return vluchtNummer > 0 && !_access.VluchtNummerExists(vluchtNummer, id);
     }
 }

@@ -6,32 +6,26 @@ static class DataMenu
         while (menuRunning)
         {
             Console.WriteLine("");
-            Console.WriteLine("Admin beheerdersmenu");
-            Console.WriteLine("1 - Vluchten beheren");
-            Console.WriteLine("2 - Vliegtuigen beheren");
-            Console.WriteLine("3 - Vliegvelden beheren");
-            Console.WriteLine("4 - Stoelen beheren");
-            Console.WriteLine("0 - Terug");
-            string input = Console.ReadLine() ?? "";
+            string menuInput = MenuOptions();
             Console.WriteLine("");
 
-            if (input == "1")
+            if (menuInput == "1")
             {
                 VluchtMenu.Start();
             }
-            else if (input == "2")
+            else if (menuInput == "2")
             {
                 VliegtuigMenu.Start();
             }
-            else if (input == "3")
+            else if (menuInput == "3")
             {
                 VliegveldMenu.Start();
             }
-            else if (input == "4")
+            else if (menuInput == "4")
             {
                 StoelMenu.Start();
             }
-            else if (input == "0")
+            else if (menuInput == "0")
             {
                 menuRunning = false;
             }
@@ -40,5 +34,17 @@ static class DataMenu
                 Console.WriteLine("Ongeldige keuze.");
             }
         }
+    }
+
+    public static string MenuOptions()
+    {
+        Console.WriteLine("Admin beheerdersmenu");
+        Console.WriteLine("1 - Vluchten beheren");
+        Console.WriteLine("2 - Vliegtuigen beheren");
+        Console.WriteLine("3 - Vliegvelden beheren");
+        Console.WriteLine("4 - Stoelen beheren");
+        Console.WriteLine("0 - Terug");
+        Console.Write("Wat wilt u doen? ");
+        return Console.ReadLine() ?? "";
     }
 }
