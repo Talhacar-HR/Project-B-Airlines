@@ -62,6 +62,7 @@ static class VluchtBoeken
                 ReserveringsStoelModel reserveringsStoel = new ReserveringsStoelModel();
                 reserveringsStoel.PassagierID = passagier.ID;
                 reserveringsStoel.StoelID = stoelId;
+                reserveringsStoel.ExtraBagage = VraagExtraBagage();
                 gekozenStoelen.Add(reserveringsStoel);
 
                 Console.Write("Wilt u nog een passagier toevoegen? (J/N): ");
@@ -80,6 +81,14 @@ static class VluchtBoeken
             return;
         }
 
+        // Eerst de prijs laten zien, dan pas bevestigen
+        PrijsOverzicht.Start(vluchtId, gekozenStoelen);
+        if (!VraagBevestiging())
+        {
+            Console.WriteLine("De reservering is geannuleerd.");
+            return;
+        }
+
         // Reservering bevestigen
         bool gelukt = reserveringLogic.MaakReservering(vluchtId, gekozenStoelen);
 
@@ -93,6 +102,24 @@ static class VluchtBoeken
         {
             Console.WriteLine("De reservering is mislukt. Probeer het opnieuw.");
         }
+    }
+
+    // Vraagt of de passagier extra bagage wil. Geeft 1 (ja) of 0 (nee) terug.
+    private static int VraagExtraBagage()
+    {
+        Console.Write($"Wilt u extra bagage (+ € {PrijsLogic.ExtraBagagePrijs})? (J/N): ");
+        string keuze = Console.ReadLine() ?? "";
+
+        return keuze.Trim().Equals("J", StringComparison.OrdinalIgnoreCase) ? 1 : 0;
+    }
+
+    // Vraagt of de gebruiker de reservering wil bevestigen
+    private static bool VraagBevestiging()
+    {
+        Console.Write("Wilt u deze reservering bevestigen? (J/N): ");
+        string keuze = Console.ReadLine() ?? "";
+
+        return keuze.Trim().Equals("J", StringComparison.OrdinalIgnoreCase);
     }
 
     // Laat de stoelen van de vlucht zien en laat de gebruiker er één kiezen.
