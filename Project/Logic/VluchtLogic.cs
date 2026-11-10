@@ -3,8 +3,8 @@ using System.Globalization;
 public class VluchtLogic
 {
     private VluchtAccess _access = new();
-    private VliegtuigAccess _vliegtuigAccess = new();
-    private VliegveldAccess _vliegveldAccess = new();
+    private VliegtuigLogic _vliegtuigLogic = new();
+    private VliegveldLogic _vliegveldLogic = new();
 
     public VluchtLogic()
     {
@@ -39,17 +39,17 @@ public class VluchtLogic
 
     private void Validate(VluchtModel flight)
     {
-        if (flight.VliegtuigID <= 0 || !_vliegtuigAccess.Exists(flight.VliegtuigID))
+        if (flight.VliegtuigID <= 0 || !_vliegtuigLogic.Exists(flight.VliegtuigID))
         {
             throw new ArgumentException($"Er bestaat geen vliegtuig met ID {flight.VliegtuigID}.", nameof(flight));
         }
 
-        if (flight.VertrekLocatie <= 0 || !_vliegveldAccess.Exists(flight.VertrekLocatie))
+        if (flight.VertrekLocatie <= 0 || !_vliegveldLogic.Exists(flight.VertrekLocatie))
         {
             throw new ArgumentException($"Er bestaat geen vertrekluchthaven met ID {flight.VertrekLocatie}.", nameof(flight));
         }
 
-        if (flight.AankomstLocatie <= 0 || !_vliegveldAccess.Exists(flight.AankomstLocatie))
+        if (flight.AankomstLocatie <= 0 || !_vliegveldLogic.Exists(flight.AankomstLocatie))
         {
             throw new ArgumentException($"Er bestaat geen aankomstluchthaven met ID {flight.AankomstLocatie}.", nameof(flight));
         }

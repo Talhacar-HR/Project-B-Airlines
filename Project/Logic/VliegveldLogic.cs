@@ -11,6 +11,11 @@ public class VliegveldLogic
         return _access.GetAll();
     }
 
+    public bool Exists(int id)
+    {
+        return _access.Exists(id);
+    }
+
     public void Add(VliegveldModel airport)
     {
         ArgumentNullException.ThrowIfNull(airport);

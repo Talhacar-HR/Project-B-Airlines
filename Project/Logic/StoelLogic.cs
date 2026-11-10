@@ -1,7 +1,7 @@
 public class StoelLogic
 {
     private StoelAccess _access = new();
-    private VliegtuigAccess _vliegtuigAccess = new();
+    private VliegtuigLogic _vliegtuigLogic = new();
 
     public StoelLogic()
     {
@@ -41,7 +41,7 @@ public class StoelLogic
 
     private void Validate(StoelModel seat)
     {
-        if (seat.VliegtuigID <= 0 || !_vliegtuigAccess.Exists(seat.VliegtuigID))
+        if (seat.VliegtuigID <= 0 || !_vliegtuigLogic.Exists(seat.VliegtuigID))
         {
             throw new ArgumentException($"Er bestaat geen vliegtuig met ID {seat.VliegtuigID}.", nameof(seat));
         }
