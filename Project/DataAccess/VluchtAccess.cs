@@ -8,7 +8,7 @@ public class VluchtAccess
 
     public void Add(VluchtModel flight)
     {
-        string sql = $"INSERT INTO {Table} (VliegtuigID, VertrekLocatie, AankomstLocatie, VertrekDatum, VertrekTijd, Vertraging, VluchtNummer) VALUES (@VliegtuigID, @VertrekLocatie, @AankomstLocatie, @VertrekDatum, @VertrekTijd, @Vertraging, @VluchtNummer)";
+        string sql = $"INSERT INTO {Table} (VliegtuigID, VertrekLocatie, AankomstLocatie, VertrekDatum, VertrekTijd, Vertraging, VluchtNummer, Prijs) VALUES (@VliegtuigID, @VertrekLocatie, @AankomstLocatie, @VertrekDatum, @VertrekTijd, @Vertraging, @VluchtNummer, @Prijs)";
         SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
         connection.Execute(sql, flight);
@@ -16,7 +16,7 @@ public class VluchtAccess
 
     public bool Update(VluchtModel flight)
     {
-        string sql = $"UPDATE {Table} SET VliegtuigID = @VliegtuigID, VertrekLocatie = @VertrekLocatie, AankomstLocatie = @AankomstLocatie, VertrekDatum = @VertrekDatum, VertrekTijd = @VertrekTijd, Vertraging = @Vertraging, VluchtNummer = @VluchtNummer WHERE ID = @ID";
+        string sql = $"UPDATE {Table} SET VliegtuigID = @VliegtuigID, VertrekLocatie = @VertrekLocatie, AankomstLocatie = @AankomstLocatie, VertrekDatum = @VertrekDatum, VertrekTijd = @VertrekTijd, Vertraging = @Vertraging, VluchtNummer = @VluchtNummer, Prijs = @Prijs WHERE ID = @ID";
         SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
         int rowsAffected = connection.Execute(sql, flight);
