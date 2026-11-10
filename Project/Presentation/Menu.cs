@@ -27,6 +27,10 @@ static class Menu
                     // Vluchten Bekijken
                     FlightOverview.Start();
             }
+            else if (input == "3" && currentAccount != null)
+            {
+                MijnReserveringen.Start();
+            }
             else if (input == "8" && currentAccount != null)
             {
                 Console.WriteLine($"Gebruikersnaam: {currentAccount.FullName}");
@@ -56,6 +60,7 @@ static class Menu
         {
             Console.WriteLine("1 - Uitloggen");
             Console.WriteLine("2 - Vluchten checken");
+            Console.WriteLine("3 - Mijn reserveringen");
             Console.WriteLine("8 - Check gebruiker");
             if (currentAccount.IsAdmin != 0)
             {

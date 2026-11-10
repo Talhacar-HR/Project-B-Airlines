@@ -5,56 +5,47 @@ public class ReserveringLogic
     private StoelAccess _stoelAccess = new();
 
     private Random _random = new Random();
-
-    // Geeft true terug als de reservering gelukt is, anders false
+    public int LaatsteBoekingsCode { get; private set; }
     public bool MaakReservering(int vluchtId, List<ReserveringsStoelModel> stoelen)
     {
-        // 1. De gebruiker moet ingelogd zijn
         AccountModel? gebruiker = AccountsLogic.CurrentAccount;
         if (gebruiker == null)
         {
             return false;
         }
 
-        // 2. Er moet minstens één stoel gekozen zijn
         if (stoelen == null || stoelen.Count == 0)
         {
             return false;
         }
 
-        // 3. De vlucht moet bestaan
         VluchtModel? vlucht = ZoekVlucht(vluchtId);
         if (vlucht == null)
         {
             return false;
         }
 
-        // 4. Elke stoel moet bij de vlucht horen en vrij zijn
         List<int> gekozenStoelIds = new List<int>();
 
         foreach (ReserveringsStoelModel reserveringsStoel in stoelen)
         {
             StoelModel? stoel = ZoekStoel(reserveringsStoel.StoelID);
 
-            // Stoel bestaat niet
             if (stoel == null)
             {
                 return false;
             }
 
-            // Stoel zit niet in het vliegtuig van deze vlucht
             if (stoel.VliegtuigID != vlucht.VliegtuigID)
             {
                 return false;
             }
 
-            // Stoel is al door iemand anders gereserveerd
             if (IsStoelBezet(vluchtId, stoel.ID))
             {
                 return false;
             }
 
-            // Dezelfde stoel is twee keer gekozen in deze reservering
             if (gekozenStoelIds.Contains(stoel.ID))
             {
                 return false;
@@ -63,7 +54,6 @@ public class ReserveringLogic
             gekozenStoelIds.Add(stoel.ID);
         }
 
-        // 5. Alles klopt, dus maak de reservering
         string nu = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
 
         ReserveringModel reservering = new ReserveringModel();
@@ -76,15 +66,14 @@ public class ReserveringLogic
         reservering.Stoelen = stoelen;
 
         _reserveringAccess.Add(reservering);
+        LaatsteBoekingsCode = reservering.BoekingsCode;
         return true;
     }
 
-    // Geeft alleen de reserveringen van de ingelogde gebruiker terug
     public List<ReserveringModel> GetMijnReserveringen()
     {
         AccountModel? gebruiker = AccountsLogic.CurrentAccount;
 
-        // Niet ingelogd, dus geen reserveringen
         if (gebruiker == null)
         {
             return new List<ReserveringModel>();
@@ -104,8 +93,26 @@ public class ReserveringLogic
         List<int> bezetteStoelIds = _reserveringAccess.GetBezetteStoelIds(vluchtID);
         return bezetteStoelIds.Count;
     }
+    public List<StoelModel> GetStoelenVoorVlucht(int vluchtId)
+    {
+        List<StoelModel> stoelenVanVlucht = new List<StoelModel>();
 
-    // Maakt een willekeurige code van 6 cijfers die nog niet bestaat
+        VluchtModel? vlucht = ZoekVlucht(vluchtId);
+        if (vlucht == null)
+        {
+            return stoelenVanVlucht;
+        }
+
+        foreach (StoelModel stoel in _stoelAccess.GetAll())
+        {
+            if (stoel.VliegtuigID == vlucht.VliegtuigID)
+            {
+                stoelenVanVlucht.Add(stoel);
+            }
+        }
+
+        return stoelenVanVlucht;
+    }
     private int MaakBoekingsCode()
     {
         int code = _random.Next(100000, 1000000);
