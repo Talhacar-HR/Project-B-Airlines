@@ -29,5 +29,14 @@ public sealed class VluchtOverichtTest1
         Assert.AreEqual(Math.Max(price1, price2), result[1].Price); // checkt hoogste vlucht in prijs
     }
 
+    [DataTestMethod]
+    [DataRow("09:00", "14:00")]
+    [DataRow("14:00", "09:00")]
+
+    public void SortFlightsByDeparture(string time1, string time2)
+    {
+        throw new NotImplementedException();
+    }
+
 
 }
