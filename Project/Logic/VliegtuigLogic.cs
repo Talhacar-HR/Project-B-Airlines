@@ -16,33 +16,33 @@ public class VliegtuigLogic
         return _access.Exists(id);
     }
 
+    public VliegtuigModel? GetById(int id)
+    {
+        return _access.GetById(id);
+    }
+
     public void Add(VliegtuigModel plane)
     {
-        ArgumentNullException.ThrowIfNull(plane);
-        Validate(plane);
         _access.Add(plane);
     }
 
-    public void Update(VliegtuigModel plane)
+    public bool Update(VliegtuigModel plane)
     {
-        ArgumentNullException.ThrowIfNull(plane);
-        if (plane.ID <= 0)
-        {
-            throw new ArgumentException("Het vliegtuig-ID moet groter zijn dan nul.", nameof(plane));
-        }
-
-        Validate(plane);
-        if (!_access.Update(plane))
-        {
-            throw new KeyNotFoundException($"Er bestaat geen vliegtuig met ID {plane.ID}.");
-        }
+        return _access.Update(plane);
     }
 
-    private static void Validate(VliegtuigModel plane)
+    public bool IsValidBaggageRuimte(int baggageRuimte)
     {
-        if (string.IsNullOrWhiteSpace(plane.Model) || string.IsNullOrWhiteSpace(plane.Merk))
-        {
-            throw new ArgumentException("Model en merk zijn verplicht.", nameof(plane));
-        }
+        return baggageRuimte >= 0;
+    }
+
+    public bool IsValidModel(string model)
+    {
+        return !string.IsNullOrWhiteSpace(model);
+    }
+
+    public bool IsValidMerk(string merk)
+    {
+        return !string.IsNullOrWhiteSpace(merk);
     }
 }

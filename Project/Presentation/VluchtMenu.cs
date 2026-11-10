@@ -76,25 +76,10 @@ static class VluchtMenu
         Console.Write("Vluchtnummer: ");
         string vluchtNummerInput = Console.ReadLine() ?? "";
 
-        if (int.TryParse(vliegtuigIDInput, out int vliegtuigID) &&
-            int.TryParse(vertrekLocatieInput, out int vertrekLocatie) &&
-            int.TryParse(aankomstLocatieInput, out int aankomstLocatie) &&
-            int.TryParse(vluchtNummerInput, out int vluchtNummer))
+        if (CheckFlight(vliegtuigIDInput, vertrekLocatieInput, aankomstLocatieInput, vertrekDatum, vertrekTijd, vertraging, vluchtNummerInput, 0, out VluchtModel flight))
         {
-            VluchtModel flight = new(0, vliegtuigID, vertrekLocatie, aankomstLocatie, vertrekDatum, vertrekTijd, vertraging, vluchtNummer);
-            try
-            {
-                vluchtLogic.Add(flight);
-                Console.WriteLine("Vlucht toegevoegd.");
-            }
-            catch (ArgumentException exception)
-            {
-                Console.WriteLine(exception.Message);
-            }
-        }
-        else
-        {
-            Console.WriteLine("Ongeldige invoer.");
+            vluchtLogic.Add(flight);
+            Console.WriteLine("Vlucht toegevoegd.");
         }
     }
 
@@ -105,12 +90,12 @@ static class VluchtMenu
 
         if (!int.TryParse(idInput, out int id))
         {
-            Console.WriteLine("Ongeldige invoer.");
+            Console.WriteLine("Voer een geldig vlucht-ID in.");
             return;
         }
 
-        VluchtModel? currentFlight = vluchtLogic.GetAll().Find(flight => flight.ID == id);
-        if (currentFlight is null)
+        VluchtModel? currentFlight = vluchtLogic.GetById(id);
+        if (currentFlight == null)
         {
             Console.WriteLine($"Er bestaat geen vlucht met ID {id}.");
             return;
@@ -131,30 +116,78 @@ static class VluchtMenu
         Console.Write($"Nieuw vluchtnummer (huidig: {currentFlight.VluchtNummer}): ");
         string vluchtNummerInput = Console.ReadLine() ?? "";
 
-        if (int.TryParse(vliegtuigIDInput, out int vliegtuigID) &&
-            int.TryParse(vertrekLocatieInput, out int vertrekLocatie) &&
-            int.TryParse(aankomstLocatieInput, out int aankomstLocatie) &&
-            int.TryParse(vluchtNummerInput, out int vluchtNummer))
+        if (CheckFlight(vliegtuigIDInput, vertrekLocatieInput, aankomstLocatieInput, vertrekDatum, vertrekTijd, vertraging, vluchtNummerInput, id, out VluchtModel flight))
         {
-            VluchtModel flight = new(id, vliegtuigID, vertrekLocatie, aankomstLocatie, vertrekDatum, vertrekTijd, vertraging, vluchtNummer);
-            try
+            if (vluchtLogic.Update(flight))
             {
-                vluchtLogic.Update(flight);
                 Console.WriteLine("Vlucht aangepast.");
             }
-            catch (ArgumentException exception)
+            else
             {
-                Console.WriteLine(exception.Message);
+                Console.WriteLine($"Er bestaat geen vlucht met ID {id}.");
             }
-            catch (KeyNotFoundException exception)
-            {
-                Console.WriteLine(exception.Message);
-            }
-        }
-        else
-        {
-            Console.WriteLine("Ongeldige invoer.");
         }
         return;
+    }
+
+    private static bool CheckFlight(string vliegtuigIDInput, string vertrekLocatieInput, string aankomstLocatieInput,
+        string vertrekDatum, string vertrekTijd, string vertraging, string vluchtNummerInput, int id,
+        out VluchtModel flight)
+    {
+        bool isValid = true;
+        bool hasVliegtuigID = int.TryParse(vliegtuigIDInput, out int vliegtuigID);
+        bool hasVertrekLocatie = int.TryParse(vertrekLocatieInput, out int vertrekLocatie);
+        bool hasAankomstLocatie = int.TryParse(aankomstLocatieInput, out int aankomstLocatie);
+        bool hasVluchtNummer = int.TryParse(vluchtNummerInput, out int vluchtNummer);
+
+        if (!hasVliegtuigID || !vluchtLogic.IsValidVliegtuigID(vliegtuigID))
+        {
+            Console.WriteLine("Voer een geldig bestaand vliegtuig-ID in.");
+            isValid = false;
+        }
+
+        if (!hasVertrekLocatie || !vluchtLogic.IsValidVertrekLocatie(vertrekLocatie))
+        {
+            Console.WriteLine("Voer een geldig bestaand vertrekluchthaven-ID in.");
+            isValid = false;
+        }
+
+        if (!hasAankomstLocatie || !vluchtLogic.IsValidAankomstLocatie(aankomstLocatie))
+        {
+            Console.WriteLine("Voer een geldig bestaand aankomstluchthaven-ID in.");
+            isValid = false;
+        }
+        else if (hasVertrekLocatie && !vluchtLogic.AreDifferentLocations(vertrekLocatie, aankomstLocatie))
+        {
+            Console.WriteLine("De vertrek- en aankomst luchthaven moeten verschillend zijn.");
+            isValid = false;
+        }
+
+        if (!vluchtLogic.IsValidVertrekDatum(vertrekDatum))
+        {
+            Console.WriteLine("De vertrekdatum moet geldig zijn en het formaat yyyy-MM-dd hebben.");
+            isValid = false;
+        }
+
+        if (!vluchtLogic.IsValidVertrekTijd(vertrekTijd))
+        {
+            Console.WriteLine("De vertrektijd moet geldig zijn en het formaat HH:mm hebben.");
+            isValid = false;
+        }
+
+        if (!vluchtLogic.IsValidVertraging(vertraging))
+        {
+            Console.WriteLine("De vertraging moet geldig zijn en het formaat HH:mm hebben.");
+            isValid = false;
+        }
+
+        if (!hasVluchtNummer || !vluchtLogic.IsValidVluchtNummer(vluchtNummer, id))
+        {
+            Console.WriteLine("Voer een uniek vluchtnummer groter dan nul in.");
+            isValid = false;
+        }
+
+        flight = new VluchtModel(id, vliegtuigID, vertrekLocatie, aankomstLocatie, vertrekDatum, vertrekTijd, vertraging, vluchtNummer);
+        return isValid;
     }
 }

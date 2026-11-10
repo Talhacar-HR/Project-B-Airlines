@@ -10,6 +10,7 @@ static class VliegveldMenu
             Console.WriteLine("");
             string input = MenuOptions();
             Console.WriteLine("");
+
             if (input == "1")
                 Overzicht();
             else if (input == "2")
@@ -54,14 +55,10 @@ static class VliegveldMenu
         Console.Write("Afkorting: ");
         string afkorting = Console.ReadLine() ?? "";
 
-        try
+        if (CheckAirport(0, naam, stad, land, afkorting, out VliegveldModel airport))
         {
-            vliegveldLogic.Add(new VliegveldModel(0, naam, stad, land, afkorting));
+            vliegveldLogic.Add(airport);
             Console.WriteLine("Vliegveld toegevoegd.");
-        }
-        catch (ArgumentException exception)
-        {
-            Console.WriteLine(exception.Message);
         }
     }
 
@@ -74,7 +71,7 @@ static class VliegveldMenu
             return;
         }
 
-        VliegveldModel? currentAirport = vliegveldLogic.GetAll().Find(airport => airport.ID == id);
+        VliegveldModel? currentAirport = vliegveldLogic.GetById(id);
         if (currentAirport is null)
         {
             Console.WriteLine($"Er bestaat geen vliegveld met ID {id}.");
@@ -95,18 +92,48 @@ static class VliegveldMenu
         if (string.IsNullOrWhiteSpace(land)) land = currentAirport.Land;
         if (string.IsNullOrWhiteSpace(afkorting)) afkorting = currentAirport.Afkorting;
 
-        try
+        if (!CheckAirport(id, naam, stad, land, afkorting, out VliegveldModel airport))
+            return;
+
+        if (vliegveldLogic.Update(airport))
         {
-            vliegveldLogic.Update(new VliegveldModel(id, naam, stad, land, afkorting));
             Console.WriteLine("Vliegveld aangepast.");
         }
-        catch (ArgumentException exception)
+        else
         {
-            Console.WriteLine(exception.Message);
+            Console.WriteLine($"Er bestaat geen vliegveld met ID {id}.");
         }
-        catch (KeyNotFoundException exception)
+    }
+
+    private static bool CheckAirport(int id, string naam, string stad, string land, string afkorting, out VliegveldModel airport)
+    {
+        bool isValid = true;
+
+        if (!vliegveldLogic.IsValidNaam(naam))
         {
-            Console.WriteLine(exception.Message);
+            Console.WriteLine("Naam is verplicht.");
+            isValid = false;
         }
+
+        if (!vliegveldLogic.IsValidStad(stad))
+        {
+            Console.WriteLine("Stad is verplicht.");
+            isValid = false;
+        }
+
+        if (!vliegveldLogic.IsValidLand(land))
+        {
+            Console.WriteLine("Land is verplicht.");
+            isValid = false;
+        }
+
+        if (!vliegveldLogic.IsValidAfkorting(afkorting))
+        {
+            Console.WriteLine("Afkorting is verplicht.");
+            isValid = false;
+        }
+
+        airport = new VliegveldModel(id, naam, stad, land, afkorting);
+        return isValid;
     }
 }

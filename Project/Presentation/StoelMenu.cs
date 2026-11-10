@@ -55,22 +55,10 @@ static class StoelMenu
         Console.Write("Stoelklasse: ");
         string stoelKlasseInput = Console.ReadLine() ?? "";
 
-        if (int.TryParse(vliegtuigIDInput, out int vliegtuigID) &&
-            int.TryParse(stoelKlasseInput, out int stoelKlasse))
+        if (CheckSeat(vliegtuigIDInput, stoelNummer, rijNummer, stoelKlasseInput, 0, out StoelModel seat))
         {
-            try
-            {
-                stoelLogic.Add(new StoelModel(0, vliegtuigID, stoelNummer, rijNummer, stoelKlasse));
-                Console.WriteLine("Stoel toegevoegd.");
-            }
-            catch (ArgumentException exception)
-            {
-                Console.WriteLine(exception.Message);
-            }
-        }
-        else
-        {
-            Console.WriteLine("Ongeldige invoer.");
+            stoelLogic.Add(seat);
+            Console.WriteLine("Stoel toegevoegd.");
         }
     }
 
@@ -83,7 +71,7 @@ static class StoelMenu
             return;
         }
 
-        StoelModel? currentSeat = stoelLogic.GetAll().Find(seat => seat.ID == id);
+        StoelModel? currentSeat = stoelLogic.GetById(id);
         if (currentSeat is null)
         {
             Console.WriteLine($"Er bestaat geen stoel met ID {id}.");
@@ -104,26 +92,51 @@ static class StoelMenu
         if (string.IsNullOrWhiteSpace(rijNummer)) rijNummer = currentSeat.RijNummer;
         if (string.IsNullOrWhiteSpace(stoelKlasseInput)) stoelKlasseInput = currentSeat.StoelKlasse.ToString();
 
-        if (int.TryParse(vliegtuigIDInput, out int vliegtuigID) &&
-            int.TryParse(stoelKlasseInput, out int stoelKlasse))
+        if (CheckSeat(vliegtuigIDInput, stoelNummer, rijNummer, stoelKlasseInput, id, out StoelModel seat))
         {
-            try
+            if (stoelLogic.Update(seat))
             {
-                stoelLogic.Update(new StoelModel(id, vliegtuigID, stoelNummer, rijNummer, stoelKlasse));
                 Console.WriteLine("Stoel aangepast.");
             }
-            catch (ArgumentException exception)
+            else
             {
-                Console.WriteLine(exception.Message);
-            }
-            catch (KeyNotFoundException exception)
-            {
-                Console.WriteLine(exception.Message);
+                Console.WriteLine($"Er bestaat geen stoel met ID {id}.");
             }
         }
-        else
+    }
+
+    private static bool CheckSeat(string vliegtuigIDInput, string stoelNummer, string rijNummer,
+        string stoelKlasseInput, int id, out StoelModel seat)
+    {
+        bool isValid = true;
+        bool hasVliegtuigID = int.TryParse(vliegtuigIDInput, out int vliegtuigID);
+        bool hasStoelKlasse = int.TryParse(stoelKlasseInput, out int stoelKlasse);
+
+        if (!hasVliegtuigID || !stoelLogic.IsValidVliegtuigID(vliegtuigID))
         {
-            Console.WriteLine("Ongeldige invoer.");
+            Console.WriteLine("Voer een bestaand vliegtuig-ID in.");
+            isValid = false;
         }
+
+        if (!stoelLogic.IsValidStoelNummer(stoelNummer))
+        {
+            Console.WriteLine("Stoelnummer is verplicht.");
+            isValid = false;
+        }
+
+        if (!stoelLogic.IsValidRijNummer(rijNummer))
+        {
+            Console.WriteLine("Rijnummer is verplicht.");
+            isValid = false;
+        }
+
+        if (!hasStoelKlasse || !stoelLogic.IsValidStoelKlasse(stoelKlasse))
+        {
+            Console.WriteLine("Stoelklasse moet een getal groter dan nul zijn.");
+            isValid = false;
+        }
+
+        seat = new StoelModel(id, vliegtuigID, stoelNummer, rijNummer, stoelKlasse);
+        return isValid;
     }
 }

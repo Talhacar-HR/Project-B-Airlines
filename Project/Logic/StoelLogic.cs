@@ -12,10 +12,13 @@ public class StoelLogic
         return _access.GetAll();
     }
 
+    public StoelModel? GetById(int id)
+    {
+        return _access.GetById(id);
+    }
+
     public void Add(StoelModel seat)
     {
-        ArgumentNullException.ThrowIfNull(seat);
-        Validate(seat);
         _access.Add(seat);
     }
 
@@ -24,36 +27,28 @@ public class StoelLogic
         return _access.GetTotalSeats(vliegtuigID);
     }
 
-    public void Update(StoelModel seat)
+    public bool Update(StoelModel seat)
     {
-        ArgumentNullException.ThrowIfNull(seat);
-        if (seat.ID <= 0)
-        {
-            throw new ArgumentException("Het stoel-ID moet groter zijn dan nul.", nameof(seat));
-        }
-
-        Validate(seat);
-        if (!_access.Update(seat))
-        {
-            throw new KeyNotFoundException($"Er bestaat geen stoel met ID {seat.ID}.");
-        }
+        return _access.Update(seat);
     }
 
-    private void Validate(StoelModel seat)
+    public bool IsValidVliegtuigID(int vliegtuigID)
     {
-        if (seat.VliegtuigID <= 0 || !_vliegtuigLogic.Exists(seat.VliegtuigID))
-        {
-            throw new ArgumentException($"Er bestaat geen vliegtuig met ID {seat.VliegtuigID}.", nameof(seat));
-        }
+        return _vliegtuigLogic.Exists(vliegtuigID);
+    }
 
-        if (string.IsNullOrWhiteSpace(seat.StoelNummer) || string.IsNullOrWhiteSpace(seat.RijNummer))
-        {
-            throw new ArgumentException("Stoelnummer en rijnummer zijn verplicht.", nameof(seat));
-        }
+    public bool IsValidStoelNummer(string stoelNummer)
+    {
+        return !string.IsNullOrWhiteSpace(stoelNummer);
+    }
 
-        if (seat.StoelKlasse <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(seat), "De stoelklasse moet groter zijn dan nul.");
-        }
+    public bool IsValidRijNummer(string rijNummer)
+    {
+        return !string.IsNullOrWhiteSpace(rijNummer);
+    }
+
+    public bool IsValidStoelKlasse(int stoelKlasse)
+    {
+        return stoelKlasse > 0;
     }
 }

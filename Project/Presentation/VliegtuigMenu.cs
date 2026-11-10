@@ -53,21 +53,10 @@ static class VliegtuigMenu
         Console.Write("Merk: ");
         string merk = Console.ReadLine() ?? "";
 
-        if (int.TryParse(baggageRuimteInput, out int baggageRuimte))
+        if (CheckPlane(baggageRuimteInput, model, merk, 0, out VliegtuigModel plane))
         {
-            try
-            {
-                vliegtuigLogic.Add(new VliegtuigModel(0, baggageRuimte, model, merk));
-                Console.WriteLine("Vliegtuig toegevoegd.");
-            }
-            catch (ArgumentException exception)
-            {
-                Console.WriteLine(exception.Message);
-            }
-        }
-        else
-        {
-            Console.WriteLine("Ongeldige invoer.");
+            vliegtuigLogic.Add(plane);
+            Console.WriteLine("Vliegtuig toegevoegd.");
         }
     }
 
@@ -80,7 +69,7 @@ static class VliegtuigMenu
             return;
         }
 
-        VliegtuigModel? currentPlane = vliegtuigLogic.GetAll().Find(plane => plane.ID == id);
+        VliegtuigModel? currentPlane = vliegtuigLogic.GetById(id);
         if (currentPlane is null)
         {
             Console.WriteLine($"Er bestaat geen vliegtuig met ID {id}.");
@@ -98,25 +87,43 @@ static class VliegtuigMenu
         if (string.IsNullOrWhiteSpace(model)) model = currentPlane.Model;
         if (string.IsNullOrWhiteSpace(merk)) merk = currentPlane.Merk;
 
-        if (int.TryParse(baggageRuimteInput, out int baggageRuimte))
+        if (CheckPlane(baggageRuimteInput, model, merk, id, out VliegtuigModel plane))
         {
-            try
+            if (vliegtuigLogic.Update(plane))
             {
-                vliegtuigLogic.Update(new VliegtuigModel(id, baggageRuimte, model, merk));
                 Console.WriteLine("Vliegtuig aangepast.");
             }
-            catch (ArgumentException exception)
+            else
             {
-                Console.WriteLine(exception.Message);
-            }
-            catch (KeyNotFoundException exception)
-            {
-                Console.WriteLine(exception.Message);
+                Console.WriteLine($"Er bestaat geen vliegtuig met ID {id}.");
             }
         }
-        else
+    }
+
+    private static bool CheckPlane(string baggageRuimteInput, string model, string merk, int id, out VliegtuigModel plane)
+    {
+        bool isValid = true;
+        bool hasBaggageRuimte = int.TryParse(baggageRuimteInput, out int baggageRuimte);
+
+        if (!hasBaggageRuimte || !vliegtuigLogic.IsValidBaggageRuimte(baggageRuimte))
         {
-            Console.WriteLine("Ongeldige invoer.");
+            Console.WriteLine("Bagageruimte moet een geldig getal van nul of hoger zijn.");
+            isValid = false;
         }
+
+        if (!vliegtuigLogic.IsValidModel(model))
+        {
+            Console.WriteLine("Model is verplicht.");
+            isValid = false;
+        }
+
+        if (!vliegtuigLogic.IsValidMerk(merk))
+        {
+            Console.WriteLine("Merk is verplicht.");
+            isValid = false;
+        }
+
+        plane = new VliegtuigModel(id, baggageRuimte, model, merk);
+        return isValid;
     }
 }

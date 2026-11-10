@@ -16,6 +16,17 @@ public class StoelAccess
         }
     }
 
+    public StoelModel? GetById(int id)
+    {
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
+        {
+            connection.Open();
+
+            string sql = $"SELECT ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse FROM {Table} WHERE ID = @Id";
+            return connection.QueryFirstOrDefault<StoelModel>(sql, new { Id = id });
+        }
+    }
+
     public int GetTotalSeats(int VliegtuigID)
     {
         using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))

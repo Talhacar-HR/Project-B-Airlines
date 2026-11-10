@@ -27,6 +27,17 @@ public class VliegtuigAccess
         }
     }
 
+    public VliegtuigModel? GetById(int id)
+    {
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
+        {
+            connection.Open();
+
+            string sql = $"SELECT ID, BaggageRuimte, Model, Merk FROM {Table} WHERE ID = @Id";
+            return connection.QueryFirstOrDefault<VliegtuigModel>(sql, new { Id = id });
+        }
+    }
+
     public void Add(VliegtuigModel plane)
     {
         using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))

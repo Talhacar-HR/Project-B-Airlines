@@ -6,6 +6,50 @@ public class VluchtAccess
 {
     private string Table = "Vlucht";
 
+    public void Add(VluchtModel flight)
+    {
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
+        {
+            connection.Open();
+
+            string sql = $"INSERT INTO {Table} (VliegtuigID, VertrekLocatie, AankomstLocatie, VertrekDatum, VertrekTijd, Vertraging, VluchtNummer) VALUES (@VliegtuigID, @VertrekLocatie, @AankomstLocatie, @VertrekDatum, @VertrekTijd, @Vertraging, @VluchtNummer)";
+            connection.Execute(sql, flight);
+        }
+    }
+
+    public bool Update(VluchtModel flight)
+    {
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
+        {
+            connection.Open();
+
+            string sql = $"UPDATE {Table} SET VliegtuigID = @VliegtuigID, VertrekLocatie = @VertrekLocatie, AankomstLocatie = @AankomstLocatie, VertrekDatum = @VertrekDatum, VertrekTijd = @VertrekTijd, Vertraging = @Vertraging, VluchtNummer = @VluchtNummer WHERE ID = @ID";
+            return connection.Execute(sql, flight) > 0;
+        }
+    }
+
+    public bool Exists(int id)
+    {
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
+        {
+            connection.Open();
+
+            string sql = $"SELECT EXISTS(SELECT 1 FROM {Table} WHERE ID = @Id)";
+            return connection.ExecuteScalar<bool>(sql, new { Id = id });
+        }
+    }
+
+    public bool VluchtNummerExists(int vluchtNummer, int id)
+    {
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
+        {
+            connection.Open();
+
+            string sql = $"SELECT EXISTS(SELECT 1 FROM {Table} WHERE VluchtNummer = @VluchtNummer AND ID != @Id)";
+            return connection.ExecuteScalar<bool>(sql, new { VluchtNummer = vluchtNummer, Id = id });
+        }
+    }
+
     public List<VluchtModel> GetAll()
     {
         using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
@@ -14,6 +58,17 @@ public class VluchtAccess
 
             string sql = $"SELECT ID, VliegtuigID, AankomstLocatie, VertrekLocatie, VertrekDatum, VertrekTijd, Vertraging, VluchtNummer FROM {Table} ORDER BY ID";
             return connection.Query<VluchtModel>(sql).AsList();
+        }
+    }
+
+    public VluchtModel? GetById(int id)
+    {
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
+        {
+            connection.Open();
+
+            string sql = $"SELECT ID, VliegtuigID, AankomstLocatie, VertrekLocatie, VertrekDatum, VertrekTijd, Vertraging, VluchtNummer FROM {Table} WHERE ID = @Id";
+            return connection.QueryFirstOrDefault<VluchtModel>(sql, new { Id = id });
         }
     }
 
@@ -36,7 +91,6 @@ public class VluchtAccess
 
         return connection.Query<FlightModel>(sql).ToList();
         }
-        
     }
 
     public FlightModel? getById(int id)
@@ -57,29 +111,6 @@ public class VluchtAccess
 
         return connection.QueryFirstOrDefault<FlightModel> (sql, new {Id = id}); 
         // QueryFirstOrDefault zoekt eerste resultaat of geeft null als er niks wordt gevonden.
-        }
-        
-    }
-
-    public void Add(VluchtModel flight)
-    {
-        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
-        {
-            connection.Open();
-
-            string sql = $"INSERT INTO {Table} (VliegtuigID, VertrekLocatie, AankomstLocatie, VertrekDatum, VertrekTijd, Vertraging, VluchtNummer) VALUES (@VliegtuigID, @VertrekLocatie, @AankomstLocatie, @VertrekDatum, @VertrekTijd, @Vertraging, @VluchtNummer)";
-            connection.Execute(sql, flight);
-        }
-    }
-
-    public bool Update(VluchtModel flight)
-    {
-        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
-        {
-            connection.Open();
-
-            string sql = $"UPDATE {Table} SET VliegtuigID = @VliegtuigID, VertrekLocatie = @VertrekLocatie, AankomstLocatie = @AankomstLocatie, VertrekDatum = @VertrekDatum, VertrekTijd = @VertrekTijd, Vertraging = @Vertraging, VluchtNummer = @VluchtNummer WHERE ID = @ID";
-            return connection.Execute(sql, flight) > 0;
         }
     }
 }

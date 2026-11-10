@@ -27,6 +27,17 @@ public class VliegveldAccess
         }
     }
 
+    public VliegveldModel? GetById(int id)
+    {
+        using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))
+        {
+            connection.Open();
+
+            string sql = $"SELECT ID, Naam, Stad, Land, Afkorting FROM {Table} WHERE ID = @Id";
+            return connection.QueryFirstOrDefault<VliegveldModel>(sql, new { Id = id });
+        }
+    }
+
     public void Add(VliegveldModel airport)
     {
         using (SqliteConnection connection = new SqliteConnection(DatabaseLocation.ConnectionString))

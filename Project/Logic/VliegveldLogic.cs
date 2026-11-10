@@ -16,36 +16,38 @@ public class VliegveldLogic
         return _access.Exists(id);
     }
 
+    public VliegveldModel? GetById(int id)
+    {
+        return _access.GetById(id);
+    }
+
     public void Add(VliegveldModel airport)
     {
-        ArgumentNullException.ThrowIfNull(airport);
-        Validate(airport);
         _access.Add(airport);
     }
 
-    public void Update(VliegveldModel airport)
+    public bool Update(VliegveldModel airport)
     {
-        ArgumentNullException.ThrowIfNull(airport);
-        if (airport.ID <= 0)
-        {
-            throw new ArgumentException("Het vliegveld-ID moet groter zijn dan nul.", nameof(airport));
-        }
-
-        Validate(airport);
-        if (!_access.Update(airport))
-        {
-            throw new KeyNotFoundException($"Er bestaat geen vliegveld met ID {airport.ID}.");
-        }
+        return _access.Update(airport);
     }
 
-    private static void Validate(VliegveldModel airport)
+    public bool IsValidNaam(string naam)
     {
-        if (string.IsNullOrWhiteSpace(airport.Naam) ||
-            string.IsNullOrWhiteSpace(airport.Stad) ||
-            string.IsNullOrWhiteSpace(airport.Land) ||
-            string.IsNullOrWhiteSpace(airport.Afkorting))
-        {
-            throw new ArgumentException("Naam, stad, land en afkorting zijn verplicht.", nameof(airport));
-        }
+        return !string.IsNullOrWhiteSpace(naam);
+    }
+
+    public bool IsValidStad(string stad)
+    {
+        return !string.IsNullOrWhiteSpace(stad);
+    }
+
+    public bool IsValidLand(string land)
+    {
+        return !string.IsNullOrWhiteSpace(land);
+    }
+
+    public bool IsValidAfkorting(string afkorting)
+    {
+        return !string.IsNullOrWhiteSpace(afkorting);
     }
 }
