@@ -5,7 +5,7 @@ public sealed class VluchtOverichtTest1
 {
     [DataTestMethod]
     [DataRow(100,200)]
-
+    [DataRow(200,100)]
    public void SortFlightsByPrice(int price1, int price2)
     {
         //arrange
@@ -25,8 +25,8 @@ public sealed class VluchtOverichtTest1
         List<FlightModel> result = flightLogic.SortFlights(flights, "price"); // sorteert de prijs.
 
         // assert
-        Assert.AreEqual(price1, result[0].Price); // checkt laagste vlucht in prijs
-        Assert.AreEqual(price2, result[0].Price); // checkt hoogste vlucht in prijs
+        Assert.AreEqual(Math.Min(price1, price2), result[0].Price); // checkt laagste vlucht in prijs
+        Assert.AreEqual(Math.Max(price1, price2), result[1].Price); // checkt hoogste vlucht in prijs
     }
 
 
