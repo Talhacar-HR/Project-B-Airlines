@@ -58,5 +58,13 @@ public sealed class VluchtOverichtTest1
       Assert.AreEqual("14:00", result[1].DepartureTime); // kijkt of 14:00 als laatst komt
     }
 
+    [DataTestMethod]
+    [DataRow("2026-12-15", "Amsterdam", "Dubai")]
+    [DataRow("2026-12-15", "Amsterdam", "Istanbul")]
+    public void FlightFilterValidData(string departureDate, string origin, string destination)
+    {
+        throw new NotImplementedException();
+    }
+
 
 }
