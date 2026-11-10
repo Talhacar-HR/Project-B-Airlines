@@ -12,7 +12,7 @@ public class VluchtAccess
         {
             connection.Open();
 
-            string sql = $"SELECT ID, VliegtuigID, AankomstLocatie, VertrekLocatie, date(VertreksTijd) AS VertrekDatum, strftime('%H:%M', VertreksTijd) AS VertrekTijd, Vertraging, VluchtNummer FROM {Table} ORDER BY ID";
+            string sql = $"SELECT ID, VliegtuigID, AankomstLocatie, VertrekLocatie, VertrekDatum, VertrekTijd, Vertraging, VluchtNummer FROM {Table} ORDER BY ID";
             return connection.Query<VluchtModel>(sql).AsList();
         }
     }
@@ -27,8 +27,8 @@ public class VluchtAccess
                 Vlucht.VluchtNummer AS FlightNumber,
                 Vertrek.Stad AS Origin,
                 Aankomst.Stad AS Destination,
-                date(Vlucht.VertreksTijd) AS DepartureDate,
-                strftime('%H:%M', Vlucht.VertreksTijd) AS DepartureTime,
+                Vlucht.VertrekDatum AS DepartureDate,
+                Vlucht.VertrekTijd AS DepartureTime,
                 Vlucht.Prijs As Price
             FROM Vlucht
             JOIN Vliegveld AS Vertrek ON Vlucht.VertrekLocatie = Vertrek.ID
@@ -47,8 +47,8 @@ public class VluchtAccess
             string sql = @"SELECT vlucht.ID as ID, Vlucht.VliegtuigID AS VliegtuigID, vlucht.VluchtNummer AS FlightNumber,
         vertrek.Stad AS Origin, 
         Aankomst.Stad AS Destination, 
-        date(Vlucht.VertreksTijd) AS DepartureDate,
-        strftime('%H:%M', Vlucht.VertreksTijd) AS DepartureTime,
+        Vlucht.VertrekDatum AS DepartureDate,
+        Vlucht.VertrekTijd AS DepartureTime,
         Vlucht.Prijs AS Price
         FROM vlucht
         Join Vliegveld AS Vertrek ON vlucht.VertrekLocatie = Vertrek.ID
