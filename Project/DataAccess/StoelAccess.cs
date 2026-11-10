@@ -12,7 +12,7 @@ public class StoelAccess
             connection.Open();
 
             string sql = $"SELECT ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse FROM {Table} ORDER BY ID";
-            return connection.Query<StoelModel>(sql).AsList();
+            return connection.Query<StoelModel>(sql).ToList();
         }
     }
 
@@ -24,7 +24,7 @@ public class StoelAccess
 
             string sql = "SELECT COUNT(*) FROM Stoel WHERE vliegtuigID = @VliegtuigID";
 
-            return connection.ExecuteScalar<int>(sql, new{VliegtuigID = VliegtuigID});
+            return connection.QueryFirst<int>(sql, new{VliegtuigID = VliegtuigID});
         }
     }
 
