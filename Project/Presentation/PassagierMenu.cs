@@ -107,7 +107,8 @@ static class VluchtBoeken
     // Vraagt of de passagier extra bagage wil. Geeft 1 (ja) of 0 (nee) terug.
     private static int VraagExtraBagage()
     {
-        Console.Write($"Wilt u extra bagage (+ € {PrijsLogic.ExtraBagagePrijs})? (J/N): ");
+        string bagagePrijs = PrijsLogic.ExtraBagagePrijs.ToString("N2", new System.Globalization.CultureInfo("nl-NL"));
+        Console.Write($"Wilt u extra bagage (+ € {bagagePrijs})? (J/N): ");
         string keuze = Console.ReadLine() ?? "";
 
         return keuze.Trim().Equals("J", StringComparison.OrdinalIgnoreCase) ? 1 : 0;

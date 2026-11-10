@@ -26,15 +26,6 @@ public class PrijsLogic
         return prijs;
     }
 
-    // Prijs voor 1 passagier uit een reservering (zoekt zelf de toeslag van de stoel op)
-    public double BerekenPrijsPerPassagier(ReserveringsStoelModel reserveringsStoel, double vluchtPrijs)
-    {
-        double toeslag = GetStoelToeslag(reserveringsStoel.StoelID);
-        bool extraBagage = reserveringsStoel.ExtraBagage == 1;
-
-        return BerekenPrijsPerPassagier(vluchtPrijs, toeslag, extraBagage);
-    }
-
     // Prijsregels voor het prijsoverzicht: 1 regel per passagier.
     // Werkt ook voor stoelen die nog niet zijn opgeslagen (voor het bevestigen).
     public List<PrijsRegelModel> GetPrijsRegels(int vluchtId, List<ReserveringsStoelModel> stoelen)
