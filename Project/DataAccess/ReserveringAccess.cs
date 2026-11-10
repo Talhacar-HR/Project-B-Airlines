@@ -5,6 +5,19 @@ public class ReserveringAccess
 {
     private static readonly string DatabaseLoc = Path.Combine(AppContext.BaseDirectory, "DataSources", "ApplicatieDB.db");
 
+    public ReserveringModel? GetById(int id)
+    {
+        string sql = "SELECT ID, GebruikersID, VluchtID, Status, BoekingsCode, AanmaakDatum, LaatsteWijziging FROM Reservering WHERE ID = @Id";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
+
+        List<ReserveringModel> reserveringen = connection.Query<ReserveringModel>(sql, new { Id = id }).ToList();
+
+        if (reserveringen.Count == 0)
+            return null;
+
+        return reserveringen[0];
+    }
+
     public void Add(ReserveringModel reservering)
     {
         SqliteConnection connection = new($"Data Source={DatabaseLoc}");
