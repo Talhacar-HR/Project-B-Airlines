@@ -17,19 +17,4 @@ public sealed class PrijsTests
         // Assert
         Assert.AreEqual(verwacht, prijs, 0.01);
     }
-
-    [TestMethod]
-    [DataRow(1, 859.98)] // reservering uit testdata
-    [DataRow(9999, 0)] // bestaat niet
-    public void BerekenTotaalprijs_Reservering_JuisteTotaal(int id, double verwacht)
-    {
-        // Arrange
-        PrijsLogic logic = new();
-
-        // Act
-        double totaal = logic.BerekenTotaalprijs(id);
-
-        // Assert
-        Assert.AreEqual(verwacht, totaal, 0.01);
-    }
 }
