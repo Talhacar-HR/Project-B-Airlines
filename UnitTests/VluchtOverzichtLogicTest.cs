@@ -35,7 +35,27 @@ public sealed class VluchtOverichtTest1
 
     public void SortFlightsByDeparture(string time1, string time2)
     {
-        throw new NotImplementedException();
+        // arrange
+       FlightLogic flightLogic = new();
+
+       FlightModel flight1 = new();
+       flight1.DepartureDate = "2026-04-26";
+       flight1.DepartureTime = time1; // 09:00 en daarna 14:00
+
+       FlightModel flight2 = new();
+       flight2.DepartureDate = "2026-04-26";
+       flight2.DepartureTime = time2; // 14:00 en daarna 09:00
+
+      List<FlightModel> flights = [];
+      flights.Add(flight1);
+      flights.Add(flight2);
+
+      // act
+      List<FlightModel> result = flightLogic.SortFlights(flights, "departure");
+
+      // assert
+      Assert.AreEqual("09:00", result[0].DepartureTime);  // kijkt of 09:00 als eerst komt
+      Assert.AreEqual("14:00", result[1].DepartureTime); // kijkt of 14:00 als laatst komt
     }
 
 
