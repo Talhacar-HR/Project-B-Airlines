@@ -1,3 +1,5 @@
+using System.Data;
+
 namespace UnitTests;
 
 [TestClass]
@@ -80,6 +82,16 @@ public sealed class VluchtOverichtTest1
             Assert.AreEqual(destination, flight.Destination); // checkt bestemming
         }
     }
+
+    [DataTestMethod]
+    [DataRow(1,false)]
+    [DataRow(10,true)]
+    public void GetAvailableFlightsTest(int flightid, bool expected)
+    {
+        throw new NotImplementedException();    
+    }
+
+
 
 
 }
