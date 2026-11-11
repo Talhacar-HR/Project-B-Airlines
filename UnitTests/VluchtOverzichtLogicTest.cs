@@ -88,7 +88,23 @@ public sealed class VluchtOverichtTest1
     [DataRow(10,true)]
     public void GetAvailableFlightsTest(int flightid, bool expected)
     {
-        throw new NotImplementedException();    
+        // arrange
+       FlightLogic flightLogic = new();
+
+       // act
+       List<FlightModel> result = flightLogic.GetAvailableFlights();
+
+       // assert
+       bool flag = false;
+
+        foreach(FlightModel flight in result)
+        {
+            if (flight.ID == flightid)
+            {
+                flag = true;
+            }
+        }
+        Assert.AreEqual(expected, flag); // is de wel of niet is gevonden
     }
 
 
