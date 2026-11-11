@@ -133,7 +133,7 @@ static class VliegveldMenu
     }
     private static VliegveldModel? ZoekVliegveld()
     {
-        Console.Write("Zoek vliegveld op naam, stad of afkorting: ");
+        Console.Write("Zoek vliegveld op afkorting: ");
         string zoekterm = Console.ReadLine() ?? "";
 
         List<VliegveldModel> gevonden = vliegveldLogic.Zoek(zoekterm);
