@@ -113,7 +113,14 @@ public sealed class VluchtOverichtTest1
 
     public void SelectedFlightTest(int flightId, bool expected)
     {
-        throw new NotImplementedException();
+       // arrange
+       FlightLogic flightLogic = new();
+
+       // act
+       bool result = flightLogic.SelectFlight(flightId);
+
+       // assert
+       Assert.AreEqual(expected, result); // checkt of ze gelijk aan elkaar zijn
     }
 
 
