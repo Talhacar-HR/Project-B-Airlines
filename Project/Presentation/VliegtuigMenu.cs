@@ -125,7 +125,7 @@ static class VliegtuigMenu
     }
     private static VliegtuigModel? ZoekVliegtuig()
     {
-        Console.Write("Zoek vliegtuig op model of merk: ");
+        Console.Write("Zoek vliegtuig op model: ");
         string zoekterm = Console.ReadLine() ?? "";
 
         List<VliegtuigModel> gevonden = vliegtuigLogic.Zoek(zoekterm);
