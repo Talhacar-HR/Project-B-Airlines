@@ -64,19 +64,14 @@ static class VliegveldMenu
 
     public static void Aanpassen()
     {
-        Console.Write("ID van het vliegveld: ");
-        if (!int.TryParse(Console.ReadLine(), out int id))
-        {
-            Console.WriteLine("Ongeldige invoer.");
-            return;
-        }
-
-        VliegveldModel? currentAirport = vliegveldLogic.GetById(id);
+        VliegveldModel? currentAirport = ZoekVliegveld();
         if (currentAirport is null)
         {
-            Console.WriteLine($"Er bestaat geen vliegveld met ID {id}.");
             return;
         }
+        int id = currentAirport.ID;
+
+        ToonVliegveld(currentAirport);
 
         Console.Write($"Nieuwe naam (huidig: {currentAirport.Naam}): ");
         string naam = Console.ReadLine() ?? "";
@@ -135,5 +130,50 @@ static class VliegveldMenu
 
         airport = new VliegveldModel(id, naam, stad, land, afkorting);
         return isValid;
+    }
+    private static VliegveldModel? ZoekVliegveld()
+    {
+        Console.Write("Zoek vliegveld op naam, stad of afkorting: ");
+        string zoekterm = Console.ReadLine() ?? "";
+
+        List<VliegveldModel> gevonden = vliegveldLogic.Zoek(zoekterm);
+
+        if (gevonden.Count == 0)
+        {
+            Console.WriteLine($"Geen vliegveld gevonden met \"{zoekterm}\". Controleer de zoekterm en probeer het opnieuw.");
+            return null;
+        }
+
+        if (gevonden.Count == 1)
+        {
+            return gevonden[0];
+        }
+
+        Console.WriteLine("Meerdere vliegvelden gevonden:");
+        for (int i = 0; i < gevonden.Count; i += 1)
+        {
+            Console.WriteLine($"{i + 1}. {gevonden[i].Naam} ({gevonden[i].Stad})");
+        }
+
+        Console.Write("Kies een nummer: ");
+        string keuze = Console.ReadLine() ?? "";
+
+        if (int.TryParse(keuze, out int nummer) && nummer >= 1 && nummer <= gevonden.Count)
+        {
+            return gevonden[nummer - 1];
+        }
+
+        Console.WriteLine("Ongeldige keuze.");
+        return null;
+    }
+    private static void ToonVliegveld(VliegveldModel vliegveld)
+    {
+        Console.WriteLine("");
+        Console.WriteLine("Gevonden vliegveld:");
+        Console.WriteLine($"  Naam:      {vliegveld.Naam}");
+        Console.WriteLine($"  Stad:      {vliegveld.Stad}");
+        Console.WriteLine($"  Land:      {vliegveld.Land}");
+        Console.WriteLine($"  Afkorting: {vliegveld.Afkorting}");
+        Console.WriteLine("");
     }
 }

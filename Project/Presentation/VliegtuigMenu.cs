@@ -71,6 +71,7 @@ static class VliegtuigMenu
             return;
         }
         int id = currentPlane.ID;
+        ToonVliegtuig(currentPlane);
 
         Console.Write($"Nieuwe bagageruimte (huidig: {currentPlane.BaggageRuimte}): ");
         string baggageRuimteInput = Console.ReadLine() ?? "";
@@ -141,9 +142,9 @@ static class VliegtuigMenu
         }
 
         Console.WriteLine("Meerdere vliegtuigen gevonden:");
-        for (int item = 0; item < gevonden.Count; item += 1)
+        for (int i = 0; i < gevonden.Count; i += 1)
         {
-            Console.WriteLine($"{item + 1}. {gevonden[item].Merk} {gevonden[item].Model}");
+            Console.WriteLine($"{i + 1}. {gevonden[i].Merk} {gevonden[i].Model}");
         }
 
         Console.Write("Kies een nummer: ");
@@ -156,5 +157,14 @@ static class VliegtuigMenu
 
         Console.WriteLine("Ongeldige keuze.");
         return null;
+    }
+    private static void ToonVliegtuig(VliegtuigModel vliegtuig)
+    {
+        Console.WriteLine("");
+        Console.WriteLine("Gevonden vliegtuig:");
+        Console.WriteLine($"  Merk:         {vliegtuig.Merk}");
+        Console.WriteLine($"  Model:        {vliegtuig.Model}");
+        Console.WriteLine($"  Bagageruimte: {vliegtuig.BaggageRuimte}");
+        Console.WriteLine("");
     }
 }

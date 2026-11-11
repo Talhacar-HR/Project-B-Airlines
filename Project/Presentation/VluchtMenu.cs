@@ -85,21 +85,14 @@ static class VluchtMenu
 
     public static void Aanpassen()
     {
-        Console.Write("ID van de vlucht: ");
-        string idInput = Console.ReadLine() ?? "";
-
-        if (!int.TryParse(idInput, out int id))
-        {
-            Console.WriteLine("Voer een geldig vlucht-ID in.");
-            return;
-        }
-
-        VluchtModel? currentFlight = vluchtLogic.GetById(id);
+        VluchtModel? currentFlight = ZoekVlucht();
         if (currentFlight == null)
         {
-            Console.WriteLine($"Er bestaat geen vlucht met ID {id}.");
             return;
         }
+        int id = currentFlight.ID;
+
+        ToonVlucht(currentFlight);
 
         Console.Write($"Nieuw vliegtuig-ID (huidig: {currentFlight.VliegtuigID}): ");
         string vliegtuigIDInput = Console.ReadLine() ?? "";
@@ -189,5 +182,54 @@ static class VluchtMenu
 
         flight = new VluchtModel(id, vliegtuigID, vertrekLocatie, aankomstLocatie, vertrekDatum, vertrekTijd, vertraging, vluchtNummer);
         return isValid;
+    }
+    private static VluchtModel? ZoekVlucht()
+    {
+        Console.Write("Zoek vlucht op vluchtnummer: ");
+        string zoekterm = Console.ReadLine() ?? "";
+
+        List<VluchtModel> gevonden = vluchtLogic.Zoek(zoekterm);
+
+        if (gevonden.Count == 0)
+        {
+            Console.WriteLine($"Geen vlucht gevonden met \"{zoekterm}\". Controleer de zoekterm en probeer het opnieuw.");
+            return null;
+        }
+
+        if (gevonden.Count == 1)
+        {
+            return gevonden[0];
+        }
+
+        Console.WriteLine("Meerdere vluchten gevonden:");
+        for (int i = 0; i < gevonden.Count; i += 1)
+        {
+            Console.WriteLine($"{i + 1}. Vlucht {gevonden[i].VluchtNummer} op {gevonden[i].VertrekDatum} om {gevonden[i].VertrekTijd}");
+        }
+
+        Console.Write("Kies een nummer: ");
+        string keuze = Console.ReadLine() ?? "";
+
+        if (int.TryParse(keuze, out int nummer) && nummer >= 1 && nummer <= gevonden.Count)
+        {
+            return gevonden[nummer - 1];
+        }
+
+        Console.WriteLine("Ongeldige keuze.");
+        return null;
+    } 
+    private static void ToonVlucht(VluchtModel vlucht)
+    {
+        Console.WriteLine("");
+        Console.WriteLine("Gevonden vlucht:");
+        Console.WriteLine($"  Vluchtnummer:          {vlucht.VluchtNummer}");
+        Console.WriteLine($"  Vliegtuig-ID:          {vlucht.VliegtuigID}");
+        Console.WriteLine($"  Vertrekluchthaven-ID:  {vlucht.VertrekLocatie}");
+        Console.WriteLine($"  Aankomstluchthaven-ID: {vlucht.AankomstLocatie}");
+        Console.WriteLine($"  Vertrekdatum:          {vlucht.VertrekDatum}");
+        Console.WriteLine($"  Vertrektijd:           {vlucht.VertrekTijd}");
+        Console.WriteLine($"  Vertraging:            {vlucht.Vertraging}");
+        Console.WriteLine($"  Prijs:                 {vlucht.Prijs}");
+        Console.WriteLine("");
     }
 }

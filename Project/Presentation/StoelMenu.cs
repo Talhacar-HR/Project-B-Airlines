@@ -64,19 +64,14 @@ static class StoelMenu
 
     public static void Aanpassen()
     {
-        Console.Write("ID van de stoel: ");
-        if (!int.TryParse(Console.ReadLine(), out int id))
-        {
-            Console.WriteLine("Ongeldige invoer.");
-            return;
-        }
-
-        StoelModel? currentSeat = stoelLogic.GetById(id);
+        StoelModel? currentSeat = ZoekStoel();
         if (currentSeat is null)
         {
-            Console.WriteLine($"Er bestaat geen stoel met ID {id}.");
             return;
         }
+        int id = currentSeat.ID;
+
+        ToonStoel(currentSeat);
 
         Console.Write($"Nieuw vliegtuig-ID (huidig: {currentSeat.VliegtuigID}): ");
         string vliegtuigIDInput = Console.ReadLine() ?? "";
@@ -138,5 +133,51 @@ static class StoelMenu
 
         seat = new StoelModel(id, vliegtuigID, stoelNummer, rijNummer, stoelKlasse);
         return isValid;
+    }
+    private static StoelModel? ZoekStoel()
+    {
+        Console.Write("Zoek stoel op stoelnummer (bijvoorbeeld 1A): ");
+        string zoekterm = Console.ReadLine() ?? "";
+
+        List<StoelModel> gevonden = stoelLogic.Zoek(zoekterm);
+
+        if (gevonden.Count == 0)
+        {
+            Console.WriteLine($"Geen stoel gevonden met \"{zoekterm}\". Controleer de zoekterm en probeer het opnieuw.");
+            return null;
+        }
+
+        if (gevonden.Count == 1)
+        {
+            return gevonden[0];
+        }
+
+        Console.WriteLine("Meerdere stoelen gevonden:");
+        for (int i = 0; i < gevonden.Count; i += 1)
+        {
+            Console.WriteLine($"{i + 1}. Stoel {gevonden[i].StoelNummer} in vliegtuig {gevonden[i].VliegtuigID}");
+        }
+
+        Console.Write("Kies een nummer: ");
+        string keuze = Console.ReadLine() ?? "";
+
+        if (int.TryParse(keuze, out int nummer) && nummer >= 1 && nummer <= gevonden.Count)
+        {
+            return gevonden[nummer - 1];
+        }
+
+        Console.WriteLine("Ongeldige keuze.");
+        return null;
+    }
+
+    private static void ToonStoel(StoelModel stoel)
+    {
+        Console.WriteLine("");
+        Console.WriteLine("Gevonden stoel:");
+        Console.WriteLine($"  Stoelnummer:  {stoel.StoelNummer}");
+        Console.WriteLine($"  Rijnummer:    {stoel.RijNummer}");
+        Console.WriteLine($"  Stoelklasse:  {stoel.StoelKlasse}");
+        Console.WriteLine($"  Vliegtuig-ID: {stoel.VliegtuigID}");
+        Console.WriteLine("");
     }
 }
