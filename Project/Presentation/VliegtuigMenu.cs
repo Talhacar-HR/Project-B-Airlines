@@ -65,19 +65,12 @@ static class VliegtuigMenu
 
     public static void Aanpassen()
     {
-        Console.Write("ID van het vliegtuig: ");
-        if (!int.TryParse(Console.ReadLine(), out int id))
-        {
-            Console.WriteLine("Ongeldige invoer.");
-            return;
-        }
-
-        VliegtuigModel? currentPlane = vliegtuigLogic.GetById(id);
+        VliegtuigModel? currentPlane = ZoekVliegtuig();
         if (currentPlane is null)
         {
-            Console.WriteLine($"Er bestaat geen vliegtuig met ID {id}.");
             return;
         }
+        int id = currentPlane.ID;
 
         Console.Write($"Nieuwe bagageruimte (huidig: {currentPlane.BaggageRuimte}): ");
         string baggageRuimteInput = Console.ReadLine() ?? "";
@@ -128,5 +121,40 @@ static class VliegtuigMenu
 
         plane = new VliegtuigModel(id, baggageRuimte, model, merk);
         return isValid;
+    }
+    private static VliegtuigModel? ZoekVliegtuig()
+    {
+        Console.Write("Zoek vliegtuig op model of merk: ");
+        string zoekterm = Console.ReadLine() ?? "";
+
+        List<VliegtuigModel> gevonden = vliegtuigLogic.Zoek(zoekterm);
+
+        if (gevonden.Count == 0)
+        {
+            Console.WriteLine($"Geen vliegtuig gevonden met \"{zoekterm}\". Controleer de zoekterm en probeer het opnieuw.");
+            return null;
+        }
+
+        if (gevonden.Count == 1)
+        {
+            return gevonden[0];
+        }
+
+        Console.WriteLine("Meerdere vliegtuigen gevonden:");
+        for (int item = 0; item < gevonden.Count; item += 1)
+        {
+            Console.WriteLine($"{item + 1}. {gevonden[item].Merk} {gevonden[item].Model}");
+        }
+
+        Console.Write("Kies een nummer: ");
+        string keuze = Console.ReadLine() ?? "";
+
+        if (int.TryParse(keuze, out int nummer) && nummer >= 1 && nummer <= gevonden.Count)
+        {
+            return gevonden[nummer - 1];
+        }
+
+        Console.WriteLine("Ongeldige keuze.");
+        return null;
     }
 }
