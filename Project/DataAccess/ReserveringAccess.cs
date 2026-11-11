@@ -18,6 +18,7 @@ public class ReserveringAccess
         return reserveringen[0];
     }
 
+    // splitsen in 2 methodes?
     public void Add(ReserveringModel reservering)
     {
         SqliteConnection connection = new($"Data Source={DatabaseLoc}");
