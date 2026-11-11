@@ -3,11 +3,11 @@ static class VluchtBoeken
     static private PassagierLogic passagierLogic = new PassagierLogic();
     static private ReserveringLogic reserveringLogic = new ReserveringLogic();
 
-    public static void Start(int vluchtId)
+    public static void Start(int vluchtId, long vluchtNummer)
     {
         AccountModel? currentAccount = AccountsLogic.CurrentAccount;
 
-        Console.WriteLine($"U heeft vlucht nummer {vluchtId} geselecteerd.");
+        Console.WriteLine($"U heeft vlucht nummer {vluchtNummer} geselecteerd.");
 
         // Hierin komen de gekozen stoelen van alle passagiers
         List<ReserveringsStoelModel> gekozenStoelen = new List<ReserveringsStoelModel>();

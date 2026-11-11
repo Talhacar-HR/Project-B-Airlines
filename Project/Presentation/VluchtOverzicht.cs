@@ -64,26 +64,28 @@ static class FlightOverview
                 ShowFlight(flight);
             }
             Console.WriteLine("Welk vluchtnummer wil je selecteren?");
-            var flightNumber = Console.ReadLine();
-
-            bool flag = false;
-
-            foreach(FlightModel flight in flights)
+            string flightNumberInput = Console.ReadLine() ?? "";
+            if (!long.TryParse(flightNumberInput, out long flightNumber))
             {
-                if (flight.FlightNumber.ToString() == flightNumber)
-                    flag = true;
-                if (flightLogic.SelectFlight(flight.ID))
-                    // ???
-                    VluchtBoeken.Start(flight.ID);
-                else
-                {
-                    Console.WriteLine("Deze vlucht is niet beschikbaar.");
-                    break;
-                }
-                if (flag == false)
-                    Console.WriteLine("Ongeldig vluchtnummer.");
-                    
+                Console.WriteLine("Ongeldig vluchtnummer.");
+                return;
             }
+
+            FlightModel? selectedFlight = flights.FirstOrDefault(flight => flight.FlightNumber == flightNumber);
+            if (selectedFlight == null)
+            {
+                Console.WriteLine("Ongeldig vluchtnummer.");
+                return;
+            }
+
+            if (!flightLogic.SelectFlight(selectedFlight.ID))
+            {
+                Console.WriteLine("Deze vlucht is niet beschikbaar.");
+                return;
+            }
+
+            // ???
+            VluchtBoeken.Start(selectedFlight.ID, selectedFlight.FlightNumber);
         }
     }
 }
