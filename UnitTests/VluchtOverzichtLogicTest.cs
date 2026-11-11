@@ -63,22 +63,7 @@ public sealed class VluchtOverichtTest1
     [DataRow("2026-12-10", "Dubai", "Amsterdam")]
     public void FlightFilterValidData(string departureDate, string origin, string destination)
     {
-        // arrange
-        FlightLogic flightLogic = new();
-
-        // act
-        List<FlightModel> result = flightLogic.FlightFilter(departureDate,origin,destination);
-        // nieuwe list result krijgt antwoord van de methode
-
-        // assert
-        Assert.AreEqual(true,result.Count > 0); // checkt of er vluchten zijn
-
-        foreach(FlightModel flight in result)
-        {
-            Assert.AreEqual(departureDate, flight.DepartureDate); // checkt datum
-            Assert.AreEqual(origin, flight.Origin); // checkt vertrekplaats
-            Assert.AreEqual(destination, flight.Destination); // checkt bestemming
-        }
+        throw new NotImplementedException();
     }
 
 
