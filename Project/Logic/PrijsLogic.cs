@@ -26,16 +26,40 @@ public class PrijsLogic
         return prijs;
     }
 
-    // Prijs voor 1 passagier uit een reservering (zoekt zelf de toeslag van de stoel op)
-    public double BerekenPrijsPerPassagier(ReserveringsStoelModel reserveringsStoel, double vluchtPrijs)
+    // Prijsregels voor het prijsoverzicht: 1 regel per passagier.
+    // Werkt ook voor stoelen die nog niet zijn opgeslagen (voor het bevestigen).
+    public List<PrijsRegelModel> GetPrijsRegels(int vluchtId, List<ReserveringsStoelModel> stoelen)
     {
-        double toeslag = GetStoelToeslag(reserveringsStoel.StoelID);
-        bool extraBagage = reserveringsStoel.ExtraBagage == 1;
+        List<PrijsRegelModel> regels = new List<PrijsRegelModel>();
 
-        return BerekenPrijsPerPassagier(vluchtPrijs, toeslag, extraBagage);
+        VluchtModel? vlucht = _vluchtLogic.GetById(vluchtId);
+        if (vlucht == null || stoelen == null)
+        {
+            return regels;
+        }
+
+        foreach (ReserveringsStoelModel stoel in stoelen)
+        {
+            regels.Add(MaakPrijsRegel(vlucht, stoel));
+        }
+
+        return regels;
     }
 
-    // Totaalprijs van een reservering: de prijzen van alle passagiers bij elkaar opgeteld.
+    // Totaalprijs van een vlucht met gekozen stoelen: alle prijsregels bij elkaar
+    public double BerekenTotaalprijs(int vluchtId, List<ReserveringsStoelModel> stoelen)
+    {
+        double totaal = 0;
+        foreach (PrijsRegelModel regel in GetPrijsRegels(vluchtId, stoelen))
+        {
+            totaal += regel.Prijs;
+        }
+
+        // Afronden op centen, zodat er geen getallen als 859.9800000001 uitkomen
+        return Math.Round(totaal, 2);
+    }
+
+    // Totaalprijs van een opgeslagen reservering.
     // Een onbekende reservering of een reservering zonder passagiers geeft 0 terug (geen crash).
     public double BerekenTotaalprijs(int reserveringId)
     {
@@ -45,22 +69,21 @@ public class PrijsLogic
             return 0;
         }
 
-        VluchtModel? vlucht = _vluchtLogic.GetById(reservering.VluchtID);
-        if (vlucht == null)
-        {
-            return 0;
-        }
+        List<ReserveringsStoelModel> stoelen = _reserveringLogic.GetStoelenByReserveringId(reserveringId);
+        return BerekenTotaalprijs(reservering.VluchtID, stoelen);
+    }
 
-        List<ReserveringsStoelModel> passagiers = _reserveringLogic.GetStoelenByReserveringId(reserveringId);
+    // Maakt 1 prijsregel voor 1 passagier
+    private PrijsRegelModel MaakPrijsRegel(VluchtModel vlucht, ReserveringsStoelModel reserveringsStoel)
+    {
+        StoelModel? stoel = _stoelLogic.GetById(reserveringsStoel.StoelID);
+        string stoelNummer = stoel == null ? "" : stoel.StoelNummer;
 
-        double totaal = 0;
-        foreach (ReserveringsStoelModel passagier in passagiers)
-        {
-            totaal += BerekenPrijsPerPassagier(passagier, vlucht.Prijs);
-        }
+        double toeslag = GetStoelToeslag(reserveringsStoel.StoelID);
+        bool extraBagage = reserveringsStoel.ExtraBagage == 1;
+        double prijs = BerekenPrijsPerPassagier(vlucht.Prijs, toeslag, extraBagage);
 
-        // Afronden op centen, zodat er geen getallen als 859.9800000001 uitkomen
-        return Math.Round(totaal, 2);
+        return new PrijsRegelModel(vlucht.VluchtNummer, vlucht.Prijs, stoelNummer, toeslag, extraBagage, prijs);
     }
 
     // Zoekt de toeslag van de stoelklasse van een stoel op.
