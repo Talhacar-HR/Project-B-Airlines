@@ -34,7 +34,6 @@ public class VluchtAccess
         return count > 0;
     }
 
-    // Geeft vluchtgegevens met luchthaven-ID's terug voor het beheren van vluchten.
     public List<VluchtModel> GetAll()
     {
         string sql = $"SELECT ID, VliegtuigID, AankomstLocatie, VertrekLocatie, VertrekDatum, VertrekTijd, Vertraging, VluchtNummer, Prijs FROM {Table} ORDER BY ID";
@@ -68,7 +67,6 @@ public class VluchtAccess
         return count > 0;
     }
 
-    // Geeft vluchtgegevens met vliegveld namen terug voor het vluchtoverzicht
     public List<FlightModel> GetAllFlights()
     {
         string sql = @"
