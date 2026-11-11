@@ -17,6 +17,8 @@ static class VliegtuigMenu
                 Toevoegen();
             else if (input == "3")
                 Aanpassen();
+            else if (input == "4")
+                StoelMenu.Start();
             else if (input == "0")
                 menuRunning = false;
             else
@@ -30,6 +32,7 @@ static class VliegtuigMenu
         Console.WriteLine("1 - Overzicht");
         Console.WriteLine("2 - Toevoegen");
         Console.WriteLine("3 - Aanpassen");
+        Console.WriteLine("4 - Stoelen beheren");
         Console.WriteLine("0 - Terug");
         return Console.ReadLine() ?? "";
     }
