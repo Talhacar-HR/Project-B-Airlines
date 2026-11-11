@@ -154,13 +154,13 @@ static class VluchtMenu
     {
         bool isValid = true;
         List<VliegtuigModel> gevondenVliegtuigen = vliegtuigLogic.GetAll()
-            .Where(vliegtuig => vliegtuig.Model.Equals(vliegtuigModelInput.Trim(), StringComparison.OrdinalIgnoreCase))
+            .Where(vliegtuig => vliegtuig.Model.ToLower() == vliegtuigModelInput.Trim().ToLower())
             .ToList();
         List<VliegveldModel> gevondenVertrekVliegvelden = vliegveldLogic.GetAll()
-            .Where(vliegveld => vliegveld.Afkorting.Equals(vertrekAfkortingInput.Trim(), StringComparison.OrdinalIgnoreCase))
+            .Where(vliegveld => vliegveld.Afkorting.ToLower() == vertrekAfkortingInput.Trim().ToLower())
             .ToList();
         List<VliegveldModel> gevondenAankomstVliegvelden = vliegveldLogic.GetAll()
-            .Where(vliegveld => vliegveld.Afkorting.Equals(aankomstAfkortingInput.Trim(), StringComparison.OrdinalIgnoreCase))
+            .Where(vliegveld => vliegveld.Afkorting.ToLower() == aankomstAfkortingInput.Trim().ToLower())
             .ToList();
         bool hasVluchtNummer = int.TryParse(vluchtNummerInput, out int vluchtNummer);
         int vliegtuigID = gevondenVliegtuigen.Count == 1 ? gevondenVliegtuigen[0].ID : 0;

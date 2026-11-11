@@ -63,7 +63,7 @@ public class VliegveldLogic
 
         foreach (VliegveldModel vliegveld in _access.GetAll())
         {
-            if (vliegveld.Naam.ToLower().Contains(term) || vliegveld.Stad.ToLower().Contains(term) || vliegveld.Afkorting.ToLower() == term)
+            if (vliegveld.Afkorting.ToLower() == term)
             {
                 gevonden.Add(vliegveld);
             }

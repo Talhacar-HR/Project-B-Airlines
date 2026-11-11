@@ -58,7 +58,7 @@ public class VliegtuigLogic
 
         foreach (VliegtuigModel vliegtuig in _access.GetAll())
         {
-            if (vliegtuig.Model.Contains(term, StringComparison.OrdinalIgnoreCase))
+            if (vliegtuig.Model.ToLower().Contains(term))
             {
                 gevonden.Add(vliegtuig);
             }

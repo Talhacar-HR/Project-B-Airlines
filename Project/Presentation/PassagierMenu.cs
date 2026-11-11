@@ -67,7 +67,7 @@ static class VluchtBoeken
 
                 Console.Write("Wilt u nog een passagier toevoegen? (J/N): ");
                 string keuze = Console.ReadLine() ?? "";
-                if (keuze.Trim().Equals("N", StringComparison.OrdinalIgnoreCase))
+                if (keuze.Trim().ToLower() == "n")
                 {
                     meerPassagiers = false;
                 }
@@ -111,7 +111,7 @@ static class VluchtBoeken
         Console.Write($"Wilt u extra bagage (+ € {bagagePrijs})? (J/N): ");
         string keuze = Console.ReadLine() ?? "";
 
-        return keuze.Trim().Equals("J", StringComparison.OrdinalIgnoreCase) ? 1 : 0;
+        return keuze.Trim().ToLower() == "j" ? 1 : 0;
     }
 
     // Vraagt of de gebruiker de reservering wil bevestigen
@@ -120,7 +120,7 @@ static class VluchtBoeken
         Console.Write("Wilt u deze reservering bevestigen? (J/N): ");
         string keuze = Console.ReadLine() ?? "";
 
-        return keuze.Trim().Equals("J", StringComparison.OrdinalIgnoreCase);
+        return keuze.Trim().ToLower() == "j";
     }
 
     // Laat de stoelen van de vlucht zien en laat de gebruiker er één kiezen.
