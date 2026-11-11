@@ -34,16 +34,7 @@ public class VluchtAccess
         return count > 0;
     }
 
-    public bool VluchtNummerExists(int vluchtNummer, int id)
-    {
-        string sql = $"SELECT EXISTS(SELECT 1 FROM {Table} WHERE VluchtNummer = @VluchtNummer AND ID != @Id)";
-        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
-
-        int count = connection.QueryFirst<int>(sql, new { VluchtNummer = vluchtNummer, Id = id });
-
-        return count > 0;
-    }
-
+    // Geeft vluchtgegevens met luchthaven-ID's terug voor het beheren van vluchten.
     public List<VluchtModel> GetAll()
     {
         string sql = $"SELECT ID, VliegtuigID, AankomstLocatie, VertrekLocatie, VertrekDatum, VertrekTijd, Vertraging, VluchtNummer, Prijs FROM {Table} ORDER BY ID";
@@ -67,6 +58,17 @@ public class VluchtAccess
         return flights[0];
     }
 
+    public bool VluchtNummerExists(int vluchtNummer, int id)
+    {
+        string sql = $"SELECT EXISTS(SELECT 1 FROM {Table} WHERE VluchtNummer = @VluchtNummer AND ID != @Id)";
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
+
+        int count = connection.QueryFirst<int>(sql, new { VluchtNummer = vluchtNummer, Id = id });
+
+        return count > 0;
+    }
+
+    // Geeft vluchtgegevens met vliegveld namen terug voor het vluchtoverzicht
     public List<FlightModel> GetAllFlights()
     {
         string sql = @"
