@@ -21,10 +21,6 @@ static class DataMenu
             {
                 VliegveldMenu.Start();
             }
-            else if (menuInput == "4")
-            {
-                StoelMenu.Start();
-            }
             else if (menuInput == "0")
             {
                 menuRunning = false;
@@ -42,7 +38,6 @@ static class DataMenu
         Console.WriteLine("1 - Vluchten beheren");
         Console.WriteLine("2 - Vliegtuigen beheren");
         Console.WriteLine("3 - Vliegvelden beheren");
-        Console.WriteLine("4 - Stoelen beheren");
         Console.WriteLine("0 - Terug");
         Console.Write("Wat wilt u doen? ");
         return Console.ReadLine() ?? "";
