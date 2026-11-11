@@ -107,6 +107,15 @@ public sealed class VluchtOverichtTest1
         Assert.AreEqual(expected, flag); // is de wel of niet is gevonden
     }
 
+    [DataTestMethod]
+    [DataRow(1,false)]
+    [DataRow(10,true)]
+
+    public void SelectedFlightTest(int flightId, bool expected)
+    {
+        throw new NotImplementedException();
+    }
+
 
 
 
