@@ -45,4 +45,25 @@ public class VliegtuigLogic
     {
         return !string.IsNullOrWhiteSpace(merk);
     }
+    public List<VliegtuigModel> Zoek(string zoekterm)
+    {
+        List<VliegtuigModel> gevonden = new List<VliegtuigModel>();
+
+        if (string.IsNullOrWhiteSpace(zoekterm))
+        {
+            return gevonden;
+        }
+
+        string term = zoekterm.Trim().ToLower();
+
+        foreach (VliegtuigModel vliegtuig in _access.GetAll())
+        {
+            if (vliegtuig.Model.ToLower().Contains(term) || vliegtuig.Merk.ToLower().Contains(term))
+            {
+                gevonden.Add(vliegtuig);
+            }
+        }
+
+        return gevonden;
+    }
 }

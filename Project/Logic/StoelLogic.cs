@@ -51,4 +51,26 @@ public class StoelLogic
     {
         return stoelKlasse > 0;
     }
+
+    public List<StoelModel> Zoek(string zoekterm)
+    {
+        List<StoelModel> gevonden = new List<StoelModel>();
+
+        if (string.IsNullOrWhiteSpace(zoekterm))
+        {
+            return gevonden;
+        }
+
+        string term = zoekterm.Trim().ToLower();
+
+        foreach (StoelModel stoel in GetAll())
+        {
+            if (stoel.StoelNummer.ToLower() == term)
+            {
+                gevonden.Add(stoel);
+            }
+        }
+
+        return gevonden;
+    }
 }

@@ -72,4 +72,26 @@ public class VluchtLogic
     {
         return vluchtNummer > 0 && !_access.VluchtNummerExists(vluchtNummer, id);
     }
+    
+    public List<VluchtModel> Zoek(string zoekterm)
+    {
+        List<VluchtModel> gevonden = new List<VluchtModel>();
+
+        if (string.IsNullOrWhiteSpace(zoekterm))
+        {
+            return gevonden;
+        }
+
+        string term = zoekterm.Trim();
+
+        foreach (VluchtModel vlucht in GetAll())
+        {
+            if (vlucht.VluchtNummer.ToString() == term)
+            {
+                gevonden.Add(vlucht);
+            }
+        }
+
+        return gevonden;
+    }
 }

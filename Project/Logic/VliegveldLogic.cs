@@ -50,4 +50,25 @@ public class VliegveldLogic
     {
         return !string.IsNullOrWhiteSpace(afkorting);
     }
+    public List<VliegveldModel> Zoek(string zoekterm)
+    {
+        List<VliegveldModel> gevonden = new List<VliegveldModel>();
+
+        if (string.IsNullOrWhiteSpace(zoekterm))
+        {
+            return gevonden;
+        }
+
+        string term = zoekterm.Trim().ToLower();
+
+        foreach (VliegveldModel vliegveld in _access.GetAll())
+        {
+            if (vliegveld.Naam.ToLower().Contains(term) || vliegveld.Stad.ToLower().Contains(term) || vliegveld.Afkorting.ToLower() == term)
+            {
+                gevonden.Add(vliegveld);
+            }
+        }
+
+        return gevonden;
+    }
 }
