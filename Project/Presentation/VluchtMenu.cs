@@ -99,8 +99,15 @@ static class VluchtMenu
             return;
         }
 
-        VluchtModel? currentFlight = vluchtLogic.GetAll()
-            .FirstOrDefault(f => f.VluchtNummer == vluchtNummer);
+        VluchtModel? currentFlight = null;
+        foreach (VluchtModel gevondenVlucht in vluchtLogic.GetAll())
+        {
+            if (gevondenVlucht.VluchtNummer == vluchtNummer)
+            {
+                currentFlight = gevondenVlucht;
+                break;
+            }
+        }
 
         if (currentFlight == null)
         {
@@ -153,15 +160,36 @@ static class VluchtMenu
         out VluchtModel flight)
     {
         bool isValid = true;
-        List<VliegtuigModel> gevondenVliegtuigen = vliegtuigLogic.GetAll()
-            .Where(vliegtuig => vliegtuig.Model.ToLower() == vliegtuigModelInput.Trim().ToLower())
-            .ToList();
-        List<VliegveldModel> gevondenVertrekVliegvelden = vliegveldLogic.GetAll()
-            .Where(vliegveld => vliegveld.Afkorting.ToLower() == vertrekAfkortingInput.Trim().ToLower())
-            .ToList();
-        List<VliegveldModel> gevondenAankomstVliegvelden = vliegveldLogic.GetAll()
-            .Where(vliegveld => vliegveld.Afkorting.ToLower() == aankomstAfkortingInput.Trim().ToLower())
-            .ToList();
+        List<VliegtuigModel> gevondenVliegtuigen = new List<VliegtuigModel>();
+        string gezochtVliegtuigModel = vliegtuigModelInput.Trim().ToLower();
+        foreach (VliegtuigModel vliegtuig in vliegtuigLogic.GetAll())
+        {
+            if (vliegtuig.Model.ToLower() == gezochtVliegtuigModel)
+            {
+                gevondenVliegtuigen.Add(vliegtuig);
+            }
+        }
+
+        List<VliegveldModel> gevondenVertrekVliegvelden = new List<VliegveldModel>();
+        string gezochtVertrekAfkorting = vertrekAfkortingInput.Trim().ToLower();
+        foreach (VliegveldModel vliegveld in vliegveldLogic.GetAll())
+        {
+            if (vliegveld.Afkorting.ToLower() == gezochtVertrekAfkorting)
+            {
+                gevondenVertrekVliegvelden.Add(vliegveld);
+            }
+        }
+
+        List<VliegveldModel> gevondenAankomstVliegvelden = new List<VliegveldModel>();
+        string gezochtAankomstAfkorting = aankomstAfkortingInput.Trim().ToLower();
+        foreach (VliegveldModel vliegveld in vliegveldLogic.GetAll())
+        {
+            if (vliegveld.Afkorting.ToLower() == gezochtAankomstAfkorting)
+            {
+                gevondenAankomstVliegvelden.Add(vliegveld);
+            }
+        }
+
         bool hasVluchtNummer = int.TryParse(vluchtNummerInput, out int vluchtNummer);
         int vliegtuigID = gevondenVliegtuigen.Count == 1 ? gevondenVliegtuigen[0].ID : 0;
         int vertrekLocatie = gevondenVertrekVliegvelden.Count == 1 ? gevondenVertrekVliegvelden[0].ID : 0;
