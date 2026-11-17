@@ -2,6 +2,7 @@ static class Menu
 {
     static public void Start()
     {
+        PrintTitel();
         bool menuRunning = true;
         while (menuRunning)
         {
@@ -50,6 +51,19 @@ static class Menu
                 Console.WriteLine("Ongeldige invoer.");
             }
         }
+    }
+
+    public static void PrintTitel()
+    {
+        Console.WriteLine(@$"
+        
+       ▀█▀▀▄        █    █                 ▀█                    ▄▀▄   ▀        ▀█   ▀                  
+        █▄▄▀ ▄▀▀▀▄ ▀█▀▀ ▀█▀▀ ▄▀▀▀▄ ▀█▄▀▄  ▄▄█  ▀▀▀▄  █▀▄▀▄      █   █ ▀█  ▀█▄▀▄  █  ▀█  █▄▀▀▄ ▄▀▀▀▄ ▄▀▀▀
+        █ ▀▄ █   █  █ ▄  █ ▄ █▀▀▀▀  █  ▀ █  █  ▄▀▀█  █ █ █      █▀▀▀█  █   █  ▀  █   █  █   █ █▀▀▀▀  ▀▀▄
+        ▀▀▀ ▀  ▀▀▀    ▀    ▀   ▀▀▀  ▀▀▀    ▀▀ ▀  ▀▀ ▀ ▀ ▀ ▀      ▀   ▀ ▀▀▀ ▀▀▀   ▀▀▀ ▀▀▀ ▀   ▀  ▀▀▀  ▀▀▀ 
+
+
+");
     }
 
     public static string MenuOptions(AccountModel? currentAccount)
