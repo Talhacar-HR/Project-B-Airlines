@@ -6,14 +6,17 @@ public class UserAccess
     private string Table = "Gebruikers";
     private static readonly string DatabaseLoc = Path.Combine(AppContext.BaseDirectory, "DataSources", "ApplicatieDB.db");
  
-    public void AddUser(UserModel user)
+    // Geeft true terug als de gebruiker is opgeslagen
+    public bool Add(UserModel user)
     {
         // Dapper opent en sluit de verbinding automatisch tijdens de query.
         // Gebruikersnaam is verplicht in de tabel, daarom gebruiken we het e-mailadres ook als gebruikersnaam
         string sql = $"INSERT INTO {Table} (Email, Gebruikersnaam, Wachtwoord) VALUES (@Email, @Email, @Password)";
         SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
-        connection.Execute(sql, user);
+        int rowsAffected = connection.Execute(sql, user);
+
+        return rowsAffected >= 1;
     }
  
     public UserModel? GetUserByEmail(string email)

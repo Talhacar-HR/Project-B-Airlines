@@ -35,8 +35,7 @@ public class UserLogic
  
         // Alles klopt, dus sla de nieuwe gebruiker op
         UserModel newUser = new UserModel(0, email, password);
-        _access.AddUser(newUser);
-        return true;
+        return _access.Add(newUser);
     }
  
     public bool Login(string email, string password)
