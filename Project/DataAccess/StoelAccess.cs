@@ -48,6 +48,16 @@ public class StoelAccess
         // het geeft 1 true of 0 false terug
         string sql = $@"SELECT EXISTS(SELECT 1 FROM {Table} 
         WHERE VliegtuigID = @VliegtuigID AND Stoelnummer = @StoelNummer)";
+
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
+
+        int count = connection.QueryFirst<int>
+        (sql, new { VliegtuigID = vliegtuigId, StoelNummer = stoelNummer });
+
+        if (count > 0)
+            return true;
+        else
+            return false;
     }
 
     public int GetTotalSeats(int VliegtuigID)
