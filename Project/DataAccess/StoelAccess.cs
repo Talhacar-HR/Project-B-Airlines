@@ -29,6 +29,11 @@ public class StoelAccess
         return seats[0];
     }
 
+    public List<StoelModel> GetByVliegtuigId(int vliegtuigId)
+    {
+        throw new NotImplementedException();
+    }
+
     public int GetTotalSeats(int VliegtuigID)
     {
         string sql = "SELECT COUNT(*) FROM Stoel WHERE vliegtuigID = @VliegtuigID";
