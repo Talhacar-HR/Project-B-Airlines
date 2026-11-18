@@ -34,6 +34,12 @@ public class StoelAccess
         string sql = @"SELECT ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse FROM {Table}
         WHERE VliegtuigID = @vliegtuigID ORDER BY ID";
 
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
+
+        List<StoelModel> seats = connection.Query<StoelModel>
+        (sql, new{VliegtuigID = vliegtuigId}).ToList();
+
+        return seats;
     }
 
     public int GetTotalSeats(int VliegtuigID)
