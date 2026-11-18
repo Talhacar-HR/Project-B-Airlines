@@ -31,7 +31,7 @@ public class StoelAccess
 
     public List<StoelModel> GetByVliegtuigId(int vliegtuigId)
     {
-        string sql = @"SELECT ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse FROM {Table}
+        string sql = $@"SELECT ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse FROM {Table}
         WHERE VliegtuigID = @vliegtuigID ORDER BY ID";
 
         SqliteConnection connection = new($"Data Source={DatabaseLoc}");
