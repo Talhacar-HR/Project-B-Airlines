@@ -31,7 +31,9 @@ public class StoelAccess
 
     public List<StoelModel> GetByVliegtuigId(int vliegtuigId)
     {
-        throw new NotImplementedException();
+        string sql = @"SELECT ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse FROM {Table}
+        WHERE VliegtuigID = @vliegtuigID ORDER BY ID";
+
     }
 
     public int GetTotalSeats(int VliegtuigID)
