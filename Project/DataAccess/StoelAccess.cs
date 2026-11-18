@@ -42,13 +42,17 @@ public class StoelAccess
         return seats;
     }
 
-    public bool Existsint (int vliegtuigId, string stoelNummer)
+    public bool Exists (int vliegtuigId, string stoelNummer)
     {
-        throw new NotImplementedException();
+        // met EXISTS checkt de query of gegevens in de db betsaan, het voorkomt dat niet dubelle stoelen bestaan.
+        // het geeft 1 true of 0 false terug
+        string sql = $@"SELECT EXISTS(SELECT 1 FROM {Table} 
+        WHERE VliegtuigID = @VliegtuigID AND Stoelnummer = @StoelNummer)";
     }
 
     public int GetTotalSeats(int VliegtuigID)
     {
+        
         string sql = "SELECT COUNT(*) FROM Stoel WHERE vliegtuigID = @VliegtuigID";
         SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
