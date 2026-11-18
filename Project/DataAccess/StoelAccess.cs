@@ -42,6 +42,11 @@ public class StoelAccess
         return seats;
     }
 
+    public bool Existsint (int vliegtuigId, string stoelNummer)
+    {
+        throw new NotImplementedException();
+    }
+
     public int GetTotalSeats(int VliegtuigID)
     {
         string sql = "SELECT COUNT(*) FROM Stoel WHERE vliegtuigID = @VliegtuigID";
