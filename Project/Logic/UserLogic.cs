@@ -5,35 +5,34 @@ public class UserLogic
     public static UserModel? CurrentUser { get; private set; }
  
     private UserAccess _access = new();
- 
+    private PassagierLogic _passagierLogic = new();
+
+    // Zelfde e-mailcontrole als bij de passagiersgegevens
+    public bool IsValidEmail(string email)
+    {
+        return email != null && _passagierLogic.IsValidEmail(email);
+    }
+
+    // Wachtwoord: minimaal 6 tekens en geen spaties
+    public bool IsValidWachtwoord(string password)
+    {
+        return password != null && password.Length >= 6 && !password.Contains(' ');
+    }
+
+    // Is dit e-mailadres nog vrij?
+    public bool IsEmailBeschikbaar(string email)
+    {
+        return _access.GetUserByEmail(email) == null;
+    }
+
     public bool Register(string email, string password)
     {
-        // E-mailadres mag niet leeg zijn
-        if (string.IsNullOrWhiteSpace(email))
+        // Ongeldige gegevens worden niet opgeslagen
+        if (!IsValidEmail(email) || !IsValidWachtwoord(password) || !IsEmailBeschikbaar(email))
         {
             return false;
         }
- 
-        // E-mailadres moet een @ en een punt bevatten
-        if (!email.Contains("@") || !email.Contains("."))
-        {
-            return false;
-        }
- 
-        // Wachtwoord mag niet leeg zijn
-        if (string.IsNullOrWhiteSpace(password))
-        {
-            return false;
-        }
- 
-        // E-mailadres mag nog niet bestaan
-        UserModel? existingUser = _access.GetUserByEmail(email);
-        if (existingUser != null)
-        {
-            return false;
-        }
- 
-        // Alles klopt, dus sla de nieuwe gebruiker op
+
         UserModel newUser = new UserModel(0, email, password);
         return _access.Add(newUser);
     }
