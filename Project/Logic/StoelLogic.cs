@@ -75,6 +75,22 @@ public class StoelLogic
     }
       public List<StoelIndelingModel> GetIndeling(string model)
     {
-        throw new NotImplementedException();
+        List<StoelIndelingModel> indeling = [];
+
+        if (model == "Airbus A330-200")
+        {
+            throw new NotImplementedException();
+        }
+        else if (model == "Boeing 737")
+        {
+            throw new NotImplementedException();
+        }
+        else if (model == "Boeing 787")
+        {
+            throw new NotImplementedException();
+        }
+
+        return indeling;
+
     }
 }
