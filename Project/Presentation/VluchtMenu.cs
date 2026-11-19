@@ -245,41 +245,7 @@ static class VluchtMenu
         flight = new VluchtModel(id, vliegtuigID, vertrekLocatie, aankomstLocatie, vertrekDatum, vertrekTijd, vertraging, vluchtNummer);
         return isValid;
     }
-    private static VluchtModel? ZoekVlucht()
-    {
-        Console.Write("Zoek vlucht op vluchtnummer: ");
-        string zoekterm = Console.ReadLine() ?? "";
 
-        List<VluchtModel> gevonden = vluchtLogic.Zoek(zoekterm);
-
-        if (gevonden.Count == 0)
-        {
-            Console.WriteLine($"Geen vlucht gevonden met \"{zoekterm}\". Controleer de zoekterm en probeer het opnieuw.");
-            return null;
-        }
-
-        if (gevonden.Count == 1)
-        {
-            return gevonden[0];
-        }
-
-        Console.WriteLine("Meerdere vluchten gevonden:");
-        for (int i = 0; i < gevonden.Count; i += 1)
-        {
-            Console.WriteLine($"{i + 1}. Vlucht {gevonden[i].VluchtNummer} op {gevonden[i].VertrekDatum} om {gevonden[i].VertrekTijd}");
-        }
-
-        Console.Write("Kies een nummer: ");
-        string keuze = Console.ReadLine() ?? "";
-
-        if (int.TryParse(keuze, out int nummer) && nummer >= 1 && nummer <= gevonden.Count)
-        {
-            return gevonden[nummer - 1];
-        }
-
-        Console.WriteLine("Ongeldige keuze.");
-        return null;
-    } 
     private static void ToonVlucht(VluchtModel vlucht)
     {
         VliegtuigModel? vliegtuig = vliegtuigLogic.GetById(vlucht.VliegtuigID);

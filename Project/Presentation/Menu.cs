@@ -24,11 +24,13 @@ static class Menu
                 if (currentAccount == null)
                     // Registeren
                     UserRegistration.Start();
-                else
+                else if (currentAccount.IsAdmin == 0)
                     // Vluchten Bekijken
                     FlightOverview.Start();
+                else
+                    Console.WriteLine("Ongeldige invoer.");
             }
-            else if (input == "3" && currentAccount != null)
+            else if (input == "3" && currentAccount != null && currentAccount.IsAdmin == 0)
             {
                 MijnReserveringen.Start();
             }
@@ -56,14 +58,10 @@ static class Menu
     public static void PrintTitel()
     {
         Console.WriteLine(@$"
-        
        ▀█▀▀▄        █    █                 ▀█                    ▄▀▄   ▀        ▀█   ▀                  
         █▄▄▀ ▄▀▀▀▄ ▀█▀▀ ▀█▀▀ ▄▀▀▀▄ ▀█▄▀▄  ▄▄█  ▀▀▀▄  █▀▄▀▄      █   █ ▀█  ▀█▄▀▄  █  ▀█  █▄▀▀▄ ▄▀▀▀▄ ▄▀▀▀
         █ ▀▄ █   █  █ ▄  █ ▄ █▀▀▀▀  █  ▀ █  █  ▄▀▀█  █ █ █      █▀▀▀█  █   █  ▀  █   █  █   █ █▀▀▀▀  ▀▀▄
-        ▀▀▀ ▀  ▀▀▀    ▀    ▀   ▀▀▀  ▀▀▀    ▀▀ ▀  ▀▀ ▀ ▀ ▀ ▀      ▀   ▀ ▀▀▀ ▀▀▀   ▀▀▀ ▀▀▀ ▀   ▀  ▀▀▀  ▀▀▀ 
-
-
-");
+        ▀  ▀  ▀▀▀    ▀    ▀   ▀▀▀  ▀▀▀    ▀▀ ▀  ▀▀ ▀ ▀ ▀ ▀      ▀   ▀ ▀▀▀ ▀▀▀   ▀▀▀ ▀▀▀ ▀   ▀  ▀▀▀  ▀▀▀");
     }
 
     public static string MenuOptions(AccountModel? currentAccount)
@@ -73,7 +71,7 @@ static class Menu
         if (currentAccount != null)
         {
             Console.WriteLine("1 - Uitloggen");
-            if (currentAccount.IsAdmin != 0)
+            if (currentAccount.IsAdmin == 0)
             {
                 Console.WriteLine("2 - Vluchten checken");
                 Console.WriteLine("3 - Mijn reserveringen");
