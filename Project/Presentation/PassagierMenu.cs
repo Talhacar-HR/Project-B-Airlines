@@ -50,11 +50,9 @@ static class VluchtBoeken
             passagierLogic.Add(passagier);
             Console.WriteLine("Passagier toegevoegd.");
 
-            // Stoel kiezen voor deze passagier
-            int stoelId = KiesStoel(vluchtId, gekozenStoelen);
+            int stoelId = Plattegrond.KiesStoel(vluchtId, gekozenStoelen);
             if (stoelId == 0)
             {
-                Console.WriteLine("Er zijn geen vrije stoelen meer op deze vlucht.");
                 meerPassagiers = false;
             }
             else
