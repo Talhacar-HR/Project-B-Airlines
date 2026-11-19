@@ -73,4 +73,8 @@ public class StoelLogic
 
         return gevonden;
     }
+      public List<StoelIndelingModel> GetIndeling(string model)
+    {
+        throw new NotImplementedException();
+    }
 }
