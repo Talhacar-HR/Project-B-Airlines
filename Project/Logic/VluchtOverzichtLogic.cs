@@ -3,7 +3,6 @@ public class FlightLogic
     private VluchtAccess _access = new();
     private StoelLogic _stoelLogic = new(); // geeft totale aantal stoelen
     private ReserveringLogic _reserveringLogic = new(); // geeft totaal bezette stoelen
-
     public FlightModel? SelectedFlight {get; private set;} // private zodat alleen flightlogic vlucht mag wijzigen
 
     public List<FlightModel> GetAvailableFlights()

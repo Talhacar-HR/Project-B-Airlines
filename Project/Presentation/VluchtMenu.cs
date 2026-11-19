@@ -35,7 +35,6 @@ static class VluchtMenu
             }
         }
     }
-
     
     public static string MenuOptions()
     {
