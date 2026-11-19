@@ -73,6 +73,10 @@ public class StoelAccess
 
     public void Add(StoelModel seat)
     {
+        // als de data bestaat, dan return je zodat de functie stopt. Bestaat de data niet, dan ga je adden.
+        if (Exists(seat.VliegtuigID, seat.StoelNummer))
+            return;
+
         string sql = $"INSERT INTO {Table} (VliegtuigID, StoelNummer, RijNummer, StoelKlasse) VALUES (@VliegtuigID, @StoelNummer, @RijNummer, @StoelKlasse)";
         SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
