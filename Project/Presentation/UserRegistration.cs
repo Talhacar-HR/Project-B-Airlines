@@ -2,10 +2,10 @@ static class UserRegistration
 {
     static private UserLogic userLogic = new UserLogic();
  
- 
-    public static void Start()
+    public static string Start()
     {
-        Console.WriteLine("");
+        Menu.PrintTitel();
+
         Console.WriteLine("Registreren");
         Console.WriteLine("Voer je e-mailadres in:");
         string email = Console.ReadLine() ?? "";
@@ -16,11 +16,11 @@ static class UserRegistration
  
         if (success)
         {
-            Console.WriteLine("Je account is aangemaakt. Je kunt nu inloggen.");
+            return "Je account is aangemaakt. Je kunt nu inloggen.";
         }
         else
         {
-            Console.WriteLine("Registreren is mislukt. Het e-mailadres is ongeldig of bestaat al, of het wachtwoord is leeg.");
+            return "Registreren is mislukt. Het e-mailadres is ongeldig of bestaat al, of het wachtwoord is leeg.";
         }
     }
 }

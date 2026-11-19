@@ -7,9 +7,26 @@ static class FlightOverview
         Console.WriteLine(flight.FlightNumber + " | " + flight.Origin + " | " + flight.Destination + " | " + flight.DepartureDate + " | " + flight.DepartureTime);
     }
 
-    public static void Start()
+    public static string Start()
     {
-        // temp test
+        /*
+        bool x = true;
+        while (x = true)
+        {
+            Console.WriteLine("Vertrekdatum (yyyy-MM-dd): ");
+            string departureDate = Console.ReadLine() ?? "";
+
+            Console.WriteLine("Vertrekplaats: ");
+            string origin = Console.ReadLine() ?? "";
+
+            Console.WriteLine("Bestemming: ");
+            string destination = Console.ReadLine() ?? "";
+
+            x = false;
+        }
+        */
+
+        /* // temp test
         List<FlightModel> availableFlights = flightLogic.GetAvailableFlights();
         Console.WriteLine("Beschikbare vluchten:");
         Console.WriteLine("Vluchtnummer | Vertrek | Bestemming | Datum | Vertrektijd");
@@ -18,7 +35,9 @@ static class FlightOverview
         {
             ShowFlight(flight);
         }
-        // temp test
+        */ // temp test
+
+        Menu.PrintTitel();
 
         Console.WriteLine("Vertrekdatum (yyyy-MM-dd): ");
         var departureDate = Console.ReadLine(); // var omdat het ook null kan terugegeven als ik string gebruik.
@@ -40,11 +59,11 @@ static class FlightOverview
         Console.WriteLine();
         if (flights.Count == 0)
         {
-            Console.WriteLine("Er zijn geen beschikbare vluchten");
+            Console.WriteLine("Er zijn geen beschikbare vluchten.");
         }
         else
         {
-            Console.WriteLine("Hoe wil je sorteren?");
+            Console.WriteLine("Hoe wilt u sorteren?");
             Console.WriteLine("1. Prijs (laag naar hoog)");
             Console.WriteLine("2. Vertrektijd (vroeg naar laat)");
 
