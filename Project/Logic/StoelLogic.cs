@@ -79,7 +79,7 @@ public class StoelLogic
 
         if (model == "Airbus A330-200")
         {
-            throw new NotImplementedException();
+            indeling = GetAirbusIndeling();
         }
         else if (model == "Boeing 737")
         {
@@ -91,7 +91,12 @@ public class StoelLogic
         }
 
         return indeling;
+    }
 
+    private List<StoelIndelingModel> GetAirbusIndeling()
+    {
+        List<StoelIndelingModel> AirBusIndeling = [];
+        return AirBusIndeling;
     }
 
     private void VoegRijenToe(List<StoelIndelingModel> indeling,int vanafRij, 
