@@ -93,4 +93,10 @@ public class StoelLogic
         return indeling;
 
     }
+
+    private void VoegRijenToe(List<StoelIndelingModel> indeling,int vanafRij, 
+    int totRij, string letters, int klasse)
+    {
+        throw new NotImplementedException();
+    }
 }
