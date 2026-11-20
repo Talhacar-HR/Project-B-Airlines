@@ -97,6 +97,10 @@ public class StoelLogic
     private void VoegRijenToe(List<StoelIndelingModel> indeling,int vanafRij, 
     int totRij, string letters, int klasse)
     {
-        throw new NotImplementedException();
+        for (int rij = vanafRij; rij <= totRij; rij++)
+        {
+            StoelIndelingModel stoelIndeling = new(rij, letters, klasse);
+            indeling.Add(stoelIndeling);
+        }
     }
 }
