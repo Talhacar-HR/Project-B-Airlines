@@ -117,7 +117,14 @@ public class StoelLogic
 
     private List<StoelIndelingModel> GetBoeing737Indeling()
     {
-        throw new NotImplementedException();
+        List<StoelIndelingModel> boeing737Indeling = [];
+
+        VoegRijenToe(boeing737Indeling, 1, 1, "ABC", 1); // blauw
+        VoegRijenToe(boeing737Indeling, 2, 15, "ABCDEF", 1); // blauw
+        VoegRijenToe(boeing737Indeling, 16, 17, "ABCDEF", 1); // oranje
+        VoegRijenToe(boeing737Indeling, 18, 33, "ABCDEF", 1); // blauw
+
+        return boeing737Indeling;
     }
 
 
