@@ -95,7 +95,23 @@ public class StoelLogic
 
     public List<StoelModel> MaakStoelen(int vliegtuigID, string model)
     {
-        throw new NotImplementedException();
+        List<StoelModel> stoelen = []; // komen aangemaakte stoelen in
+
+        List<StoelIndelingModel> indeling = GetIndeling(model); // haalt vaste stoelindeling op
+
+        foreach (StoelIndelingModel rij in indeling) // gaat langs iedere rij
+        {
+            foreach (char letter in rij.StoelLetters) // langs iedere stoeletter van de rij
+            {
+                string rijNummer = rij.RijNummer.ToString();
+                string stoelNummer = rijNummer + letter; // stoel wordt 16A bijv
+
+                StoelModel stoel = new StoelModel(0, vliegtuigID, 
+                stoelNummer,rijNummer,rij.StoelKlasse); // maakt juiste stoel aan met data
+                stoelen.Add(stoel);
+            }
+        }
+    return stoelen;
     }
 
     private List<StoelIndelingModel> GetAirbusIndeling()
