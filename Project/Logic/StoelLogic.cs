@@ -97,9 +97,21 @@ public class StoelLogic
     {
         List<StoelIndelingModel> airBusIndeling = [];
 
-       VoegRijenToe(airBusIndeling, 1, 2, "ACDGHK", 2); 
-       // lijst waarin de rijen worden toegveogd, begin rij, stop bij rij, 
+        // lijst waarin de rijen worden toegveogd, begin rij, stop bij rij, 
        // stoelletters bij rij, stoelklasse(club class)
+       VoegRijenToe(airBusIndeling, 1, 2, "ACDGHK", 2); 
+       VoegRijenToe(airBusIndeling, 4, 4, "ACDGHK", 1); // extra been ruimte
+       VoegRijenToe(airBusIndeling, 5, 9, "ACDGHK", 1); // zitplaatsen voorin
+       VoegRijenToe(airBusIndeling, 10, 10, "DFG", 1); // standaard
+       VoegRijenToe(airBusIndeling, 14, 14, "ABCDFGHJK", 1); // extra been ruimte
+       VoegRijenToe(airBusIndeling, 15, 33, "ABCDFGHJK", 1); // standaard
+       VoegRijenToe(airBusIndeling, 36, 36, "ABCDFGHJK", 1); // extra been ruimte
+       VoegRijenToe(airBusIndeling, 37, 43, "ACDFGHJK", 1); // standaard
+       VoegRijenToe(airBusIndeling, 44, 44, "ACDFGHK", 1); // standaard
+       VoegRijenToe(airBusIndeling, 45, 50, "ACDFGHK", 1); // twee stoelen naast elkaar (AC en HK), DFG standaard
+
+
+
 
        return airBusIndeling;
     }
