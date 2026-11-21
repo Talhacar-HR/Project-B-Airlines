@@ -114,6 +114,11 @@ public class StoelLogic
     return stoelen;
     }
 
+    public void SlaStoelenOp(int vliegtuigID, string model)
+    {
+        throw new NotImplementedException();
+    }
+    
     private List<StoelIndelingModel> GetAirbusIndeling()
     {
         List<StoelIndelingModel> airBusIndeling = [];
