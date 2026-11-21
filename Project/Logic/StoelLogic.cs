@@ -129,7 +129,19 @@ public class StoelLogic
 
      private List<StoelIndelingModel> GetBoeing787Indeling()
     {
-         throw new NotImplementedException();
+        List<StoelIndelingModel> boeing787Indeling = [];
+
+        VoegRijenToe(boeing787Indeling, 1, 6, "ABDEKL", 2); // oranje, voorste cabine
+
+        VoegRijenToe(boeing787Indeling, 16, 22, "ABCDEFJKL", 1); // blauw
+        VoegRijenToe(boeing787Indeling, 23, 23, "ABCDEFJKL", 1); // blauw in het midden, verder wit
+        VoegRijenToe(boeing787Indeling, 24, 25, "ABCDEFJKL", 1); // wit, standaard
+
+        VoegRijenToe(boeing787Indeling, 27, 27, "ABCDEFJKL", 1); // gedeeltelijk blauw
+        VoegRijenToe(boeing787Indeling, 28, 36, "ABCDEFJKL", 1); // wit, standaard
+        VoegRijenToe(boeing787Indeling, 37, 38, "DEF", 1); // wit, alleen middenstoelen
+
+        return boeing787Indeling;
     }
 
 
