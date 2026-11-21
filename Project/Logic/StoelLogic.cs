@@ -87,7 +87,7 @@ public class StoelLogic
         }
         else if (model == "Boeing 787")
         {
-            throw new NotImplementedException();
+            indeling = GetBoeing787Indeling();
         }
 
         return indeling;
@@ -125,6 +125,11 @@ public class StoelLogic
         VoegRijenToe(boeing737Indeling, 18, 33, "ABCDEF", 1); // blauw
 
         return boeing737Indeling;
+    }
+
+     private List<StoelIndelingModel> GetBoeing787Indeling()
+    {
+         throw new NotImplementedException();
     }
 
 
