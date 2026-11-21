@@ -95,8 +95,13 @@ public class StoelLogic
 
     private List<StoelIndelingModel> GetAirbusIndeling()
     {
-        List<StoelIndelingModel> AirBusIndeling = [];
-        return AirBusIndeling;
+        List<StoelIndelingModel> airBusIndeling = [];
+
+       VoegRijenToe(airBusIndeling, 1, 2, "ACDGHK", 2); 
+       // lijst waarin de rijen worden toegveogd, begin rij, stop bij rij, 
+       // stoelletters bij rij, stoelklasse(club class)
+
+       return airBusIndeling;
     }
 
     private void VoegRijenToe(List<StoelIndelingModel> indeling,int vanafRij, 
