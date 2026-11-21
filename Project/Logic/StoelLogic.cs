@@ -93,6 +93,11 @@ public class StoelLogic
         return indeling;
     }
 
+    public List<StoelModel> MaakStoelen(int vliegtuigID, string model)
+    {
+        throw new NotImplementedException();
+    }
+
     private List<StoelIndelingModel> GetAirbusIndeling()
     {
         List<StoelIndelingModel> airBusIndeling = [];
