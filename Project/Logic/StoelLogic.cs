@@ -116,9 +116,15 @@ public class StoelLogic
 
     public void SlaStoelenOp(int vliegtuigID, string model)
     {
-        throw new NotImplementedException();
+       // Maakt alle stoelen aan volgens de vaste indeling
+        List<StoelModel> stoelen = MaakStoelen(vliegtuigID, model);
+
+        foreach (StoelModel stoel in stoelen)  // Gaat langs iedere aangemaakte stoel
+        {
+            _access.Add(stoel);// Slaat stoel op in de database
+        }
     }
-    
+
     private List<StoelIndelingModel> GetAirbusIndeling()
     {
         List<StoelIndelingModel> airBusIndeling = [];
