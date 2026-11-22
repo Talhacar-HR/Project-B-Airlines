@@ -62,8 +62,33 @@ public class FlightLogic
         return GetDepartureMoment(flight2).CompareTo(GetDepartureMoment(flight1));
     }
 
+    // Zoekdatum in Nederlands formaat (dd-MM-yyyy), niet in het verleden
+    public bool IsValidZoekDatum(string datum)
+    {
+        if (!DateOnly.TryParseExact(datum, "dd-MM-yyyy", out DateOnly zoekDatum))
+            return false;
+
+        return zoekDatum >= DateOnly.FromDateTime(DateTime.Today);
+    }
+
+    // Vertrekplaats of bestemming mag niet leeg zijn
+    public bool IsValidLocatie(string locatie)
+    {
+        return !string.IsNullOrWhiteSpace(locatie);
+    }
+
+    // Zet een Nederlandse datum (dd-MM-yyyy) om naar het formaat van de database (yyyy-MM-dd)
+    private string NaarDatabaseDatum(string datum)
+    {
+        if (DateOnly.TryParseExact(datum, "dd-MM-yyyy", out DateOnly nlDatum))
+            return nlDatum.ToString("yyyy-MM-dd");
+
+        return datum;
+    }
+
     public List<FlightModel> FlightFilter(string departureDate, string origin, string destination)
     {
+        departureDate = NaarDatabaseDatum(departureDate);
         List<FlightModel> availableFlights = GetAvailableFlights();
         List<FlightModel> filteredFlights = [];
 

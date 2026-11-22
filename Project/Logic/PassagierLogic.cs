@@ -4,9 +4,30 @@ public class PassagierLogic
 {
     private PassagierAccess _access = new();
 
-    public void Add(PassagierModel passagier)
+    // Slaat de passagier alleen op als alle gegevens geldig zijn.
+    // Geeft true terug als de passagier is opgeslagen.
+    public bool Add(PassagierModel passagier)
     {
+        if (!IsValidPassagier(passagier))
+            return false;
+
         passagier.ID = _access.Add(passagier);
+        return passagier.ID > 0;
+    }
+
+    // Zijn alle verplichte gegevens van de passagier geldig?
+    public bool IsValidPassagier(PassagierModel passagier)
+    {
+        if (passagier == null || passagier.Email == null || passagier.PaspoortNummer == null || passagier.Telefoonnummer == null)
+            return false;
+
+        return IsValidNaam(passagier.Naam) &&
+            IsValidAchternaam(passagier.Achternaam) &&
+            IsValidEmail(passagier.Email) &&
+            IsValidPaspoortNummer(passagier.PaspoortNummer) &&
+            IsValidGeboorteDatum(passagier.GeboorteDatum) &&
+            IsValidTelefoonnummer(passagier.Telefoonnummer) &&
+            IsValidPaspoortVerloopDatum(passagier.PaspoortVerloopDatum);
     }
 
     public bool IsValidNaam(string naam)

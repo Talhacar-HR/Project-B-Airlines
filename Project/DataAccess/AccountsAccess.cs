@@ -7,12 +7,15 @@ public class AccountsAccess
     private string Table = "Gebruikers";
     private static readonly string DatabaseLoc = Path.Combine(AppContext.BaseDirectory, "DataSources", "ApplicatieDB.db");
 
-    public void Write(AccountModel account)
+    // Geeft true terug als het account is opgeslagen
+    public bool Add(AccountModel account)
     {
         string sql = $"INSERT INTO {Table} (Email, Wachtwoord, Gebruikersnaam) VALUES (@EmailAddress, @Password, @FullName)";
         SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
-        connection.Execute(sql, account);
+        int rowsAffected = connection.Execute(sql, account);
+
+        return rowsAffected >= 1;
     }
 
     public AccountModel? GetByEmail(string email)
