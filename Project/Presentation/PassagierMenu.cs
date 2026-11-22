@@ -121,29 +121,38 @@ static class VluchtBoeken
         while (true)
         {
             Console.WriteLine("");
-            Console.WriteLine("Stoelen:");
-            Console.WriteLine("ID | Rij | Stoel | Status");
-            Console.WriteLine("------------------------");
-
+            Console.WriteLine("=== Stoelplattegrond ===");
+            Console.WriteLine("X = bezet, zonder X = vrij");
+            string vorigeRij = "";
             foreach (StoelModel stoel in stoelen)
             {
-                string status = "vrij";
-                if (IsBezet(vluchtId, stoel.ID, gekozenStoelen))
+                // Begint een nieuwe regel wanneer het rijnummer verandert
+                if (stoel.RijNummer != vorigeRij)
                 {
-                    status = "BEZET";
+                    Console.WriteLine();
+                    Console.Write($"Rij {stoel.RijNummer}: ");
+                    vorigeRij = stoel.RijNummer;
                 }
 
-                Console.WriteLine(stoel.ID + " | " + stoel.RijNummer + " | " + stoel.StoelNummer + " | " + status);
+                // Laat zien of de stoel bezet is
+                if (IsBezet(vluchtId, stoel.ID, gekozenStoelen) == true)
+                {
+                    Console.Write($"[{stoel.StoelNummer}:X] ");
+                }
+                else
+                {
+                    Console.Write($"[{stoel.StoelNummer}] ");
+                }
             }
-
-            Console.Write("Kies het ID van een stoel: ");
+            Console.WriteLine();
+            Console.Write("Kies een stoelnummer (bijvoorbeeld 15A): ");
             string invoer = Console.ReadLine() ?? "";
 
             // Zoek de stoel die de gebruiker heeft gekozen
             StoelModel? gekozenStoel = null;
             foreach (StoelModel stoel in stoelen)
             {
-                if (stoel.ID.ToString() == invoer.Trim())
+                if (stoel.StoelNummer.ToLower() == invoer.Trim().ToLower())
                 {
                     gekozenStoel = stoel;
                 }

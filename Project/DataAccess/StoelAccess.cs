@@ -29,8 +29,40 @@ public class StoelAccess
         return seats[0];
     }
 
+    public List<StoelModel> GetByVliegtuigId(int vliegtuigId)
+    {
+        string sql = $@"SELECT ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse FROM {Table}
+        WHERE VliegtuigID = @vliegtuigID ORDER BY ID";
+
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
+
+        List<StoelModel> seats = connection.Query<StoelModel>
+        (sql, new{VliegtuigID = vliegtuigId}).ToList();
+
+        return seats;
+    }
+
+    public bool Exists (int vliegtuigId, string stoelNummer)
+    {
+        // met EXISTS checkt de query of gegevens in de db betsaan, het voorkomt dat niet dubelle stoelen bestaan.
+        // het geeft 1 true of 0 false terug
+        string sql = $@"SELECT EXISTS(SELECT 1 FROM {Table} 
+        WHERE VliegtuigID = @VliegtuigID AND Stoelnummer = @StoelNummer)";
+
+        SqliteConnection connection = new($"Data Source={DatabaseLoc}");
+
+        int count = connection.QueryFirst<int>
+        (sql, new { VliegtuigID = vliegtuigId, StoelNummer = stoelNummer });
+
+        if (count > 0)
+            return true;
+        else
+            return false;
+    }
+
     public int GetTotalSeats(int VliegtuigID)
     {
+        
         string sql = "SELECT COUNT(*) FROM Stoel WHERE vliegtuigID = @VliegtuigID";
         SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
@@ -41,6 +73,10 @@ public class StoelAccess
 
     public void Add(StoelModel seat)
     {
+        // als de data bestaat, dan return je zodat de functie stopt. Bestaat de data niet, dan ga je adden.
+        if (Exists(seat.VliegtuigID, seat.StoelNummer))
+            return;
+
         string sql = $"INSERT INTO {Table} (VliegtuigID, StoelNummer, RijNummer, StoelKlasse) VALUES (@VliegtuigID, @StoelNummer, @RijNummer, @StoelKlasse)";
         SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
