@@ -1,6 +1,6 @@
 public class FlightLogic
 {
-    private VluchtAccess _access = new();
+    private VluchtOverzichtAccess _access = new();
     private StoelLogic _stoelLogic = new(); // geeft totale aantal stoelen
     private ReserveringLogic _reserveringLogic = new(); // geeft totaal bezette stoelen
     public FlightModel? SelectedFlight {get; private set;} // private zodat alleen flightlogic vlucht mag wijzigen
@@ -80,7 +80,7 @@ public class FlightLogic
     public bool SelectFlight(int id)
     {
         SelectedFlight = null; // wist de vorige opgeslagen data, zodat je opnieuw kan selecteren.
-        FlightModel? flight = _access.getById(id);
+        FlightModel? flight = _access.GetById(id);
         if (flight == null)
             return false;
         if (GetDepartureMoment(flight) <= DateTime.Now) // checkt of de vlucht is vertrokken.
@@ -90,6 +90,21 @@ public class FlightLogic
 
         SelectedFlight = flight; // als het niet is vertokken sla je de vlucht op.
         return true;
+    }
+
+    public List<string> GetAllCountries()
+    {
+        return _access.GetAllCountries();
+    }
+
+    public List<string> GetCitiesByCountry(string country)
+    {
+        if (string.IsNullOrWhiteSpace(country))
+        {
+            return [];
+        }
+
+        return _access.GetCitiesByCountry(country);
     }
 
     public List<FlightModel> SortFlights(List<FlightModel> flights, string sortby)
