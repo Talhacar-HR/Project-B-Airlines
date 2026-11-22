@@ -1,4 +1,4 @@
-public class PlattegrondLogic
+public class StoelkaartLogic
 {
     private StoelAccess _stoelAccess = new();
     private ReserveringAccess _reserveringAccess = new();
@@ -91,7 +91,6 @@ public class PlattegrondLogic
         return aantalToegevoegd;
     }
 
-    // Geeft het vliegtuig dat bij een vlucht hoort, of null
     public VliegtuigModel? GetVliegtuigVoorVlucht(int vluchtId)
     {
         VluchtModel? vlucht = _vluchtLogic.GetById(vluchtId);
@@ -113,7 +112,6 @@ public class PlattegrondLogic
         return _reserveringAccess.GetBezetteStoelIds(vluchtId);
     }
 
-    // Zoekt een stoel in een lijst op stoelnummer, bijvoorbeeld "12C". Hoofdletters maken niet uit.
     public StoelModel? ZoekStoel(List<StoelModel> stoelen, string stoelNummer)
     {
         string gezocht = stoelNummer.Trim().ToUpper();
@@ -129,7 +127,6 @@ public class PlattegrondLogic
         return null;
     }
 
-    // Geeft de status van een stoel: "bezet", "gekozen" of "vrij"
     public string GetStatus(int stoelId, List<int> bezetteStoelIds, List<int> gekozenStoelIds)
     {
         if (bezetteStoelIds.Contains(stoelId))
@@ -143,5 +140,79 @@ public class PlattegrondLogic
         }
 
         return "vrij";
+    }
+
+    public List<PlattegrondRijModel> GetPlattegrond(int vluchtId)
+    {
+        List<PlattegrondRijModel> plattegrond = new List<PlattegrondRijModel>();
+
+        VliegtuigModel? vliegtuig = GetVliegtuigVoorVlucht(vluchtId);
+        if (vliegtuig == null)
+        {
+            return plattegrond;
+        }
+
+        List<StoelModel> stoelen = GetStoelenVoorVlucht(vluchtId);
+
+        foreach (IndelingStoelenModel sectie in GetIndeling(vliegtuig.Model))
+        {
+            for (int rij = sectie.VanRij; rij <= sectie.TotRij; rij += 1)
+            {
+                PlattegrondRijModel plattegrondRij = new PlattegrondRijModel(rij, sectie.Letters);
+
+                foreach (char letter in sectie.Letters)
+                {
+                    if (letter == ' ')
+                    {
+                        continue;
+                    }
+
+                    StoelModel? stoel = ZoekStoel(stoelen, rij.ToString() + letter);
+                    if (stoel == null)
+                    {
+                        continue;
+                    }
+
+                    string status = "Beschikbaar";
+                    if (_reserveringLogic.IsStoelBezet(vluchtId, stoel.ID))
+                    {
+                        status = "Bezet";
+                    }
+
+                    plattegrondRij.Stoelen.Add(new PlattegrondStoelModel(stoel, status));
+                }
+
+                if (plattegrondRij.Stoelen.Count > 0)
+                {
+                    plattegrond.Add(plattegrondRij);
+                }
+            }
+        }
+
+        return plattegrond;
+    }
+
+    public bool KanStoelKiezen(int vluchtId, int stoelId)
+    {
+        bool stoelZitInVliegtuig = false;
+        foreach (StoelModel stoel in GetStoelenVoorVlucht(vluchtId))
+        {
+            if (stoel.ID == stoelId)
+            {
+                stoelZitInVliegtuig = true;
+            }
+        }
+
+        if (!stoelZitInVliegtuig)
+        {
+            return false;
+        }
+
+        if (_reserveringLogic.IsStoelBezet(vluchtId, stoelId))
+        {
+            return false;
+        }
+
+        return true;
     }
 }
