@@ -73,12 +73,10 @@ static class Menu
         if (currentAccount != null)
         {
             Console.WriteLine("1 - Uitloggen");
-            if (currentAccount.IsAdmin != 0)
-            {
-                Console.WriteLine("2 - Vluchten checken");
-                Console.WriteLine("3 - Mijn reserveringen");
-            }
+            Console.WriteLine("2 - Vluchten checken");
+            Console.WriteLine("3 - Mijn reserveringen");
             Console.WriteLine("8 - Check gebruiker");
+            
             if (currentAccount.IsAdmin != 0)
             {
                 Console.WriteLine("9 - Gegevens beheren");

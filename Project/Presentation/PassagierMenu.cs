@@ -120,7 +120,6 @@ static class VluchtBoeken
 
         return keuze.Trim().ToLower() == "j";
     }
-
     private static bool CheckPassagier(PassagierModel passagier)
     {
         bool isValid = true;
