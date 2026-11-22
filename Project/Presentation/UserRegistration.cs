@@ -1,26 +1,34 @@
 static class UserRegistration
 {
     static private UserLogic userLogic = new UserLogic();
- 
- 
+
     public static void Start()
     {
         Console.WriteLine("");
         Console.WriteLine("Registreren");
-        Console.WriteLine("Voer je e-mailadres in:");
-        string email = Console.ReadLine() ?? "";
-        Console.WriteLine("Voer je wachtwoord in:");
-        string password = Console.ReadLine() ?? "";
- 
-        bool success = userLogic.Register(email, password);
- 
-        if (success)
-        {
+
+        string email = VraagEmail();
+        string password = Invoer.VraagTotGeldig("Wachtwoord: ", userLogic.IsValidWachtwoord,
+            "Het wachtwoord moet minimaal 6 tekens zijn, zonder spaties.");
+
+        if (userLogic.Register(email, password))
             Console.WriteLine("Je account is aangemaakt. Je kunt nu inloggen.");
-        }
         else
+            Console.WriteLine("Registreren is mislukt. Probeer het later opnieuw.");
+    }
+
+    // Vraagt een geldig e-mailadres dat nog niet in gebruik is
+    private static string VraagEmail()
+    {
+        while (true)
         {
-            Console.WriteLine("Registreren is mislukt. Het e-mailadres is ongeldig of bestaat al, of het wachtwoord is leeg.");
+            string email = Invoer.VraagTotGeldig("E-mailadres: ", userLogic.IsValidEmail,
+                "Ongeldig e-mailadres, bijvoorbeeld naam@voorbeeld.nl.");
+
+            if (userLogic.IsEmailBeschikbaar(email))
+                return email;
+
+            Console.WriteLine("Dit e-mailadres is al in gebruik.");
         }
     }
 }
