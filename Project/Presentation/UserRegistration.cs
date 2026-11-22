@@ -12,9 +12,7 @@ static class UserRegistration
         Console.WriteLine("Voer je wachtwoord in:");
         string password = Console.ReadLine() ?? "";
  
-        bool success = userLogic.Register(email, password);
- 
-        if (success)
+        if (userLogic.Register(email, password))
         {
             return "Je account is aangemaakt. Je kunt nu inloggen.";
         }

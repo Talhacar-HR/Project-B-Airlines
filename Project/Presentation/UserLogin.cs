@@ -11,8 +11,9 @@ static class UserLogin
         string email = Console.ReadLine() ?? "";
         Console.WriteLine("Voer uw wachtwoord in.");
         string password = Console.ReadLine() ?? "";
-        Console.WriteLine("");
+        
         AccountModel acc = accountsLogic.CheckLogin(email, password);
+        
         if (acc != null)
         {
             return $"Welkom terug, {acc.FullName}.\n" + $"Uw e-mailadres is {acc.EmailAddress}.";
