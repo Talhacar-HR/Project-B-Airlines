@@ -73,7 +73,7 @@ public class StoelLogic
 
         return gevonden;
     }
-      public List<StoelIndelingModel> GetIndeling(string model)
+    public List<StoelIndelingModel> GetIndeling(string model)
     {
         List<StoelIndelingModel> indeling = [];
 
@@ -133,16 +133,16 @@ public class StoelLogic
        // stoelletters bij rij, stoelklasse(club class)
        VoegRijenToe(airBusIndeling, 1, 2, "ACDGHK", 2); // club class
        VoegRijenToe(airBusIndeling, 4, 4, "ABCHJK", 1); // extra been ruimte
-       VoegRijenToe(airBusIndeling, 5, 5, "ABCDFGHJK", 1); // ectra beenruimte
+       VoegRijenToe(airBusIndeling, 5, 5, "ABCDFGHJK", 1); // extra beenruimte
        VoegRijenToe(airBusIndeling, 6, 7, "ABCDFGHJK", 1); //voorin
        VoegRijenToe(airBusIndeling, 8, 9, "DFG", 1); // voorin
        VoegRijenToe(airBusIndeling, 10, 10, "DFG", 1); // standaard
        VoegRijenToe(airBusIndeling, 14, 14, "ABCDFGHJK", 1); //extra beenruimte
        VoegRijenToe(airBusIndeling, 15, 33, "ABCDFGHJK", 1); // standaard
        VoegRijenToe(airBusIndeling, 36, 36, "ABCDFGHJK", 1); // extra beenruimte
-       VoegRijenToe(airBusIndeling, 37, 44, "ABCDFGHJK", 1); // standaard
-       VoegRijenToe(airBusIndeling, 45, 50, "ACDFGHK", 1); // AC en HK blauw, DFG standaard
-
+       VoegRijenToe(airBusIndeling, 37, 42, "ACDFGHK", 1); // standaard
+       VoegRijenToe(airBusIndeling, 43, 44, "ABCDFGHJK", 1); // standaard
+       VoegRijenToe(airBusIndeling, 45, 50, "ACDFGHK", 1); // twee naast elkaar
 
        return airBusIndeling;
     }
@@ -159,7 +159,7 @@ public class StoelLogic
         return boeing737Indeling;
     }
 
-     private List<StoelIndelingModel> GetBoeing787Indeling()
+    private List<StoelIndelingModel> GetBoeing787Indeling()
     {
         List<StoelIndelingModel> boeing787Indeling = [];
 
