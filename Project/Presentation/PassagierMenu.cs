@@ -15,39 +15,13 @@ static class VluchtBoeken
         bool meerPassagiers = true;
         while (meerPassagiers)
         {
-            Console.WriteLine("Vul uw passagiersgegevens in:");
+            PassagierModel passagier = VraagPassagier(currentAccount?.Id);
 
-            Console.Write("Voornaam: ");
-            string naam = Console.ReadLine() ?? "";
-            Console.Write("Achternaam: ");
-            string achternaam = Console.ReadLine() ?? "";
-            Console.Write("E-mailadres: ");
-            string email = Console.ReadLine() ?? "";
-            Console.Write("Paspoortnummer: ");
-            string paspoortNummer = Console.ReadLine() ?? "";
-            Console.Write("Geboortedatum: ");
-            string geboorteDatum = Console.ReadLine() ?? "";
-            Console.Write("Telefoonnummer: ");
-            string telefoonnummer = Console.ReadLine() ?? "";
-            Console.Write("Paspoortverloopdatum: ");
-            string paspoortVerloopDatum = Console.ReadLine() ?? "";
-
-            PassagierModel passagier = new()
+            if (!passagierLogic.Add(passagier))
             {
-                GebruikerID = currentAccount?.Id,
-                Naam = naam,
-                Achternaam = achternaam,
-                Email = email,
-                PaspoortNummer = paspoortNummer,
-                GeboorteDatum = geboorteDatum,
-                Telefoonnummer = telefoonnummer,
-                PaspoortVerloopDatum = paspoortVerloopDatum
-            };
-
-            if (!CheckPassagier(passagier))
+                Console.WriteLine("De passagier kon niet worden opgeslagen. Probeer het opnieuw.");
                 continue;
-
-            passagierLogic.Add(passagier);
+            }
             Console.WriteLine("Passagier toegevoegd.");
 
             // Stoel kiezen voor deze passagier
@@ -211,52 +185,22 @@ static class VluchtBoeken
     }
 
 
-    private static bool CheckPassagier(PassagierModel passagier)
+    // Vraagt alle passagiersgegevens. Elk veld wordt meteen gecontroleerd
+    // en opnieuw gevraagd tot het goed is.
+    private static PassagierModel VraagPassagier(int? gebruikerId)
     {
-        bool isValid = true;
+        Console.WriteLine("Vul uw passagiersgegevens in:");
 
-        if (!passagierLogic.IsValidNaam(passagier.Naam))
+        return new PassagierModel
         {
-            Console.WriteLine("Voornaam bevat ongeldige tekens.");
-            isValid = false;
-        }
-
-        if (!passagierLogic.IsValidAchternaam(passagier.Achternaam))
-        {
-            Console.WriteLine("Achternaam bevat ongeldige tekens.");
-            isValid = false;
-        }
-
-        if (!passagierLogic.IsValidEmail(passagier.Email))
-        {
-            Console.WriteLine("Het e-mailadres is ongeldig.");
-            isValid = false;
-        }
-
-        if (!passagierLogic.IsValidPaspoortNummer(passagier.PaspoortNummer))
-        {
-            Console.WriteLine("Het paspoortnummer moet 5-20 letters of cijfers bevatten.");
-            isValid = false;
-        }
-
-        if (!passagierLogic.IsValidGeboorteDatum(passagier.GeboorteDatum))
-        {
-            Console.WriteLine("De geboortedatum moet een geldige datum in het verleden zijn (yyyy-MM-dd).");
-            isValid = false;
-        }
-
-        if (!passagierLogic.IsValidTelefoonnummer(passagier.Telefoonnummer))
-        {
-            Console.WriteLine("Het telefoonnummer moet 7-15 cijfers bevatten.");
-            isValid = false;
-        }
-
-        if (!passagierLogic.IsValidPaspoortVerloopDatum(passagier.PaspoortVerloopDatum))
-        {
-            Console.WriteLine("De paspoortverloopdatum moet een geldige datum in de toekomst zijn (yyyy-MM-dd).");
-            isValid = false;
-        }
-
-        return isValid;
+            GebruikerID = gebruikerId,
+            Naam = Invoer.VraagTotGeldig("Voornaam: ", passagierLogic.IsValidNaam, "Voornaam is verplicht en mag alleen letters bevatten."),
+            Achternaam = Invoer.VraagTotGeldig("Achternaam: ", passagierLogic.IsValidAchternaam, "Achternaam is verplicht en mag alleen letters bevatten."),
+            Email = Invoer.VraagTotGeldig("E-mailadres: ", passagierLogic.IsValidEmail, "Ongeldig e-mailadres, bijvoorbeeld naam@voorbeeld.nl."),
+            PaspoortNummer = Invoer.VraagTotGeldig("Paspoortnummer: ", passagierLogic.IsValidPaspoortNummer, "Het paspoortnummer moet 5-20 letters of cijfers bevatten."),
+            GeboorteDatum = Invoer.VraagTotGeldig("Geboortedatum (jjjj-mm-dd): ", passagierLogic.IsValidGeboorteDatum, "Ongeldige geboortedatum, gebruik jjjj-mm-dd en een datum in het verleden."),
+            Telefoonnummer = Invoer.VraagTotGeldig("Telefoonnummer: ", passagierLogic.IsValidTelefoonnummer, "Het telefoonnummer moet 7-15 cijfers bevatten."),
+            PaspoortVerloopDatum = Invoer.VraagTotGeldig("Paspoortverloopdatum (jjjj-mm-dd): ", passagierLogic.IsValidPaspoortVerloopDatum, "Ongeldige verloopdatum, gebruik jjjj-mm-dd en een datum in de toekomst.")
+        };
     }
 }
