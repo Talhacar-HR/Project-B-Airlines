@@ -1,6 +1,7 @@
 static class VliegtuigMenu
 {
     static private VliegtuigLogic vliegtuigLogic = new VliegtuigLogic();
+    static private StoelkaartLogic stoelkaartLogic = new StoelkaartLogic();
 
     public static void Start()
     {
@@ -19,6 +20,8 @@ static class VliegtuigMenu
                 Aanpassen();
             else if (input == "4")
                 StoelMenu.Start();
+            else if (input == "5")
+                StoelenAanmaken();
             else if (input == "0")
                 menuRunning = false;
             else
@@ -33,6 +36,7 @@ static class VliegtuigMenu
         Console.WriteLine("2 - Toevoegen");
         Console.WriteLine("3 - Aanpassen");
         Console.WriteLine("4 - Stoelen beheren");
+        Console.WriteLine("5 - Stoelen aanmaken volgens plattegrond");
         Console.WriteLine("0 - Terug");
         return Console.ReadLine() ?? "";
     }
@@ -166,5 +170,23 @@ static class VliegtuigMenu
         Console.WriteLine($"  Model:        {vliegtuig.Model}");
         Console.WriteLine($"  Bagageruimte: {vliegtuig.BaggageRuimte}");
         Console.WriteLine("");
+    }
+
+    public static void StoelenAanmaken()
+    {
+        VliegtuigModel? vliegtuig = ZoekVliegtuig();
+        if (vliegtuig is null)
+        {
+            return;
+        }
+
+        if (stoelkaartLogic.GetIndeling(vliegtuig.Model).Length == 0)
+        {
+            Console.WriteLine($"Er is geen plattegrond voor model {vliegtuig.Model}.");
+            return;
+        }
+
+        int aantal = stoelkaartLogic.MaakStoelenAan(vliegtuig);
+        Console.WriteLine($"{aantal} stoelen aangemaakt voor {vliegtuig.Merk} {vliegtuig.Model}.");
     }
 }
