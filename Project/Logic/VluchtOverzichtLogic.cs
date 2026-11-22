@@ -71,6 +71,12 @@ public class FlightLogic
         return zoekDatum >= DateOnly.FromDateTime(DateTime.Today);
     }
 
+    // Vertrekplaats of bestemming mag niet leeg zijn
+    public bool IsValidLocatie(string locatie)
+    {
+        return !string.IsNullOrWhiteSpace(locatie);
+    }
+
     // Zet een Nederlandse datum (dd-MM-yyyy) om naar het formaat van de database (yyyy-MM-dd)
     private string NaarDatabaseDatum(string datum)
     {

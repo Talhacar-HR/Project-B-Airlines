@@ -20,20 +20,13 @@ static class FlightOverview
         }
         // temp test
 
-        Console.WriteLine("Vertrekdatum (yyyy-MM-dd): ");
-        var departureDate = Console.ReadLine(); // var omdat het ook null kan terugegeven als ik string gebruik.
-
-        Console.WriteLine("Vertrekplaats: ");
-        var origin = Console.ReadLine();
-
-        Console.WriteLine("Bestemming: ");
-        var destination = Console.ReadLine();
-
-        if (departureDate == null || origin == null || destination == null)
-        {
-            Console.WriteLine("Ongeldige invoer.");
-            return;
-        }
+        // Elk veld wordt meteen gecontroleerd en opnieuw gevraagd tot het goed is
+        string departureDate = Invoer.VraagTotGeldig("Vertrekdatum (dd-mm-jjjj): ", flightLogic.IsValidZoekDatum,
+            "Ongeldige datum, gebruik dd-mm-jjjj (bijvoorbeeld 15-12-2026) en geen datum in het verleden.");
+        string origin = Invoer.VraagTotGeldig("Vertrekplaats: ", flightLogic.IsValidLocatie,
+            "Vul een vertrekplaats in.");
+        string destination = Invoer.VraagTotGeldig("Bestemming: ", flightLogic.IsValidLocatie,
+            "Vul een bestemming in.");
 
         List<FlightModel> flights = flightLogic.FlightFilter(departureDate, origin, destination);
 
