@@ -50,7 +50,7 @@ static class VluchtBoeken
             passagierLogic.Add(passagier);
             Console.WriteLine("Passagier toegevoegd.");
 
-            int stoelId = Plattegrond.KiesStoel(vluchtId, gekozenStoelen);
+            int stoelId = StoelkaartMenu.Start(vluchtId, gekozenStoelen);
             if (stoelId == 0)
             {
                 meerPassagiers = false;
@@ -120,94 +120,6 @@ static class VluchtBoeken
 
         return keuze.Trim().ToLower() == "j";
     }
-
-    // Laat de stoelen van de vlucht zien en laat de gebruiker er één kiezen.
-    // Geeft het ID van de gekozen stoel terug, of 0 als er geen vrije stoel meer is.
-    private static int KiesStoel(int vluchtId, List<ReserveringsStoelModel> gekozenStoelen)
-    {
-        List<StoelModel> stoelen = reserveringLogic.GetStoelenVoorVlucht(vluchtId);
-
-        // Kijk eerst of er nog minstens één vrije stoel is
-        bool vrijeStoelGevonden = false;
-        foreach (StoelModel stoel in stoelen)
-        {
-            if (!IsBezet(vluchtId, stoel.ID, gekozenStoelen))
-            {
-                vrijeStoelGevonden = true;
-            }
-        }
-
-        if (!vrijeStoelGevonden)
-        {
-            return 0;
-        }
-
-        while (true)
-        {
-            Console.WriteLine("");
-            Console.WriteLine("Stoelen:");
-            Console.WriteLine("ID | Rij | Stoel | Status");
-            Console.WriteLine("------------------------");
-
-            foreach (StoelModel stoel in stoelen)
-            {
-                string status = "vrij";
-                if (IsBezet(vluchtId, stoel.ID, gekozenStoelen))
-                {
-                    status = "BEZET";
-                }
-
-                Console.WriteLine(stoel.ID + " | " + stoel.RijNummer + " | " + stoel.StoelNummer + " | " + status);
-            }
-
-            Console.Write("Kies het ID van een stoel: ");
-            string invoer = Console.ReadLine() ?? "";
-
-            // Zoek de stoel die de gebruiker heeft gekozen
-            StoelModel? gekozenStoel = null;
-            foreach (StoelModel stoel in stoelen)
-            {
-                if (stoel.ID.ToString() == invoer.Trim())
-                {
-                    gekozenStoel = stoel;
-                }
-            }
-
-            if (gekozenStoel == null)
-            {
-                Console.WriteLine("Deze stoel bestaat niet. Kies een stoel uit de lijst.");
-            }
-            else if (IsBezet(vluchtId, gekozenStoel.ID, gekozenStoelen))
-            {
-                Console.WriteLine("Deze stoel is al bezet. Kies een andere stoel.");
-            }
-            else
-            {
-                return gekozenStoel.ID;
-            }
-        }
-    }
-
-    // Een stoel is bezet als iemand anders hem al heeft gereserveerd,
-    // of als je hem in deze reservering al voor een andere passagier hebt gekozen
-    private static bool IsBezet(int vluchtId, int stoelId, List<ReserveringsStoelModel> gekozenStoelen)
-    {
-        if (reserveringLogic.IsStoelBezet(vluchtId, stoelId))
-        {
-            return true;
-        }
-
-        foreach (ReserveringsStoelModel gekozen in gekozenStoelen)
-        {
-            if (gekozen.StoelID == stoelId)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
 
     private static bool CheckPassagier(PassagierModel passagier)
     {
