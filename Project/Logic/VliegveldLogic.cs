@@ -50,12 +50,14 @@ public class VliegveldLogic
     {
         return !string.IsNullOrWhiteSpace(afkorting);
     }
+
     public List<VliegveldModel> Zoek(string zoekterm)
     {
         List<VliegveldModel> gevonden = new List<VliegveldModel>();
 
         if (string.IsNullOrWhiteSpace(zoekterm))
         {
+            Console.WriteLine("Dit gaat fout 1", gevonden, " - ", zoekterm);
             return gevonden;
         }
 

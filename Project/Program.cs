@@ -14,8 +14,7 @@ test123
 
 DEBUGS:
 - Keuzemenus nummers weghalen
-- Na kiezen datum en tijd - Er zijn geen beschikbare vluchten gevonden op die datum.
-- Vliegveld toevoegen beter benadrukken
+- Na kiezen datum en tijd - Er zijn geen beschikbare vluchten gevonden op die datum
 
 - Vluchten toevoegen fout
 */
