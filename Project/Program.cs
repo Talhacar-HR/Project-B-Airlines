@@ -1,5 +1,19 @@
 ﻿// See https://aka.ms/new-console-template for more information
-// dotnet run --project .\Project\Project.csproj
+
+/*
+RUN PROJECT:
+dotnet run --project .\Project\Project.csproj
+
+ADMIN:
+admin@admin.com
+adm123
+
+USER:
+test@test.com
+test123
+
+
+*/
 
 StoelLogic stoelLogic = new();
 // Stoelen automatisch aanmaken voor de drie vliegtuigen

@@ -1,3 +1,5 @@
+using System.Collections;
+
 static class TestMenu
 {
     static public void Start()
@@ -30,11 +32,7 @@ static class TestMenu
                     selectedIndex = Math.Min(menuChoices.Count - 1, selectedIndex + 1);
                     break;
 
-                case ConsoleKey.Enter:
-                    menuRunning = false;
-                    break;
-
-                case ConsoleKey.Escape:
+                case ConsoleKey.Enter or ConsoleKey.Escape:
                     menuRunning = false;
                     break;
             }
