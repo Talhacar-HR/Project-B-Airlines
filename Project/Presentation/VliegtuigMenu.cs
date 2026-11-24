@@ -67,17 +67,21 @@ static class VliegtuigMenu
 
     public static string Toevoegen()
     {
+        string mijnKeuzes = "";
         Console.Write("Model: ");
         string model = Console.ReadLine() ?? "";
+        mijnKeuzes += $"Gekozen model: {model}\n";
         Console.Write("Merk: ");
         string merk = Console.ReadLine() ?? "";
+        mijnKeuzes += $"Gekozen merk: {merk}\n";
         Console.Write("Bagageruimte: ");
         string baggageRuimteInput = Console.ReadLine() ?? "";
+        mijnKeuzes += $"Gekozen bagageruimte: {baggageRuimteInput}\n";
 
         if (CheckPlane(baggageRuimteInput, model, merk, 0, out VliegtuigModel plane))
         {
             vliegtuigLogic.Add(plane);
-            return "Vliegtuig toegevoegd.";
+            return $"Vliegtuig toegevoegd.\n{mijnKeuzes}";
         }
         else
         {
@@ -97,30 +101,39 @@ static class VliegtuigMenu
         int id = currentPlane.ID;
 
         ToonVliegtuig(currentPlane, mijnKeuzes);
-        Console.WriteLine("Laat de overige velden leeg om ze ongewijzigd te laten.");
-
         VliegtuigModel? gekozenModel = KeuzeMenu.KiesVliegtuig(currentPlane.ID, aanpassen: true);
         if (gekozenModel is null)
             return "Vliegtuig niet aangepast; er is geen model gekozen.";
         string model = gekozenModel.Model;
+        mijnKeuzes += $"Gekozen model: {model}\n";
+
+        ToonVliegtuig(currentPlane, mijnKeuzes);
         string merk = Invoer.VraagTotGeldig(
             $"Mogelijk nieuw merk [{currentPlane.Merk}]: ",
             input => string.IsNullOrWhiteSpace(input) || vliegtuigLogic.IsValidMerk(input),
             "Merk is verplicht.");
+        if (string.IsNullOrWhiteSpace(merk)) merk = currentPlane.Merk;
+        mijnKeuzes += $"Gekozen merk: {merk}\n";
+
+        ToonVliegtuig(currentPlane, mijnKeuzes);
         string baggageRuimteInput = Invoer.VraagTotGeldig(
             $"Mogelijk nieuwe bagageruimte [{currentPlane.BaggageRuimte}]: ",
             input => string.IsNullOrWhiteSpace(input) ||
                 (int.TryParse(input, out int baggageRuimte) && vliegtuigLogic.IsValidBaggageRuimte(baggageRuimte)),
             "Bagageruimte moet een geldig getal van nul of hoger zijn.");
-
-        if (string.IsNullOrWhiteSpace(merk)) merk = currentPlane.Merk;
         if (string.IsNullOrWhiteSpace(baggageRuimteInput)) baggageRuimteInput = currentPlane.BaggageRuimte.ToString();
+        mijnKeuzes += $"Gekozen bagageruimte: {baggageRuimteInput}\n";
+
+        ToonVliegtuig(currentPlane, mijnKeuzes);
+        Console.WriteLine("Wilt u deze aanpassingen bevestigen? (J/N)");
+        if (Console.ReadLine()?.Trim().ToLowerInvariant() != "j")
+            return "Vliegtuig niet aangepast; bevestiging geannuleerd.";
 
         if (CheckPlane(baggageRuimteInput, model, merk, id, out VliegtuigModel plane))
         {
             if (vliegtuigLogic.Update(plane))
             {
-                return "Vliegtuig aangepast.";
+                return $"Vliegtuig aangepast.\n{mijnKeuzes}";
             }
             else
             {
@@ -166,6 +179,7 @@ static class VliegtuigMenu
         Console.WriteLine("");
         if (mijnKeuzes != "")
         {
+            Console.WriteLine("Gekozen wijzigingen:");
             Console.WriteLine(mijnKeuzes);
         }
     }

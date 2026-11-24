@@ -4,38 +4,46 @@ static class FlightOverview
 
     public static string Start()
     {
-        string choices = "";
+        string mijnKeuzes = "";
 
-        Menu.PrintTitel();
         string? departureCountry = SelectMenuChoice(
             "Kies het land van vertrek:",
-            CreateMenuChoices("land", ""));
+            CreateMenuChoices("land", ""),
+            mijnKeuzes);
         if (departureCountry == null) {return "Er zijn geen landen beschikbaar.";}
+        mijnKeuzes += $"Plaats van vertrek: {departureCountry}\n";
 
-        Menu.PrintTitel();
         string? departureCity = SelectMenuChoice(
             "Kies het vliegveld van vertrek:",
-            CreateMenuChoices("vliegveld", departureCountry));
+            CreateMenuChoices("vliegveld", departureCountry),
+            mijnKeuzes);
         if (departureCity == null) {return $"Er zijn geen steden beschikbaar in {departureCountry}.";}
-        choices += $"Plaats van vertrek: {departureCity}, {departureCountry}.\n";
+        mijnKeuzes += $"\r\n, {departureCity}\n";
 
-        Menu.PrintTitel();
-        Console.WriteLine(choices);
         string? arrivalCountry = SelectMenuChoice(
             "Kies het land van aankomst:",
-            CreateMenuChoices("land", ""));
+            CreateMenuChoices("land", ""),
+            mijnKeuzes);
         if (arrivalCountry == null) {return "Er zijn geen landen beschikbaar.";}
+        mijnKeuzes += $"Plaats van aankomst: {arrivalCountry}";
 
         string? arrivalCity = SelectMenuChoice(
             "Kies het vliegveld van aankomst:",
-            CreateMenuChoices("vliegveld", arrivalCountry));
+            CreateMenuChoices("vliegveld", arrivalCountry),
+            mijnKeuzes);
         if (arrivalCity == null) {return $"Er zijn geen steden beschikbaar in {arrivalCountry}.";}
-        choices += $"Plaats van aankomst: {arrivalCity}, {arrivalCountry}.\n";
+        mijnKeuzes += $"\r\n, {arrivalCity}\n";
 
-        List<FlightModel> flights = GetSpecificFlight(departureCity, arrivalCity);
+        List<FlightModel> flights = GetSpecificFlight(
+            departureCity,
+            arrivalCity,
+            mijnKeuzes,
+            out string? departureDate);
+        if (departureDate is not null)
+            mijnKeuzes += $"Vertrekdatum: {departureDate}\n";
 
         Menu.PrintTitel();
-        Console.WriteLine(choices);
+        Console.WriteLine(mijnKeuzes);
 
         Console.WriteLine();
         if (flights.Count == 0)
@@ -45,7 +53,10 @@ static class FlightOverview
 
         string? sortChoice = SelectMenuChoice(
             "Hoe wilt u de gevonden vluchten sorteren?",
-            new List<string> { "Prijs (laag naar hoog)", "Vertrektijd (vroeg naar laat)" });
+            new List<string> { "Prijs (laag naar hoog)", "Vertrektijd (vroeg naar laat)" },
+            mijnKeuzes);
+        if (sortChoice is not null)
+
         if (sortChoice == "Prijs (laag naar hoog)")
         {
             flights = flightLogic.SortFlights(flights, "price");
@@ -67,7 +78,7 @@ static class FlightOverview
             allFlights.Add($"{flight.FlightNumber} | {flight.Origin} | {flight.Destination} | {flight.DepartureDate} | {flight.DepartureTime} | €{flight.Price}");
         }
 
-        string? flightNumberInput = SelectMenuChoice(statement, allFlights);
+        string? flightNumberInput = SelectMenuChoice(statement, allFlights, mijnKeuzes);
         if (flightNumberInput == null)
         {
             return "Er zijn geen vluchten beschikbaar.";
@@ -80,6 +91,7 @@ static class FlightOverview
         }
 
         FlightModel selectedFlight = flights[selectedIndex];
+        mijnKeuzes += $"Gekozen vlucht: {selectedFlight.FlightNumber} - {selectedFlight.DepartureDate} {selectedFlight.DepartureTime}, €{selectedFlight.Price}\n";
 
         if (!flightLogic.SelectFlight(selectedFlight.ID))
         {
@@ -88,10 +100,10 @@ static class FlightOverview
 
         VluchtBoeken.Start(selectedFlight.ID, selectedFlight.FlightNumber);
 
-        return "Uw boeking is voltooid.";
+        return $"Uw boeking is voltooid.\n{mijnKeuzes}";
     }
 
-    private static string? SelectMenuChoice(string title, List<string> choices)
+    private static string? SelectMenuChoice(string title, List<string> choices, string mijnKeuzes = "")
     {
         if (choices.Count == 0)
         {
@@ -103,6 +115,10 @@ static class FlightOverview
         while (choosing)
         {
             Menu.PrintTitel();
+            if (mijnKeuzes != "")
+            {
+                Console.WriteLine(mijnKeuzes);
+            }
             Console.WriteLine(title);
 
             for (int i = 0; i < choices.Count; i++)
@@ -146,7 +162,11 @@ static class FlightOverview
         return [];
     }
 
-    private static List<FlightModel> GetSpecificFlight(string departureCity, string arrivalCity)
+    private static List<FlightModel> GetSpecificFlight(
+        string departureCity,
+        string arrivalCity,
+        string mijnKeuzes,
+        out string? departureDate)
     {
         List<string> dates = new();
         foreach (FlightModel flight in flightLogic.GetAvailableFlights())
@@ -159,7 +179,7 @@ static class FlightOverview
             }
         }
 
-        string? departureDate = SelectMenuChoice("Kies de vertrekdatum:", dates);
+        departureDate = SelectMenuChoice("Kies de vertrekdatum:", dates, mijnKeuzes);
         if (departureDate == null)
         {
             return [];

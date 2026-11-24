@@ -70,7 +70,7 @@ static class Menu
             menuOptions.Add("1 - Uitloggen");
             if (currentAccount.IsAdmin == 0)
             {
-                menuOptions.Add("2 - Vluchten boeken");
+                menuOptions.Add("2 - Vlucht boeken");
                 menuOptions.Add("3 - Mijn reserveringen");
             }
             menuOptions.Add("8 - Check gebruiker");

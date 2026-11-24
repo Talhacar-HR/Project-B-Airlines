@@ -102,7 +102,7 @@ static class VliegveldMenu
         if (CheckAirport(0, naam, stad, land, afkorting, out VliegveldModel airport))
         {
             vliegveldLogic.Add(airport);
-            return $"Vliegveld toegevoegd.";
+            return $"Vliegveld toegevoegd.\n{mijnKeuzes}";
         }
         return "Vliegveld niet toegevoegd; er ging iets fout.";
     }
@@ -149,6 +149,7 @@ static class VliegveldMenu
             "Afkorting is verplicht.");
         if (string.IsNullOrWhiteSpace(afkorting)) afkorting = currentAirport.Afkorting;
         mijnKeuzes += $"Gekozen afkorting: {afkorting}\n";
+
         ToonVliegveld(currentAirport, mijnKeuzes);
 
         Console.WriteLine("Wilt u deze aanpassingen bevestigen? (J/N)");
@@ -162,7 +163,7 @@ static class VliegveldMenu
 
         if (vliegveldLogic.Update(airport))
         {
-            return "Vliegveld aangepast.";
+            return "Vliegveld aangepast.\n{mijnKeuzes}";
         }
         else
         {

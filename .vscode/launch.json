@@ -1,0 +1,16 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C#: Project [Project]",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "C:\\Users\\cross\\OneDrive\\Eclipse\\htdocs\\!coding\\Hogeschool Rotterdam HBO\\2025-2026 Schooljaar 1\\C#\\Project-B-Airlines\\Project\\Project.csproj",
+            "launchProfileName": "Project",
+            "launchConfigurationId": "Project"
+        }
+    ]
+}
