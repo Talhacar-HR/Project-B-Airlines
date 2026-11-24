@@ -15,22 +15,6 @@ test123
 DEBUGS:
 - Keuzemenus nummers weghalen
 - Na kiezen datum en tijd - Er zijn geen beschikbare vluchten gevonden op die datum
-- Vluchten toevoegen fout
-
-Vluchten:
-- Overzicht : werkt
-- Toevoegen : werkt
-- Aanpassen : werkt
-
-Vliegtuig:
-- Overzicht : werkt
-- Toevoegen : werkt
-- Aanpassen : werkt
-
-Vlievgeld:
-- Overzicht : werkt
-- Toevoegen : werkt
-- Aanpassen : werkt
 */
 
 // Stoelen automatisch aanmaken voor de drie vliegtuigen

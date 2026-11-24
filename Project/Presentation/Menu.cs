@@ -70,7 +70,7 @@ static class Menu
             menuOptions.Add("1 - Uitloggen");
             if (currentAccount.IsAdmin == 0)
             {
-                menuOptions.Add("2 - Vluchten checken");
+                menuOptions.Add("2 - Vluchten boeken");
                 menuOptions.Add("3 - Mijn reserveringen");
             }
             menuOptions.Add("8 - Check gebruiker");
@@ -144,30 +144,5 @@ static class Menu
          █ ▀▄ █   █  █ ▄  █ ▄ █▀▀▀▀  █  ▀ █  █  ▄▀▀█  █ █ █      █▀▀▀█  █   █  ▀  █   █  █   █ █▀▀▀▀  ▀▀▄
          ▀  ▀  ▀▀▀    ▀    ▀   ▀▀▀  ▀▀▀    ▀▀ ▀  ▀▀ ▀ ▀ ▀ ▀      ▀   ▀ ▀▀▀ ▀▀▀   ▀▀▀ ▀▀▀ ▀   ▀  ▀▀▀  ▀▀▀
         ");
-    }
-
-    public static string MenuOptions(AccountModel? currentAccount)
-    {
-        Console.WriteLine("");
-        Console.WriteLine("Wat wilt u doen?");
-        if (currentAccount != null)
-        {
-            Console.WriteLine("1 - Uitloggen");
-            Console.WriteLine("2 - Vluchten boeken");
-            Console.WriteLine("3 - Mijn reserveringen");
-            Console.WriteLine("8 - Check gebruiker");
-            
-            if (currentAccount.IsAdmin != 0)
-            {
-                Console.WriteLine("9 - Gegevens beheren");
-            }
-        }
-        else
-        {
-            Console.WriteLine("1 - Inloggen");
-            Console.WriteLine("2 - Registreren");
-        }
-        Console.WriteLine("0 - Programma afsluiten");
-        return Console.ReadLine() ?? "";
     }
 }
