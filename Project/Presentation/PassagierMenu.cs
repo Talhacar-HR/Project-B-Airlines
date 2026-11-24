@@ -38,12 +38,12 @@ static class VluchtBoeken
                 reserveringsStoel.ExtraBagage = VraagExtraBagage();
                 gekozenStoelen.Add(reserveringsStoel);
 
-            Console.Write("Wilt u nog een passagier toevoegen? (J/N): ");
-            string keuze = Console.ReadLine() ?? "";
-            if (keuze.Trim().ToLower() == "n")
-                meerPassagiers = false;
+                Console.Write("Wilt u nog een passagier toevoegen? (J/N): ");
+                string keuze = Console.ReadLine() ?? "";
+                if (keuze.Trim().ToLower() == "n")
+                    meerPassagiers = false;
+            }
         }
-    }
 
         // Geen enkele stoel gekozen, dus ook geen reservering
         if (gekozenStoelen.Count == 0)

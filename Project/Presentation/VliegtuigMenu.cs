@@ -5,6 +5,8 @@ static class VliegtuigMenu
 
     public static void Start()
     {
+        string feedback = "";
+
         bool menuRunning = true;
         while (menuRunning)
         {
@@ -12,16 +14,18 @@ static class VliegtuigMenu
             string input = MenuOptions();
             Console.WriteLine("");
 
+            if (feedback != "")
+                Console.WriteLine(feedback);
+                Console.WriteLine("");
+
             if (input == "1")
                 Overzicht();
             else if (input == "2")
-                Toevoegen();
+                feedback = Toevoegen();
             else if (input == "3")
-                Aanpassen();
+                feedback = Aanpassen();
             else if (input == "4")
                 StoelMenu.Start();
-            else if (input == "5")
-                StoelenAanmaken();
             else if (input == "0")
                 menuRunning = false;
             else
@@ -31,7 +35,7 @@ static class VliegtuigMenu
 
     public static string MenuOptions()
     {
-        string[] menuOptions = { "1 - Overzicht", "2 - Toevoegen", "3 - Aanpassen", "4 - Stoelen beheren", "5 - Stoelen aanmaken volgens plattegrond", "0 - Terug" };
+        string[] menuOptions = { "1 - Overzicht", "2 - Toevoegen", "3 - Aanpassen", "4 - Stoelen beheren", "0 - Terug" };
         int selectedIndex = 0;
 
         while (true)
@@ -71,7 +75,7 @@ static class VliegtuigMenu
             Console.WriteLine($"ID: {plane.ID}, Bagageruimte: {plane.BaggageRuimte}, Model: {plane.Model}, Merk: {plane.Merk}");
     }
 
-    public static void Toevoegen()
+    public static string Toevoegen()
     {
         Console.Write("Bagageruimte: ");
         string baggageRuimteInput = Console.ReadLine() ?? "";
@@ -83,16 +87,20 @@ static class VliegtuigMenu
         if (CheckPlane(baggageRuimteInput, model, merk, 0, out VliegtuigModel plane))
         {
             vliegtuigLogic.Add(plane);
-            Console.WriteLine("Vliegtuig toegevoegd.");
+            return "Vliegtuig toegevoegd.";
+        }
+        else
+        {
+            return "Vliegtuig niet toegevoegd; er ging iets fout.";
         }
     }
 
-    public static void Aanpassen()
+    public static string Aanpassen()
     {
         VliegtuigModel? currentPlane = ZoekVliegtuig();
         if (currentPlane is null)
         {
-            return;
+            return "";
         }
         int id = currentPlane.ID;
         ToonVliegtuig(currentPlane);
@@ -112,13 +120,14 @@ static class VliegtuigMenu
         {
             if (vliegtuigLogic.Update(plane))
             {
-                Console.WriteLine("Vliegtuig aangepast.");
+                return "Vliegtuig aangepast.";
             }
             else
             {
-                Console.WriteLine($"Er bestaat geen vliegtuig met ID {id}.");
+                return $"Er bestaat geen vliegtuig met ID {id}.";
             }
         }
+        return "";
     }
 
     private static bool CheckPlane(string baggageRuimteInput, string model, string merk, int id, out VliegtuigModel plane)

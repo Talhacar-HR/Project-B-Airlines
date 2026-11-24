@@ -7,16 +7,14 @@ static class StoelMenu
         bool menuRunning = true;
         while (menuRunning)
         {
+            Menu.PrintTitel();
+
             Console.WriteLine("");
             string input = MenuOptions();
             Console.WriteLine("");
 
             if (input == "1")
                 Overzicht();
-            else if (input == "2")
-                Toevoegen();
-            else if (input == "3")
-                Aanpassen();
             else if (input == "0")
                 menuRunning = false;
             else
@@ -26,7 +24,7 @@ static class StoelMenu
 
     public static string MenuOptions()
     {
-        string[] menuOptions = { "1 - Overzicht", "2 - Toevoegen", "3 - Aanpassen", "0 - Terug" };
+        string[] menuOptions = { "1 - Overzicht", "0 - Terug" };
         int selectedIndex = 0;
 
         while (true)
