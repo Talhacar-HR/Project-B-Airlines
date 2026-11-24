@@ -65,12 +65,12 @@ static class VliegtuigMenu
 
     public static string Toevoegen()
     {
-        Console.Write("Bagageruimte: ");
-        string baggageRuimteInput = Console.ReadLine() ?? "";
         Console.Write("Model: ");
         string model = Console.ReadLine() ?? "";
         Console.Write("Merk: ");
         string merk = Console.ReadLine() ?? "";
+        Console.Write("Bagageruimte: ");
+        string baggageRuimteInput = Console.ReadLine() ?? "";
 
         if (CheckPlane(baggageRuimteInput, model, merk, 0, out VliegtuigModel plane))
         {
@@ -85,7 +85,7 @@ static class VliegtuigMenu
 
     public static string Aanpassen()
     {
-        VliegtuigModel? currentPlane = KeuzeMenu.KiesVliegtuig();
+        VliegtuigModel? currentPlane = KeuzeMenu.KiesVliegtuig(aanpassen: true);
         if (currentPlane is null)
         {
             return "";
@@ -95,15 +95,15 @@ static class VliegtuigMenu
         Console.WriteLine("Laat een veld leeg als u de huidige invoer wilt gebruiken.");
 
         string model = Invoer.VraagTotGeldig(
-            $"Nieuw model [{currentPlane.Model}]: ",
+            $"Mogelijk nieuw model [{currentPlane.Model}]: ",
             input => string.IsNullOrWhiteSpace(input) || vliegtuigLogic.IsValidModel(input),
             "Model is verplicht.");
         string merk = Invoer.VraagTotGeldig(
-            $"Nieuw merk [{currentPlane.Merk}]: ",
+            $"Mogelijk nieuw merk [{currentPlane.Merk}]: ",
             input => string.IsNullOrWhiteSpace(input) || vliegtuigLogic.IsValidMerk(input),
             "Merk is verplicht.");
         string baggageRuimteInput = Invoer.VraagTotGeldig(
-            $"Nieuwe bagageruimte [{currentPlane.BaggageRuimte}]: ",
+            $"Mogelijk nieuwe bagageruimte [{currentPlane.BaggageRuimte}]: ",
             input => string.IsNullOrWhiteSpace(input) ||
                 (int.TryParse(input, out int baggageRuimte) && vliegtuigLogic.IsValidBaggageRuimte(baggageRuimte)),
             "Bagageruimte moet een geldig getal van nul of hoger zijn.");
@@ -131,12 +131,6 @@ static class VliegtuigMenu
         bool isValid = true;
         bool hasBaggageRuimte = int.TryParse(baggageRuimteInput, out int baggageRuimte);
 
-        if (!hasBaggageRuimte || !vliegtuigLogic.IsValidBaggageRuimte(baggageRuimte))
-        {
-            Console.WriteLine("Bagageruimte moet een geldig getal van nul of hoger zijn.");
-            isValid = false;
-        }
-
         if (!vliegtuigLogic.IsValidModel(model))
         {
             Console.WriteLine("Model is verplicht.");
@@ -146,6 +140,12 @@ static class VliegtuigMenu
         if (!vliegtuigLogic.IsValidMerk(merk))
         {
             Console.WriteLine("Merk is verplicht.");
+            isValid = false;
+        }
+
+        if (!hasBaggageRuimte || !vliegtuigLogic.IsValidBaggageRuimte(baggageRuimte))
+        {
+            Console.WriteLine("Bagageruimte moet een geldig getal van nul of hoger zijn.");
             isValid = false;
         }
 

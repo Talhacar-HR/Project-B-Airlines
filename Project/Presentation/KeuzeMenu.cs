@@ -4,24 +4,28 @@ static class KeuzeMenu
     static private VliegveldLogic vliegveldLogic = new VliegveldLogic();
     static private VluchtLogic vluchtLogic = new VluchtLogic();
 
-    public static VliegtuigModel? KiesVliegtuig(int? geselecteerdVliegtuigId = null)
+    public static VliegtuigModel? KiesVliegtuig(int? geselecteerdVliegtuigId = null, bool aanpassen = false)
     {
         List<VliegtuigModel> vliegtuigen = vliegtuigLogic.GetAll();
         int selectedIndex = geselecteerdVliegtuigId.HasValue
             ? vliegtuigen.FindIndex(vliegtuig => vliegtuig.ID == geselecteerdVliegtuigId.Value)
             : 0;
+        string titel = aanpassen
+            ? "Kies een mogelijk nieuw vliegtuigmodel:"
+            : "Kies een vliegtuigmodel:";
 
         return ToonKeuzemenu(
-            "Kies een vliegtuigmodel:",
+            titel,
             vliegtuigen,
             vliegtuig => $"{vliegtuig.Model} ({vliegtuig.Merk})",
             selectedIndex);
     }
 
     public static VliegveldModel? KiesVliegveld(
-        string titel,
+        string vliegveldType,
         int? geselecteerdVliegveldId = null,
-        int? uitgeslotenVliegveldId = null)
+        int? uitgeslotenVliegveldId = null,
+        bool aanpassen = false)
     {
         List<VliegveldModel> vliegvelden = vliegveldLogic.GetAll();
         if (uitgeslotenVliegveldId.HasValue)
@@ -30,6 +34,9 @@ static class KeuzeMenu
         int selectedIndex = geselecteerdVliegveldId.HasValue
             ? vliegvelden.FindIndex(vliegveld => vliegveld.ID == geselecteerdVliegveldId.Value)
             : 0;
+        string titel = aanpassen
+            ? $"Kies een mogelijk nieuw {vliegveldType}:"
+            : $"Kies het {vliegveldType}:";
 
         return ToonKeuzemenu(
             titel,
@@ -38,7 +45,7 @@ static class KeuzeMenu
             selectedIndex);
     }
 
-    public static VluchtModel? KiesVlucht()
+    public static VluchtModel? KiesVlucht(bool aanpassen = false)
     {
         List<VluchtModel> flights = vluchtLogic.GetAll();
         List<VliegtuigModel> vliegtuigen = vliegtuigLogic.GetAll();
@@ -57,8 +64,12 @@ static class KeuzeMenu
                 $"{flight.VertrekDatum} {flight.VertrekTijd}");
         }
 
+        string titel = aanpassen
+            ? "Kies een vlucht om aan te passen:"
+            : "Kies een vlucht:";
+
         return ToonKeuzemenu(
-            "Kies een vlucht:",
+            titel,
             flights,
             flight => flightLabels[flight.ID],
             0);

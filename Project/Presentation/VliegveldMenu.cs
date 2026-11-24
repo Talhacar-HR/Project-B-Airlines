@@ -102,39 +102,54 @@ static class VliegveldMenu
 
     public static string Aanpassen()
     {
-        VliegveldModel? currentAirport = KeuzeMenu.KiesVliegveld("Kies het vliegveld");
+        string mijnKeuzes = "";
+
+        VliegveldModel? currentAirport = KeuzeMenu.KiesVliegveld("vliegveld", aanpassen: true);
         if (currentAirport is null)
         {
             return "Geen vliegveld gekozen; er is niets aangepast.";
         }
         int id = currentAirport.ID;
 
-        ToonVliegveld(currentAirport);
-        Console.WriteLine("Laat een veld leeg als u de huidige invoer wilt gebruiken.");
+        ToonVliegveld(currentAirport, mijnKeuzes);
 
         string naam = Invoer.VraagTotGeldig(
-            $"Nieuwe naam [{currentAirport.Naam}]: ",
+            $"Mogelijk nieuwe naam [{currentAirport.Naam}]: ",
             input => string.IsNullOrWhiteSpace(input) || vliegveldLogic.IsValidNaam(input),
             "Naam is verplicht.");
         if (string.IsNullOrWhiteSpace(naam)) naam = currentAirport.Naam;
+        mijnKeuzes += $"Gekozen naam: {naam}\n";
 
+        ToonVliegveld(currentAirport, mijnKeuzes);
         string stad = Invoer.VraagTotGeldig(
-            $"Nieuwe stad [{currentAirport.Stad}]: ",
+            $"Mogelijk nieuwe stad [{currentAirport.Stad}]: ",
             input => string.IsNullOrWhiteSpace(input) || vliegveldLogic.IsValidStad(input),
             "Stad is verplicht.");
         if (string.IsNullOrWhiteSpace(stad)) stad = currentAirport.Stad;
+        mijnKeuzes += $"Gekozen stad: {stad}\n";
 
+        ToonVliegveld(currentAirport, mijnKeuzes);
         string land = Invoer.VraagTotGeldig(
-            $"Nieuw land [{currentAirport.Land}]: ",
+            $"Mogelijk nieuw land [{currentAirport.Land}]: ",
             input => string.IsNullOrWhiteSpace(input) || vliegveldLogic.IsValidLand(input),
             "Land is verplicht.");
         if (string.IsNullOrWhiteSpace(land)) land = currentAirport.Land;
+        mijnKeuzes += $"Gekozen land: {land}\n";
 
+        ToonVliegveld(currentAirport, mijnKeuzes);
         string afkorting = Invoer.VraagTotGeldig(
-            $"Nieuwe afkorting [{currentAirport.Afkorting}]: ",
+            $"Mogelijk nieuwe afkorting [{currentAirport.Afkorting}]: ",
             input => string.IsNullOrWhiteSpace(input) || vliegveldLogic.IsValidAfkorting(input),
             "Afkorting is verplicht.");
         if (string.IsNullOrWhiteSpace(afkorting)) afkorting = currentAirport.Afkorting;
+        mijnKeuzes += $"Gekozen afkorting: {afkorting}\n";
+        ToonVliegveld(currentAirport, mijnKeuzes);
+
+        Console.WriteLine("Wilt u deze aanpassingen bevestigen? (J/N)");
+        if (Console.ReadLine()?.ToLower() == "n")
+        {
+            return "Vliegveld niet aangepast; bevestiging geannuleerd.";
+        }
 
         if (!CheckAirport(id, naam, stad, land, afkorting, out VliegveldModel airport))
             return "Vliegveld niet aangepast; er is iets foutgegaan tijdens het checken.";
@@ -180,14 +195,17 @@ static class VliegveldMenu
         airport = new VliegveldModel(id, naam, stad, land, afkorting);
         return isValid;
     }
-    private static void ToonVliegveld(VliegveldModel vliegveld)
+
+    private static void ToonVliegveld(VliegveldModel vliegveld, string mijnKeuzes)
     {
-        Console.WriteLine("");
-        Console.WriteLine("Gevonden vliegveld:");
+        Menu.PrintTitel();
+        Console.WriteLine("Gevonden/gekozen vliegveld:");
         Console.WriteLine($"  Naam:      {vliegveld.Naam}");
         Console.WriteLine($"  Stad:      {vliegveld.Stad}");
         Console.WriteLine($"  Land:      {vliegveld.Land}");
         Console.WriteLine($"  Afkorting: {vliegveld.Afkorting}");
+        Console.WriteLine("");
+        Console.WriteLine(mijnKeuzes);
         Console.WriteLine("");
     }
 }

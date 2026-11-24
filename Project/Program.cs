@@ -21,6 +21,16 @@ Vluchten:
 - Overzicht : werkt
 - Toevoegen : werkt
 - Aanpassen : werkt
+
+Vliegtuig:
+- Overzicht : werkt
+- Toevoegen : werkt
+- Aanpassen : werkt
+
+Vlievgeld:
+- Overzicht : werkt
+- Toevoegen : werkt
+- Aanpassen : werkt
 */
 
 // Stoelen automatisch aanmaken voor de drie vliegtuigen
