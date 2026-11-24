@@ -16,8 +16,8 @@ public class VluchtOverzichtAccess
                 Vlucht.VertrekTijd AS DepartureTime,
                 Vlucht.Prijs AS Price
             FROM Vlucht
-            JOIN Vliegveld AS Vertrek ON Vlucht.VertrekLocatie = Vertrek.ID
-            JOIN Vliegveld AS Aankomst ON Vlucht.AankomstLocatie = Aankomst.ID";
+                JOIN Vliegveld AS Vertrek ON Vlucht.VertrekLocatie = Vertrek.ID
+                JOIN Vliegveld AS Aankomst ON Vlucht.AankomstLocatie = Aankomst.ID";
         using SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
         return connection.Query<FlightModel>(sql).ToList();
@@ -25,15 +25,17 @@ public class VluchtOverzichtAccess
 
     public FlightModel? GetById(int id)
     {
-        string sql = @"SELECT vlucht.ID as ID, Vlucht.VliegtuigID AS VliegtuigID, vlucht.VluchtNummer AS FlightNumber,
-            vertrek.Stad AS Origin,
-            Aankomst.Stad AS Destination,
-            Vlucht.VertrekDatum AS DepartureDate,
-            Vlucht.VertrekTijd AS DepartureTime,
-            Vlucht.Prijs AS Price
+        string sql = @"
+            SELECT vlucht.ID as ID, Vlucht.VliegtuigID AS VliegtuigID,
+                vlucht.VluchtNummer AS FlightNumber,
+                Vertrek.Stad AS Origin,
+                Aankomst.Stad AS Destination,
+                Vlucht.VertrekDatum AS DepartureDate,
+                Vlucht.VertrekTijd AS DepartureTime,
+                Vlucht.Prijs AS Price
             FROM vlucht
-            JOIN Vliegveld AS Vertrek ON vlucht.VertrekLocatie = Vertrek.ID
-            JOIN Vliegveld AS Aankomst ON Vlucht.AankomstLocatie = Aankomst.ID
+                JOIN Vliegveld AS Vertrek ON vlucht.VertrekLocatie = Vertrek.ID
+                JOIN Vliegveld AS Aankomst ON Vlucht.AankomstLocatie = Aankomst.ID
             WHERE Vlucht.ID = @Id";
         using SqliteConnection connection = new($"Data Source={DatabaseLoc}");
 
@@ -52,7 +54,7 @@ public class VluchtOverzichtAccess
         return connection.Query<string>(sql).ToList();
     }
 
-    public List<string> GetCitiesByCountry(string country)
+    public List<string> GetAirportsByCountry(string country)
     {
         string sql = @"
             SELECT DISTINCT Stad

@@ -1,5 +1,6 @@
 using Dapper;
 using Microsoft.Data.Sqlite;
+using System.Globalization;
 
 namespace UnitTests;
 
@@ -26,10 +27,10 @@ public sealed class ReserveringTests
             connection.Execute("INSERT INTO Stoel (ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse) VALUES (4, 1, 'A', '20', 1)");
             connection.Execute("INSERT INTO Stoel (ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse) VALUES (5, 1, 'B', '20', 1)");
 
-            connection.Execute("INSERT INTO Passagier (ID, GebruikerID, Naam, Achternaam, Email, PaspoortNummer, GeboorteDatum, Telefoonnummer, PaspoortVerloopDatum) VALUES (1, 2, 'Jan', 'Jansen', 'jan@test.nl', 'NL1111111', '1990-01-01', '0611111111', '2030-01-01')");
-            connection.Execute("INSERT INTO Passagier (ID, GebruikerID, Naam, Achternaam, Email, PaspoortNummer, GeboorteDatum, Telefoonnummer, PaspoortVerloopDatum) VALUES (2, 2, 'Deniz', 'Yilmaz', 'deniz@outlook.com', 'NL2222222', '1995-05-05', '0622222222', '2031-05-05')");
+            connection.Execute("INSERT INTO Passagier (ID, GebruikerID, Naam, Achternaam, Email, PaspoortNummer, GeboorteDatum, Telefoonnummer, PaspoortVerloopDatum) VALUES (1, 2, 'Jan', 'Jansen', 'jan@test.nl', 'NL1111111', '01-01-1990', '0611111111', '01-01-2030')");
+            connection.Execute("INSERT INTO Passagier (ID, GebruikerID, Naam, Achternaam, Email, PaspoortNummer, GeboorteDatum, Telefoonnummer, PaspoortVerloopDatum) VALUES (2, 2, 'Deniz', 'Yilmaz', 'deniz@outlook.com', 'NL2222222', '05-05-1995', '0622222222', '05-05-2031')");
 
-            connection.Execute("INSERT INTO Reservering (ID, GebruikersID, VluchtID, Status, BoekingsCode, AanmaakDatum, LaatsteWijziging) VALUES (1, 2, 7, 'Bevestigd', 100001, '2026-11-01 10:00', '2026-11-01 10:00')");
+            connection.Execute("INSERT INTO Reservering (ID, GebruikersID, VluchtID, Status, BoekingsCode, AanmaakDatum, LaatsteWijziging) VALUES (1, 2, 7, 'Bevestigd', 100001, '01-11-2026 10:00', '01-11-2026 10:00')");
 
             connection.Execute("INSERT INTO ReserveringsStoel (PassagierID, ReserveringID, StoelID) VALUES (1, 1, 2)");
             connection.Execute("INSERT INTO ReserveringsStoel (PassagierID, ReserveringID, StoelID) VALUES (2, 1, 3)");
@@ -47,8 +48,8 @@ public sealed class ReserveringTests
         reservering.VluchtID = 7;
         reservering.Status = "Bevestigd";
         reservering.BoekingsCode = 100002;
-        reservering.AanmaakDatum = "2026-11-09 12:00";
-        reservering.LaatsteWijziging = "2026-11-09 12:00";
+        reservering.AanmaakDatum = "09-11-2026 12:00";
+        reservering.LaatsteWijziging = "09-11-2026 12:00";
         reservering.Stoelen.Add(new ReserveringsStoelModel(0, 1, 0, 4));
 
         access.Add(reservering);
@@ -65,6 +66,32 @@ public sealed class ReserveringTests
         }
 
         Assert.IsTrue(gevonden);
+    }
+
+    [TestMethod]
+    public void NieuweReserveringGebruiktDatumFormaatDagMaandJaar()
+    {
+        AccountsLogic accountsLogic = new AccountsLogic();
+        Assert.IsNotNull(accountsLogic.CheckLogin("deniz@outlook.com", "denizbaba"));
+
+        ReserveringLogic logic = new ReserveringLogic();
+        List<ReserveringsStoelModel> stoelen = new()
+        {
+            new ReserveringsStoelModel(0, 1, 0, 4)
+        };
+
+        Assert.IsTrue(logic.MaakReservering(7, stoelen));
+
+        ReserveringModel? reservering = new ReserveringAccess()
+            .GetByGebruikerId(2)
+            .FirstOrDefault(reservering => reservering.BoekingsCode == logic.LaatsteBoekingsCode);
+        Assert.IsNotNull(reservering);
+        Assert.IsTrue(DateTime.TryParseExact(
+            reservering.AanmaakDatum,
+            "dd-MM-yyyy HH:mm",
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None,
+            out _));
     }
 
 

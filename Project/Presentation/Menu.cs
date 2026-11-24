@@ -101,13 +101,13 @@ static class Menu
                 return UserRegistration.Start();
             else if (currentAccount.IsAdmin == 0)
                 // Vluchten Bekijken
-                return FlightOverview.Start(); // return
+                return FlightOverview.Start();
             else
                 return "Ongeldige invoer.";
         }
         else if (input == '3' && currentAccount != null && currentAccount.IsAdmin == 0)
         {
-            MijnReserveringen.Start();
+            return MijnReserveringen.Start();
         }
         else if (input == '8' && currentAccount != null)
         {
@@ -133,12 +133,17 @@ static class Menu
 
     public static void PrintTitel()
     {
-        Console.Clear();
-        Console.WriteLine("");
-        Console.WriteLine(@$"       ▀█▀▀▄        █    █                 ▀█                    ▄▀▄   ▀        ▀█   ▀                  
-        █▄▄▀ ▄▀▀▀▄ ▀█▀▀ ▀█▀▀ ▄▀▀▀▄ ▀█▄▀▄  ▄▄█  ▀▀▀▄  █▀▄▀▄      █   █ ▀█  ▀█▄▀▄  █  ▀█  █▄▀▀▄ ▄▀▀▀▄ ▄▀▀▀
-        █ ▀▄ █   █  █ ▄  █ ▄ █▀▀▀▀  █  ▀ █  █  ▄▀▀█  █ █ █      █▀▀▀█  █   █  ▀  █   █  █   █ █▀▀▀▀  ▀▀▄
-        ▀  ▀  ▀▀▀    ▀    ▀   ▀▀▀  ▀▀▀    ▀▀ ▀  ▀▀ ▀ ▀ ▀ ▀      ▀   ▀ ▀▀▀ ▀▀▀   ▀▀▀ ▀▀▀ ▀   ▀  ▀▀▀  ▀▀▀");
-        Console.WriteLine("");
+        try
+        {
+            Console.Clear();
+        }
+        catch (IOException) {}
+        Console.WriteLine(@$"
+        ▀█▀▀▄        █    █                 ▀█                    ▄▀▄   ▀        ▀█   ▀                  
+         █▄▄▀ ▄▀▀▀▄ ▀█▀▀ ▀█▀▀ ▄▀▀▀▄ ▀█▄▀▄  ▄▄█  ▀▀▀▄  █▀▄▀▄      █   █ ▀█  ▀█▄▀▄  █  ▀█  █▄▀▀▄ ▄▀▀▀▄ ▄▀▀▀
+         █ ▀▄ █   █  █ ▄  █ ▄ █▀▀▀▀  █  ▀ █  █  ▄▀▀█  █ █ █      █▀▀▀█  █   █  ▀  █   █  █   █ █▀▀▀▀  ▀▀▄
+         ▀  ▀  ▀▀▀    ▀    ▀   ▀▀▀  ▀▀▀    ▀▀ ▀  ▀▀ ▀ ▀ ▀ ▀      ▀   ▀ ▀▀▀ ▀▀▀   ▀▀▀ ▀▀▀ ▀   ▀  ▀▀▀  ▀▀▀
+        ");
     }
+
 }

@@ -26,12 +26,34 @@ static class VliegveldMenu
 
     public static string MenuOptions()
     {
-        Console.WriteLine("Vliegvelden beheren");
-        Console.WriteLine("1 - Overzicht");
-        Console.WriteLine("2 - Toevoegen");
-        Console.WriteLine("3 - Aanpassen");
-        Console.WriteLine("0 - Terug");
-        return Console.ReadLine() ?? "";
+        string[] menuOptions = { "1 - Overzicht", "2 - Toevoegen", "3 - Aanpassen", "0 - Terug" };
+        int selectedIndex = 0;
+
+        while (true)
+        {
+            Console.Clear();
+            Console.WriteLine("Vliegvelden beheren");
+            for (int i = 0; i < menuOptions.Length; i++)
+            {
+                string marker = i == selectedIndex ? "> " : "  ";
+                Console.WriteLine($"{marker}{menuOptions[i]}");
+            }
+
+            ConsoleKey key = Console.ReadKey(intercept: true).Key;
+            switch (key)
+            {
+                case ConsoleKey.UpArrow:
+                    selectedIndex = Math.Max(0, selectedIndex - 1);
+                    break;
+                case ConsoleKey.DownArrow:
+                    selectedIndex = Math.Min(menuOptions.Length - 1, selectedIndex + 1);
+                    break;
+                case ConsoleKey.Enter:
+                    return menuOptions[selectedIndex][0].ToString();
+                case ConsoleKey.Escape:
+                    return "0";
+            }
+        }
     }
 
     public static void Overzicht()

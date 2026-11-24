@@ -8,8 +8,10 @@ static class UserLogin
 
         Console.WriteLine("Welkom op de inlogpagina.");
         Console.WriteLine("Voer uw e-mailadres in.");
+        Console.Write("> ");
         string email = Console.ReadLine() ?? "";
         Console.WriteLine("Voer uw wachtwoord in.");
+        Console.Write("> ");
         string password = Console.ReadLine() ?? "";
         
         AccountModel acc = accountsLogic.CheckLogin(email, password);

@@ -13,24 +13,121 @@ static class VluchtBoeken
         List<ReserveringsStoelModel> gekozenStoelen = new List<ReserveringsStoelModel>();
 
         bool meerPassagiers = true;
+
         while (meerPassagiers)
         {
-            Console.WriteLine("Vul uw passagiersgegevens in:");
+            string naam = "";
+            string achternaam = "";
+            string email = "";
+            string paspoortNummer = "";
+            string geboorteDatum = "";
+            string telefoonnummer = "";
+            string paspoortVerloopDatum = "";
 
-            Console.Write("Voornaam: ");
-            string naam = Console.ReadLine() ?? "";
-            Console.Write("Achternaam: ");
-            string achternaam = Console.ReadLine() ?? "";
-            Console.Write("E-mailadres: ");
-            string email = Console.ReadLine() ?? "";
-            Console.Write("Paspoortnummer: ");
-            string paspoortNummer = Console.ReadLine() ?? "";
-            Console.Write("Geboortedatum: ");
-            string geboorteDatum = Console.ReadLine() ?? "";
-            Console.Write("Telefoonnummer: ");
-            string telefoonnummer = Console.ReadLine() ?? "";
-            Console.Write("Paspoortverloopdatum: ");
-            string paspoortVerloopDatum = Console.ReadLine() ?? "";
+            string feedback = "";
+            string warning = "";
+            int currentChoice = 0;
+            bool choicesConfirmed = false;
+            while (choicesConfirmed == false)
+            {
+                Menu.PrintTitel();
+                if (feedback != "")
+                    Console.WriteLine(feedback);
+                if (warning != "")
+                    Console.WriteLine(warning);
+                    warning = "";
+
+                switch (currentChoice)
+                {
+                    case 0:
+                        Console.Write("Voornaam: ");
+                        naam = Console.ReadLine() ?? "";
+
+                        if (passagierLogic.IsValidNaam(naam))
+                        {
+                            currentChoice += 1;
+                            feedback += $"Voornaam: {naam}";
+                        }
+                        else
+                            warning = "Voornaam bevat ongeldige tekens.";
+                        break;
+                    case 1:
+                        Console.Write("Achternaam: ");
+                        achternaam = Console.ReadLine() ?? "";
+
+                        if (passagierLogic.IsValidAchternaam(achternaam))
+                        {
+                            currentChoice += 1;
+                            feedback += $"\nAchternaam: {achternaam}";
+                        }
+                        else
+                            warning = "Achternaam bevat ongeldige tekens.";
+                        break;
+                    case 2:
+                        Console.Write("E-mailadres: ");
+                        email = Console.ReadLine() ?? "";
+
+                        if (passagierLogic.IsValidEmail(email))
+                        {
+                            currentChoice += 1;
+                            feedback += $"\nE-mailadres: {email}";
+                        }
+                        else
+                            warning = "Het e-mailadres is ongeldig.";
+                        break;
+                    case 3:
+                        Console.Write("Paspoortnummer: ");
+                        paspoortNummer = Console.ReadLine() ?? "";
+
+                        if (passagierLogic.IsValidPaspoortNummer(paspoortNummer))
+                        {
+                            currentChoice += 1;
+                            feedback += $"\nPaspoortnummer: {paspoortNummer}";
+                        }
+                        else
+                            warning = "Het paspoortnummer moet 5-20 letters of cijfers bevatten.";
+                        break;
+                    case 4:
+                        Console.Write("Geboortedatum (dd-MM-yyyy): ");
+                        geboorteDatum = Console.ReadLine() ?? "";
+
+                        if (passagierLogic.IsValidGeboorteDatum(geboorteDatum))
+                        {
+                            currentChoice += 1;
+                            feedback += $"\nGeboortedatum: {geboorteDatum}";
+                        }
+                        else
+                            warning = "De geboortedatum moet een geldige datum in het verleden zijn (dd-MM-yyyy).";
+                        break;
+                    case 5:
+                        Console.Write("Telefoonnummer: ");
+                        telefoonnummer = Console.ReadLine() ?? "";
+
+                        if (passagierLogic.IsValidTelefoonnummer(telefoonnummer))
+                        {
+                            currentChoice += 1;
+                            feedback += $"\nTelefoonnummer: {telefoonnummer}";
+                        }
+                        else
+                            warning = "Het telefoonnummer moet 7-15 cijfers bevatten.";
+                        break;
+                    case 6:
+                        Console.Write("Paspoortverloopdatum (dd-MM-yyyy): ");
+                        paspoortVerloopDatum = Console.ReadLine() ?? "";
+
+                        if (passagierLogic.IsValidPaspoortVerloopDatum(paspoortVerloopDatum))
+                        {
+                            currentChoice += 1;
+                            feedback += $"\nPaspoortverloopdatum: {paspoortVerloopDatum}";
+                        }
+                        else
+                            warning = "De paspoortverloopdatum moet een geldige datum in de toekomst zijn (dd-MM-yyyy).";
+                        break;
+                    case 7:
+                        choicesConfirmed = true;
+                        break;
+                }
+            }
 
             PassagierModel passagier = new()
             {
@@ -43,12 +140,10 @@ static class VluchtBoeken
                 Telefoonnummer = telefoonnummer,
                 PaspoortVerloopDatum = paspoortVerloopDatum
             };
-
-            if (!CheckPassagier(passagier))
-                continue;
-
+            
+            Menu.PrintTitel();
+            Console.WriteLine(feedback);
             passagierLogic.Add(passagier);
-            Console.WriteLine("Passagier toegevoegd.");
 
             // Stoel kiezen voor deze passagier
             int stoelId = KiesStoel(vluchtId, gekozenStoelen);
@@ -65,14 +160,12 @@ static class VluchtBoeken
                 reserveringsStoel.ExtraBagage = VraagExtraBagage();
                 gekozenStoelen.Add(reserveringsStoel);
 
-                Console.Write("Wilt u nog een passagier toevoegen? (J/N): ");
-                string keuze = Console.ReadLine() ?? "";
-                if (keuze.Trim().ToLower() == "n")
-                {
-                    meerPassagiers = false;
-                }
-            }
+            Console.Write("Wilt u nog een passagier toevoegen? (J/N): ");
+            string keuze = Console.ReadLine() ?? "";
+            if (keuze.Trim().ToLower() == "n")
+                meerPassagiers = false;
         }
+    }
 
         // Geen enkele stoel gekozen, dus ook geen reservering
         if (gekozenStoelen.Count == 0)
@@ -208,55 +301,5 @@ static class VluchtBoeken
         }
 
         return false;
-    }
-
-
-    private static bool CheckPassagier(PassagierModel passagier)
-    {
-        bool isValid = true;
-
-        if (!passagierLogic.IsValidNaam(passagier.Naam))
-        {
-            Console.WriteLine("Voornaam bevat ongeldige tekens.");
-            isValid = false;
-        }
-
-        if (!passagierLogic.IsValidAchternaam(passagier.Achternaam))
-        {
-            Console.WriteLine("Achternaam bevat ongeldige tekens.");
-            isValid = false;
-        }
-
-        if (!passagierLogic.IsValidEmail(passagier.Email))
-        {
-            Console.WriteLine("Het e-mailadres is ongeldig.");
-            isValid = false;
-        }
-
-        if (!passagierLogic.IsValidPaspoortNummer(passagier.PaspoortNummer))
-        {
-            Console.WriteLine("Het paspoortnummer moet 5-20 letters of cijfers bevatten.");
-            isValid = false;
-        }
-
-        if (!passagierLogic.IsValidGeboorteDatum(passagier.GeboorteDatum))
-        {
-            Console.WriteLine("De geboortedatum moet een geldige datum in het verleden zijn (yyyy-MM-dd).");
-            isValid = false;
-        }
-
-        if (!passagierLogic.IsValidTelefoonnummer(passagier.Telefoonnummer))
-        {
-            Console.WriteLine("Het telefoonnummer moet 7-15 cijfers bevatten.");
-            isValid = false;
-        }
-
-        if (!passagierLogic.IsValidPaspoortVerloopDatum(passagier.PaspoortVerloopDatum))
-        {
-            Console.WriteLine("De paspoortverloopdatum moet een geldige datum in de toekomst zijn (yyyy-MM-dd).");
-            isValid = false;
-        }
-
-        return isValid;
     }
 }

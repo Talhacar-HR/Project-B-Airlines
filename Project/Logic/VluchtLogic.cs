@@ -1,3 +1,5 @@
+using System.Globalization;
+
 public class VluchtLogic
 {
     private VluchtAccess _access = new();
@@ -55,7 +57,7 @@ public class VluchtLogic
 
     public bool IsValidVertrekDatum(string vertrekDatum)
     {
-        return DateOnly.TryParseExact(vertrekDatum, "yyyy-MM-dd", out _);
+        return DateOnly.TryParseExact(vertrekDatum, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out _);
     }
 
     public bool IsValidVertrekTijd(string vertrekTijd)

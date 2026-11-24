@@ -1,4 +1,5 @@
 using System.Data;
+using System.Globalization;
 
 namespace UnitTests;
 
@@ -41,11 +42,11 @@ public sealed class VluchtOverichtTest1
        FlightLogic flightLogic = new();
 
        FlightModel flight1 = new();
-       flight1.DepartureDate = "2026-04-26";
+       flight1.DepartureDate = "26-04-2026";
        flight1.DepartureTime = time1; // 09:00 en daarna 14:00
 
        FlightModel flight2 = new();
-       flight2.DepartureDate = "2026-04-26";
+       flight2.DepartureDate = "26-04-2026";
        flight2.DepartureTime = time2; // 14:00 en daarna 09:00
 
       List<FlightModel> flights = [];
@@ -61,8 +62,8 @@ public sealed class VluchtOverichtTest1
     }
 
     [DataTestMethod]
-    [DataRow("2026-12-03", "Amsterdam", "Dubai")]
-    [DataRow("2026-12-10", "Dubai", "Amsterdam")]
+    [DataRow("03-12-2026", "Amsterdam", "Dubai")]
+    [DataRow("10-12-2026", "Dubai", "Amsterdam")]
     public void FlightFilterValidData(string departureDate, string origin, string destination)
     {
         // arrange
@@ -81,6 +82,29 @@ public sealed class VluchtOverichtTest1
             Assert.AreEqual(origin, flight.Origin); // checkt vertrekplaats
             Assert.AreEqual(destination, flight.Destination); // checkt bestemming
         }
+
+    }
+
+    [TestMethod]
+    public void DepartureDateRequiresDayMonthYear()
+    {
+        VluchtLogic flightLogic = new();
+
+        Assert.IsTrue(flightLogic.IsValidVertrekDatum("26-04-2026"));
+        Assert.IsFalse(flightLogic.IsValidVertrekDatum("2026-04-26"));
+    }
+
+    [TestMethod]
+    public void PassengerDatesRequireDayMonthYear()
+    {
+        PassagierLogic passagierLogic = new();
+        string yesterday = DateTime.Today.AddDays(-1).ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
+        string tomorrow = DateTime.Today.AddDays(1).ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
+
+        Assert.IsTrue(passagierLogic.IsValidGeboorteDatum(yesterday));
+        Assert.IsFalse(passagierLogic.IsValidGeboorteDatum(DateTime.Today.AddDays(-1).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+        Assert.IsTrue(passagierLogic.IsValidPaspoortVerloopDatum(tomorrow));
+        Assert.IsFalse(passagierLogic.IsValidPaspoortVerloopDatum(DateTime.Today.AddDays(1).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
     }
 
     [DataTestMethod]

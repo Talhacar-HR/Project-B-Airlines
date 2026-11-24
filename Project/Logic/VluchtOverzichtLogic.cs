@@ -1,3 +1,5 @@
+using System.Globalization;
+
 public class FlightLogic
 {
     private VluchtOverzichtAccess _access = new();
@@ -25,7 +27,11 @@ public class FlightLogic
 
     private DateTime GetDepartureMoment(FlightModel flight)
     {
-        return DateTime.Parse(flight.DepartureDate + " " + flight.DepartureTime);
+        return DateTime.ParseExact(
+            flight.DepartureDate + " " + flight.DepartureTime,
+            "dd-MM-yyyy HH:mm",
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None);
     }
 
     private bool HasAvailableSeats(FlightModel flight)
@@ -97,14 +103,9 @@ public class FlightLogic
         return _access.GetAllCountries();
     }
 
-    public List<string> GetCitiesByCountry(string country)
+    public List<string> GetAirportsByCountry(string country)
     {
-        if (string.IsNullOrWhiteSpace(country))
-        {
-            return [];
-        }
-
-        return _access.GetCitiesByCountry(country);
+        return _access.GetAirportsByCountry(country);
     }
 
     public List<FlightModel> SortFlights(List<FlightModel> flights, string sortby)
