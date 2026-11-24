@@ -13,8 +13,8 @@ test@test.com
 test123
 
 DEBUGS:
-- Adminmenu stoelemenu weghalen (4)
 - Keuzemenus nummers weghalen
+- Na kiezen datum en tijd - Er zijn geen beschikbare vluchten gevonden op die datum.
 */
 
 StoelLogic stoelLogic = new();

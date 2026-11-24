@@ -10,32 +10,32 @@ static class VliegtuigMenu
         bool menuRunning = true;
         while (menuRunning)
         {
+            Menu.PrintTitel();
             Console.WriteLine("");
             string input = MenuOptions();
             Console.WriteLine("");
 
             if (feedback != "")
                 Console.WriteLine(feedback);
+                feedback = "";
                 Console.WriteLine("");
 
             if (input == "1")
-                Overzicht();
+                StoelMenu.Start();
             else if (input == "2")
                 feedback = Toevoegen();
             else if (input == "3")
                 feedback = Aanpassen();
-            else if (input == "4")
-                StoelMenu.Start();
             else if (input == "0")
                 menuRunning = false;
             else
-                Console.WriteLine("Ongeldige keuze.");
+                feedback = "Ongeldige keuze.";
         }
     }
 
     public static string MenuOptions()
     {
-        string[] menuOptions = { "1 - Overzicht", "2 - Toevoegen", "3 - Aanpassen", "4 - Stoelen beheren", "0 - Terug" };
+        string[] menuOptions = { "1 - Vliegtuigenmodellen", "2 - Toevoegen", "3 - Aanpassen", "0 - Terug" };
         int selectedIndex = 0;
 
         while (true)
@@ -63,18 +63,6 @@ static class VliegtuigMenu
                     return "0";
             }
         }
-    }
-
-    public static string Overzicht()
-    {
-        List<VliegtuigModel> planes = vliegtuigLogic.GetAll();
-        if (planes.Count == 0)
-            return "Geen vliegtuigen gevonden.";
-
-        string vliegtuigen = "";
-        foreach (VliegtuigModel plane in planes)
-            vliegtuigen += $"ID: {plane.ID}, Bagageruimte: {plane.BaggageRuimte}, Model: {plane.Model}, Merk: {plane.Merk}\n";
-        return vliegtuigen;
     }
 
     public static string Toevoegen()
@@ -193,6 +181,7 @@ static class VliegtuigMenu
         Console.WriteLine("Ongeldige keuze.");
         return null;
     }
+
     private static void ToonVliegtuig(VliegtuigModel vliegtuig)
     {
         Console.WriteLine("");

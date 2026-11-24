@@ -4,21 +4,27 @@ static class StoelMenu
 
     public static void Start()
     {
+        string feedback = "";
+
         bool menuRunning = true;
         while (menuRunning)
         {
             Menu.PrintTitel();
-
             Console.WriteLine("");
             string input = MenuOptions();
             Console.WriteLine("");
 
+            if (feedback != "")
+                Console.WriteLine(feedback);
+                feedback = "";
+                Console.WriteLine("");
+
             if (input == "1")
-                Overzicht();
+                feedback = Overzicht();
             else if (input == "0")
                 menuRunning = false;
             else
-                Console.WriteLine("Ongeldige keuze.");
+                feedback = "Ongeldige keuze.";
         }
     }
 
