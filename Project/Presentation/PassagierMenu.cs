@@ -63,7 +63,7 @@ static class VluchtBoeken
         // Reservering bevestigen
         if (reserveringLogic.MaakReservering(vluchtId, gekozenStoelen))
         {
-            return $"\nUw reservering is bevestigd!\nUw boekingscode is: {reserveringLogic.LaatsteBoekingsCode}";
+            return new PrijsLogic().MaakBevestigingsTekst(vluchtId, gekozenStoelen, reserveringLogic.LaatsteBoekingsCode);
         }
         else
         {

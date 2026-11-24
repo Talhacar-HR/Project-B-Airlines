@@ -29,6 +29,8 @@ public sealed class PlattegrondTests
             connection.Execute("INSERT INTO Stoel (ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse) VALUES (4, 1, '1C', '1', 1)");
             connection.Execute("INSERT INTO Stoel (ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse) VALUES (5, 1, '2A', '2', 1)");
 
+            connection.Execute("INSERT OR REPLACE INTO Gebruikers (ID, Admin, Email, Gebruikersnaam, Wachtwoord) VALUES (2, 0, 'deniz@outlook.com', 'deniz@outlook.com', 'denizbaba')");
+
             connection.Execute("INSERT INTO Passagier (ID, GebruikerID, Naam, Achternaam, Email, PaspoortNummer, GeboorteDatum, Telefoonnummer, PaspoortVerloopDatum) VALUES (1, 2, 'Jan', 'Jansen', 'jan@test.nl', 'NL1111111', '1990-01-01', '0611111111', '2030-01-01')");
             connection.Execute("INSERT INTO Reservering (ID, GebruikersID, VluchtID, Status, BoekingsCode, AanmaakDatum, LaatsteWijziging) VALUES (1, 2, 7, 'Bevestigd', 100001, '2026-11-01 10:00', '2026-11-01 10:00')");
             connection.Execute("INSERT INTO ReserveringsStoel (PassagierID, ReserveringID, StoelID) VALUES (1, 1, 2)");

@@ -116,9 +116,9 @@ public sealed class InvoerTests
             Achternaam = "Jansen",
             Email = "jan@test.nl",
             PaspoortNummer = "NL1234567",
-            GeboorteDatum = "1990-05-12",
+            GeboorteDatum = "12-05-1990",
             Telefoonnummer = "0612345678",
-            PaspoortVerloopDatum = "2035-01-01"
+            PaspoortVerloopDatum = "01-01-2035"
         };
     }
 }

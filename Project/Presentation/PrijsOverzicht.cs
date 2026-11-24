@@ -39,6 +39,6 @@ static class PrijsOverzicht
     // Geeft een bedrag terug als "€ 0,00"
     private static string Bedrag(double bedrag)
     {
-        return "€ " + bedrag.ToString("N2", new CultureInfo("nl-NL"));
+        return PrijsLogic.FormatBedrag(bedrag);
     }
 }

@@ -27,6 +27,8 @@ public sealed class ReserveringTests
             connection.Execute("INSERT INTO Stoel (ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse) VALUES (4, 1, 'A', '20', 1)");
             connection.Execute("INSERT INTO Stoel (ID, VliegtuigID, StoelNummer, RijNummer, StoelKlasse) VALUES (5, 1, 'B', '20', 1)");
 
+            connection.Execute("INSERT OR REPLACE INTO Gebruikers (ID, Admin, Email, Gebruikersnaam, Wachtwoord) VALUES (2, 0, 'deniz@outlook.com', 'deniz@outlook.com', 'denizbaba')");
+
             connection.Execute("INSERT INTO Passagier (ID, GebruikerID, Naam, Achternaam, Email, PaspoortNummer, GeboorteDatum, Telefoonnummer, PaspoortVerloopDatum) VALUES (1, 2, 'Jan', 'Jansen', 'jan@test.nl', 'NL1111111', '01-01-1990', '0611111111', '01-01-2030')");
             connection.Execute("INSERT INTO Passagier (ID, GebruikerID, Naam, Achternaam, Email, PaspoortNummer, GeboorteDatum, Telefoonnummer, PaspoortVerloopDatum) VALUES (2, 2, 'Deniz', 'Yilmaz', 'deniz@outlook.com', 'NL2222222', '05-05-1995', '0622222222', '05-05-2031')");
 

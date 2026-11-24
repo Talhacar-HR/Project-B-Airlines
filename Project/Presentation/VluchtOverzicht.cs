@@ -73,7 +73,7 @@ static class FlightOverview
         List<string> allFlights = [];
         foreach (FlightModel flight in flights)
         {
-            allFlights.Add($"{flight.FlightNumber} | {flight.Origin} | {flight.Destination} | {flight.DepartureDate} | {flight.DepartureTime} | €{flight.Price}");
+            allFlights.Add($"{flight.FlightNumber} | {flight.Origin} | {flight.Destination} | {flight.DepartureDate} | {flight.DepartureTime} | {PrijsLogic.FormatBedrag(flight.Price)}");
         }
 
         string? flightNumberInput = SelectMenuChoice(statement, allFlights, mijnKeuzes);
@@ -90,16 +90,14 @@ static class FlightOverview
 
         FlightModel selectedFlight = flights[selectedIndex];
         mijnKeuzes += $"Datum: {selectedFlight.DepartureDate} {selectedFlight.DepartureTime}\n";
-        mijnKeuzes += $"Prijs: €{selectedFlight.Price}";
+        mijnKeuzes += $"Vluchtprijs: {PrijsLogic.FormatBedrag(selectedFlight.Price)}";
 
         if (!flightLogic.SelectFlight(selectedFlight.ID))
         {
             return "Deze vlucht is niet beschikbaar.";
         }
 
-        VluchtBoeken.Start(selectedFlight.ID, selectedFlight.FlightNumber, mijnKeuzes);
-
-        return $"Uw boeking is voltooid.\n{mijnKeuzes}";
+        return VluchtBoeken.Start(selectedFlight.ID, selectedFlight.FlightNumber, mijnKeuzes);
     }
 
     private static string? SelectMenuChoice(string title, List<string> choices, string mijnKeuzes = "")

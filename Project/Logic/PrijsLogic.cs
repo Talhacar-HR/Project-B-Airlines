@@ -59,6 +59,31 @@ public class PrijsLogic
         return Math.Round(totaal, 2);
     }
 
+    // Geeft een bedrag terug als "€ 1.234,56" (Nederlandse notatie)
+    public static string FormatBedrag(double bedrag)
+    {
+        return "€ " + bedrag.ToString("N2", new System.Globalization.CultureInfo("nl-NL"));
+    }
+
+    // Tekst voor na het bevestigen: boekingscode, per passagier stoel/bagage/prijs en het totaal
+    public string MaakBevestigingsTekst(int vluchtId, List<ReserveringsStoelModel> stoelen, int boekingsCode)
+    {
+        string tekst = "\nUw reservering is bevestigd!";
+        tekst += $"\nUw boekingscode is: {boekingsCode}\n";
+
+        int nummer = 1;
+        foreach (PrijsRegelModel regel in GetPrijsRegels(vluchtId, stoelen))
+        {
+            string bagage = regel.ExtraBagage ? "ja" : "nee";
+            tekst += $"\nPassagier {nummer}: stoel {regel.StoelNummer}, extra bagage: {bagage}, {FormatBedrag(regel.Prijs)}";
+            nummer++;
+        }
+
+        tekst += "\n--------------------------------------------";
+        tekst += $"\nTotaalprijs: {FormatBedrag(BerekenTotaalprijs(vluchtId, stoelen))}";
+        return tekst;
+    }
+
     // Totaalprijs van een opgeslagen reservering.
     // Een onbekende reservering of een reservering zonder passagiers geeft 0 terug (geen crash).
     public double BerekenTotaalprijs(int reserveringId)
