@@ -153,7 +153,7 @@ static class Menu
         if (currentAccount != null)
         {
             Console.WriteLine("1 - Uitloggen");
-            Console.WriteLine("2 - Vluchten checken");
+            Console.WriteLine("2 - Vluchten boeken");
             Console.WriteLine("3 - Mijn reserveringen");
             Console.WriteLine("8 - Check gebruiker");
             

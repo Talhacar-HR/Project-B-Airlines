@@ -36,8 +36,10 @@ static class VluchtMenu
             Menu.PrintTitel();
 
             if (feedback != "")
+            {
                 Console.WriteLine(feedback);
                 Console.WriteLine("");
+            }
 
             Console.WriteLine("Vluchten beheren");
             for (int i = 0; i < menuOptions.Length; i++)
@@ -94,12 +96,14 @@ static class VluchtMenu
         VliegveldModel? vertrekVliegveld = KeuzeMenu.KiesVliegveld("vertrekvliegveld");
         if (vertrekVliegveld is null)
             return "Geen vertrekvliegveld gekozen; vlucht niet toegevoegd.";
+        mijnKeuzes += $"Gekozen vertrekvliegveld: {vertrekVliegveld.Naam}\n";
 
         VliegveldModel? aankomstVliegveld = KeuzeMenu.KiesVliegveld(
             "aankomstvliegveld",
             uitgeslotenVliegveldId: vertrekVliegveld.ID);
         if (aankomstVliegveld is null)
             return "Geen aankomstvliegveld gekozen; vlucht niet toegevoegd.";
+        mijnKeuzes += $"Gekozen aankomstvliegveld: {aankomstVliegveld.Naam}\n";
 
         string vertrekAfkortingInput = vertrekVliegveld.Afkorting;
         string aankomstAfkortingInput = aankomstVliegveld.Afkorting;
@@ -107,27 +111,32 @@ static class VluchtMenu
             "Vertrekdatum (dd-MM-yyyy): ",
             vluchtLogic.IsValidVertrekDatum,
             "De vertrekdatum moet geldig zijn en het formaat dd-MM-yyyy hebben.");
+        mijnKeuzes += $"Gekozen vertrekdatum: {vertrekDatum}\n";
         string vertrekTijd = Invoer.VraagTotGeldig(
             "Vertrektijd (HH:mm): ",
             vluchtLogic.IsValidVertrekTijd,
             "De vertrektijd moet geldig zijn en het formaat HH:mm hebben.");
+        mijnKeuzes += $"Gekozen vertrektijd: {vertrekTijd}\n";
         string vertraging = Invoer.VraagTotGeldig(
             "Vertraging (HH:mm): ",
             vluchtLogic.IsValidVertraging,
             "De vertraging moet geldig zijn en het formaat HH:mm hebben.");
+        mijnKeuzes += $"Gekozen vertraging: {vertraging}\n";
         string vluchtNummerInput = Invoer.VraagTotGeldig(
             "Vluchtnummer: ",
             input => int.TryParse(input, out int nummer) && vluchtLogic.IsValidVluchtNummer(nummer, 0),
             "Voer een uniek vluchtnummer groter dan nul in.");
+        mijnKeuzes += $"Gekozen vluchtnummer: {vluchtNummerInput}\n";
         string prijsNummerInput = Invoer.VraagTotGeldig(
             "Prijs: ",
             input => double.TryParse(input, out double prijs) && double.IsFinite(prijs) && prijs >= 0,
             "Voer een geldige prijs van nul of hoger in.");
+        mijnKeuzes += $"Gekozen prijs: {prijsNummerInput}\n";
 
         if (CheckFlight(vliegtuigModelInput, vertrekAfkortingInput, aankomstAfkortingInput, vertrekDatum, vertrekTijd, vertraging, vluchtNummerInput, prijsNummerInput, 0, out VluchtModel flight))
         {
             vluchtLogic.Add(flight);
-            return "Vlucht toegevoegd.";
+            return $"Vlucht toegevoegd.";
         }
         return "Vlucht niet toegevoegd; er ging iets fout.";
     }
@@ -138,27 +147,32 @@ static class VluchtMenu
         if (currentFlight == null)
             return "Geen vlucht gekozen; vlucht niet aangepast.";
 
+        string mijnKeuzes = "";
         int vluchtNummer = currentFlight.VluchtNummer;
         int id = currentFlight.ID;
 
-        ToonVlucht(currentFlight);
+        ToonVlucht(currentFlight, mijnKeuzes);
 
         VliegtuigModel? currentVliegtuig = vliegtuigLogic.GetById(currentFlight.VliegtuigID);
         VliegveldModel? currentVertrekVliegveld = vliegveldLogic.GetById(currentFlight.VertrekLocatie);
         VliegveldModel? currentAankomstVliegveld = vliegveldLogic.GetById(currentFlight.AankomstLocatie);
 
-        Console.WriteLine("Kies vertrek- en aankomstvliegveld uit de menus. Laat de overige velden leeg om ze ongewijzigd te laten.");
         VliegtuigModel? gekozenVliegtuig = KeuzeMenu.KiesVliegtuig(currentVliegtuig?.ID, aanpassen: true);
         if (gekozenVliegtuig is null)
             return "Vlucht niet aangepast; er is geen vliegtuig gekozen.";
 
         string vliegtuigModelInput = gekozenVliegtuig.Model;
+        mijnKeuzes += $"Gekozen vliegtuig: {gekozenVliegtuig.Model}\n";
+        ToonVlucht(currentFlight, mijnKeuzes);
+
         VliegveldModel? vertrekVliegveld = KeuzeMenu.KiesVliegveld(
             "vertrekvliegveld",
             currentVertrekVliegveld?.ID,
             aanpassen: true);
         if (vertrekVliegveld is null)
             return "Vlucht niet aangepast; er is geen vertrekvliegveld gekozen.";
+        mijnKeuzes += $"Gekozen vertrekvliegveld: {vertrekVliegveld.Naam}\n";
+        ToonVlucht(currentFlight, mijnKeuzes);
 
         VliegveldModel? aankomstVliegveld = KeuzeMenu.KiesVliegveld(
             "aankomstvliegveld",
@@ -167,6 +181,8 @@ static class VluchtMenu
             aanpassen: true);
         if (aankomstVliegveld is null)
             return "Vlucht niet aangepast; er is geen aankomstvliegveld gekozen.";
+        mijnKeuzes += $"Gekozen aankomstvliegveld: {aankomstVliegveld.Naam}\n";
+        ToonVlucht(currentFlight, mijnKeuzes);
 
         string vertrekAfkortingInput = vertrekVliegveld.Afkorting;
         string aankomstAfkortingInput = aankomstVliegveld.Afkorting;
@@ -174,37 +190,55 @@ static class VluchtMenu
             $"Nieuwe vertrekdatum [{currentFlight.VertrekDatum}] (dd-MM-yyyy): ",
             input => string.IsNullOrWhiteSpace(input) || vluchtLogic.IsValidVertrekDatum(input),
             "De vertrekdatum moet geldig zijn en het formaat dd-MM-yyyy hebben.");
+        if (string.IsNullOrWhiteSpace(vertrekDatum)) vertrekDatum = currentFlight.VertrekDatum;
+        mijnKeuzes += $"Gekozen vertrekdatum: {vertrekDatum}\n";
+        ToonVlucht(currentFlight, mijnKeuzes);
+
         string vertrekTijd = Invoer.VraagTotGeldig(
             $"Nieuwe vertrektijd [{currentFlight.VertrekTijd}] (HH:mm): ",
             input => string.IsNullOrWhiteSpace(input) || vluchtLogic.IsValidVertrekTijd(input),
             "De vertrektijd moet geldig zijn en het formaat HH:mm hebben.");
+        if (string.IsNullOrWhiteSpace(vertrekTijd)) vertrekTijd = currentFlight.VertrekTijd;
+        mijnKeuzes += $"Gekozen vertrektijd: {vertrekTijd}\n";
+        ToonVlucht(currentFlight, mijnKeuzes);
+
         string vertraging = Invoer.VraagTotGeldig(
             $"Nieuwe vertraging [{currentFlight.Vertraging}] (HH:mm): ",
             input => string.IsNullOrWhiteSpace(input) || vluchtLogic.IsValidVertraging(input),
             "De vertraging moet geldig zijn en het formaat HH:mm hebben.");
+        if (string.IsNullOrWhiteSpace(vertraging)) vertraging = currentFlight.Vertraging;
+        mijnKeuzes += $"Gekozen vertraging: {vertraging}\n";
+        ToonVlucht(currentFlight, mijnKeuzes);
+
         string nieuweVluchtNummerInput = Invoer.VraagTotGeldig(
             $"Nieuw vluchtnummer [{currentFlight.VluchtNummer}]: ",
             input => string.IsNullOrWhiteSpace(input) ||
                 (int.TryParse(input, out int nummer) && vluchtLogic.IsValidVluchtNummer(nummer, id)),
             "Voer een uniek vluchtnummer groter dan nul in.");
+        if (string.IsNullOrWhiteSpace(nieuweVluchtNummerInput))
+            nieuweVluchtNummerInput = currentFlight.VluchtNummer.ToString();
+        mijnKeuzes += $"Gekozen vluchtnummer: {nieuweVluchtNummerInput}\n";
+        ToonVlucht(currentFlight, mijnKeuzes);
+
         string nieuwePrijsNummerInput = Invoer.VraagTotGeldig(
             $"Nieuwe prijs [{currentFlight.Prijs}]: ",
             input => string.IsNullOrWhiteSpace(input) ||
                 (double.TryParse(input, out double prijs) && double.IsFinite(prijs) && prijs >= 0),
             "Voer een geldige prijs van nul of hoger in.");
+        if (string.IsNullOrWhiteSpace(nieuwePrijsNummerInput))
+            nieuwePrijsNummerInput = currentFlight.Prijs.ToString();
+        mijnKeuzes += $"Gekozen prijs: {nieuwePrijsNummerInput}\n";
+        ToonVlucht(currentFlight, mijnKeuzes);
 
-        if (string.IsNullOrWhiteSpace(vliegtuigModelInput)) vliegtuigModelInput = currentVliegtuig?.Model ?? "";
-        if (string.IsNullOrWhiteSpace(vertrekDatum)) vertrekDatum = currentFlight.VertrekDatum;
-        if (string.IsNullOrWhiteSpace(vertrekTijd)) vertrekTijd = currentFlight.VertrekTijd;
-        if (string.IsNullOrWhiteSpace(vertraging)) vertraging = currentFlight.Vertraging;
-        if (string.IsNullOrWhiteSpace(nieuweVluchtNummerInput)) nieuweVluchtNummerInput = currentFlight.VluchtNummer.ToString();
-        if (string.IsNullOrWhiteSpace(nieuwePrijsNummerInput)) nieuwePrijsNummerInput = currentFlight.Prijs.ToString();
+        Console.WriteLine("Wilt u deze aanpassingen bevestigen? (J/N)");
+        if (Console.ReadLine()?.Trim().ToLowerInvariant() != "j")
+            return "Vlucht niet aangepast; bevestiging geannuleerd.";
 
         if (CheckFlight(vliegtuigModelInput, vertrekAfkortingInput, aankomstAfkortingInput, vertrekDatum, vertrekTijd, vertraging, nieuweVluchtNummerInput, nieuwePrijsNummerInput, id, out VluchtModel flight))
         {
             if (vluchtLogic.Update(flight))
             {
-                return "Vlucht aangepast.";
+                return $"Vlucht aangepast.";
             }
             else
             {
@@ -312,22 +346,27 @@ static class VluchtMenu
         return isValid;
     }
 
-    private static void ToonVlucht(VluchtModel vlucht)
+    private static void ToonVlucht(VluchtModel vlucht, string mijnKeuzes)
     {
         VliegtuigModel? vliegtuig = vliegtuigLogic.GetById(vlucht.VliegtuigID);
         VliegveldModel? vertrekVliegveld = vliegveldLogic.GetById(vlucht.VertrekLocatie);
         VliegveldModel? aankomstVliegveld = vliegveldLogic.GetById(vlucht.AankomstLocatie);
 
-        Console.WriteLine("");
+        Menu.PrintTitel();
         Console.WriteLine("Gevonden vlucht:");
         Console.WriteLine($"  Vluchtnummer:          {vlucht.VluchtNummer}");
         Console.WriteLine($"  Vliegtuigmodel:        {vliegtuig?.Model ?? "Onbekend"}");
-        Console.WriteLine($"  Vertrekvliegveld:      {vertrekVliegveld?.Afkorting ?? "Onbekend"}");
-        Console.WriteLine($"  Aankomstvliegveld:     {aankomstVliegveld?.Afkorting ?? "Onbekend"}");
+        Console.WriteLine($"  Vertrekvliegveld:      {vertrekVliegveld?.Naam ?? "Onbekend"}");
+        Console.WriteLine($"  Aankomstvliegveld:     {aankomstVliegveld?.Naam ?? "Onbekend"}");
         Console.WriteLine($"  Vertrekdatum:          {vlucht.VertrekDatum}");
         Console.WriteLine($"  Vertrektijd:           {vlucht.VertrekTijd}");
         Console.WriteLine($"  Vertraging:            {vlucht.Vertraging}");
         Console.WriteLine($"  Prijs:                 {vlucht.Prijs}");
         Console.WriteLine("");
+        if (mijnKeuzes != "")
+        {
+            Console.WriteLine("Gekozen wijzigingen:");
+            Console.WriteLine(mijnKeuzes);
+        }
     }
 }
