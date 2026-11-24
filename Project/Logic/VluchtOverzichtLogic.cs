@@ -1,9 +1,10 @@
+using System.Globalization;
+
 public class FlightLogic
 {
-    private VluchtAccess _access = new();
+    private VluchtOverzichtAccess _access = new();
     private StoelLogic _stoelLogic = new(); // geeft totale aantal stoelen
     private ReserveringLogic _reserveringLogic = new(); // geeft totaal bezette stoelen
-
     public FlightModel? SelectedFlight {get; private set;} // private zodat alleen flightlogic vlucht mag wijzigen
 
     public List<FlightModel> GetAvailableFlights()
@@ -26,7 +27,11 @@ public class FlightLogic
 
     private DateTime GetDepartureMoment(FlightModel flight)
     {
-        return DateTime.Parse(flight.DepartureDate + " " + flight.DepartureTime);
+        return DateTime.ParseExact(
+            flight.DepartureDate + " " + flight.DepartureTime,
+            "dd-MM-yyyy HH:mm",
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None);
     }
 
     private bool HasAvailableSeats(FlightModel flight)
@@ -106,7 +111,7 @@ public class FlightLogic
     public bool SelectFlight(int id)
     {
         SelectedFlight = null; // wist de vorige opgeslagen data, zodat je opnieuw kan selecteren.
-        FlightModel? flight = _access.getById(id);
+        FlightModel? flight = _access.GetById(id);
         if (flight == null)
             return false;
         if (GetDepartureMoment(flight) <= DateTime.Now) // checkt of de vlucht is vertrokken.
@@ -116,6 +121,16 @@ public class FlightLogic
 
         SelectedFlight = flight; // als het niet is vertokken sla je de vlucht op.
         return true;
+    }
+
+    public List<string> GetAllCountries()
+    {
+        return _access.GetAllCountries();
+    }
+
+    public List<string> GetAirportsByCountry(string country)
+    {
+        return _access.GetAirportsByCountry(country);
     }
 
     public List<FlightModel> SortFlights(List<FlightModel> flights, string sortby)

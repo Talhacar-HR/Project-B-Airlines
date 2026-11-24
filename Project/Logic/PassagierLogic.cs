@@ -59,7 +59,7 @@ public class PassagierLogic
 
     public bool IsValidGeboorteDatum(string geboorteDatum)
     {
-        return DateTime.TryParseExact(geboorteDatum, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime datum) &&
+        return DateTime.TryParseExact(geboorteDatum, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime datum) &&
             datum.Date < DateTime.Today;
     }
 
@@ -74,7 +74,7 @@ public class PassagierLogic
 
     public bool IsValidPaspoortVerloopDatum(string paspoortVerloopDatum)
     {
-        return DateTime.TryParseExact(paspoortVerloopDatum, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime datum) &&
+        return DateTime.TryParseExact(paspoortVerloopDatum, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime datum) &&
             datum.Date > DateTime.Today;
     }
 

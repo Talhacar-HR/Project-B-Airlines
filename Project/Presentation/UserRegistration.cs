@@ -1,20 +1,20 @@
 static class UserRegistration
 {
     static private UserLogic userLogic = new UserLogic();
-
-    public static void Start()
+ 
+    public static string Start()
     {
-        Console.WriteLine("");
-        Console.WriteLine("Registreren");
+        Menu.PrintTitel();
 
+        Console.WriteLine("Registreren");
         string email = VraagEmail();
         string password = Invoer.VraagTotGeldig("Wachtwoord: ", userLogic.IsValidWachtwoord,
             "Het wachtwoord moet minimaal 6 tekens zijn, zonder spaties.");
 
         if (userLogic.Register(email, password))
-            Console.WriteLine("Je account is aangemaakt. Je kunt nu inloggen.");
+            return "Uw account is aangemaakt. U kunt nu inloggen.";
         else
-            Console.WriteLine("Registreren is mislukt. Probeer het later opnieuw.");
+            return "Registreren is mislukt. Probeer het later opnieuw.";
     }
 
     // Vraagt een geldig e-mailadres dat nog niet in gebruik is

@@ -38,13 +38,33 @@ static class DataMenu
 
     public static string MenuOptions()
     {
-        Console.WriteLine("Admin beheerdersmenu");
-        Console.WriteLine("1 - Vluchten beheren");
-        Console.WriteLine("2 - Vliegtuigen beheren");
-        Console.WriteLine("3 - Vliegvelden beheren");
-        Console.WriteLine("4 - Stoelen beheren");
-        Console.WriteLine("0 - Terug");
-        Console.Write("Wat wilt u doen? ");
-        return Console.ReadLine() ?? "";
+        string[] menuOptions = { "1 - Vluchten beheren", "2 - Vliegtuigen beheren", "3 - Vliegvelden beheren", "4 - Stoelen beheren", "0 - Terug" };
+        int selectedIndex = 0;
+
+        while (true)
+        {
+            Console.Clear();
+            Console.WriteLine("Admin beheerdersmenu");
+            for (int i = 0; i < menuOptions.Length; i++)
+            {
+                string marker = i == selectedIndex ? "> " : "  ";
+                Console.WriteLine($"{marker}{menuOptions[i]}");
+            }
+
+            ConsoleKey key = Console.ReadKey(intercept: true).Key;
+            switch (key)
+            {
+                case ConsoleKey.UpArrow:
+                    selectedIndex = Math.Max(0, selectedIndex - 1);
+                    break;
+                case ConsoleKey.DownArrow:
+                    selectedIndex = Math.Min(menuOptions.Length - 1, selectedIndex + 1);
+                    break;
+                case ConsoleKey.Enter:
+                    return menuOptions[selectedIndex][0].ToString();
+                case ConsoleKey.Escape:
+                    return "0";
+            }
+        }
     }
 }

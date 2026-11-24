@@ -35,16 +35,37 @@ static class VluchtMenu
             }
         }
     }
-
     
     public static string MenuOptions()
     {
-        Console.WriteLine("Vluchten beheren");
-        Console.WriteLine("1 - Overzicht");
-        Console.WriteLine("2 - Toevoegen");
-        Console.WriteLine("3 - Aanpassen");
-        Console.WriteLine("0 - Terug");
-        return Console.ReadLine() ?? "";
+        string[] menuOptions = { "1 - Overzicht", "2 - Toevoegen", "3 - Aanpassen", "0 - Terug" };
+        int selectedIndex = 0;
+
+        while (true)
+        {
+            Console.Clear();
+            Console.WriteLine("Vluchten beheren");
+            for (int i = 0; i < menuOptions.Length; i++)
+            {
+                string marker = i == selectedIndex ? "> " : "  ";
+                Console.WriteLine($"{marker}{menuOptions[i]}");
+            }
+
+            ConsoleKey key = Console.ReadKey(intercept: true).Key;
+            switch (key)
+            {
+                case ConsoleKey.UpArrow:
+                    selectedIndex = Math.Max(0, selectedIndex - 1);
+                    break;
+                case ConsoleKey.DownArrow:
+                    selectedIndex = Math.Min(menuOptions.Length - 1, selectedIndex + 1);
+                    break;
+                case ConsoleKey.Enter:
+                    return menuOptions[selectedIndex][0].ToString();
+                case ConsoleKey.Escape:
+                    return "0";
+            }
+        }
     }
 
     public static void Overzicht()
@@ -72,7 +93,7 @@ static class VluchtMenu
         string vertrekAfkortingInput = Console.ReadLine() ?? "";
         Console.Write("Aankomstvliegveld-afkorting: ");
         string aankomstAfkortingInput = Console.ReadLine() ?? "";
-        Console.Write("Vertrek datum (yyyy-MM-dd): ");
+        Console.Write("Vertrek datum (dd-MM-yyyy): ");
         string vertrekDatum = Console.ReadLine() ?? "";
         Console.Write("Vertrek tijd (HH:mm): ");
         string vertrekTijd = Console.ReadLine() ?? "";
@@ -80,8 +101,10 @@ static class VluchtMenu
         string vertraging = Console.ReadLine() ?? "";
         Console.Write("Vluchtnummer: ");
         string vluchtNummerInput = Console.ReadLine() ?? "";
+        Console.Write("Prijs: ");
+        string prijsNummerInput = Console.ReadLine() ?? "";
 
-        if (CheckFlight(vliegtuigModelInput, vertrekAfkortingInput, aankomstAfkortingInput, vertrekDatum, vertrekTijd, vertraging, vluchtNummerInput, 0, out VluchtModel flight))
+        if (CheckFlight(vliegtuigModelInput, vertrekAfkortingInput, aankomstAfkortingInput, vertrekDatum, vertrekTijd, vertraging, vluchtNummerInput, prijsNummerInput, 0, out VluchtModel flight))
         {
             vluchtLogic.Add(flight);
             Console.WriteLine("Vlucht toegevoegd.");
@@ -128,7 +151,7 @@ static class VluchtMenu
         string vertrekAfkortingInput = Console.ReadLine() ?? "";
         Console.Write($"Nieuwe aankomstvliegveld-afkorting (huidig: {currentAankomstVliegveld?.Afkorting}): ");
         string aankomstAfkortingInput = Console.ReadLine() ?? "";
-        Console.Write($"Nieuwe vertrek datum (huidig: {currentFlight.VertrekDatum}, yyyy-MM-dd): ");
+        Console.Write($"Nieuwe vertrek datum (huidig: {currentFlight.VertrekDatum}, dd-MM-yyyy): ");
         string vertrekDatum = Console.ReadLine() ?? "";
         Console.Write($"Nieuwe vertrek tijd (huidig: {currentFlight.VertrekTijd}, HH:mm): ");
         string vertrekTijd = Console.ReadLine() ?? "";
@@ -136,12 +159,14 @@ static class VluchtMenu
         string vertraging = Console.ReadLine() ?? "";
         Console.Write($"Nieuw vluchtnummer (huidig: {currentFlight.VluchtNummer}): ");
         string nieuweVluchtNummerInput = Console.ReadLine() ?? "";
+        Console.Write($"Nieuw vluchtnummer (huidig: {currentFlight.Prijs}): ");
+        string nieuwePrijsNummerInput = Console.ReadLine() ?? "";
 
         if (string.IsNullOrWhiteSpace(vliegtuigModelInput)) vliegtuigModelInput = currentVliegtuig?.Model ?? "";
         if (string.IsNullOrWhiteSpace(vertrekAfkortingInput)) vertrekAfkortingInput = currentVertrekVliegveld?.Afkorting ?? "";
         if (string.IsNullOrWhiteSpace(aankomstAfkortingInput)) aankomstAfkortingInput = currentAankomstVliegveld?.Afkorting ?? "";
 
-        if (CheckFlight(vliegtuigModelInput, vertrekAfkortingInput, aankomstAfkortingInput, vertrekDatum, vertrekTijd, vertraging, nieuweVluchtNummerInput, id, out VluchtModel flight))
+        if (CheckFlight(vliegtuigModelInput, vertrekAfkortingInput, aankomstAfkortingInput, vertrekDatum, vertrekTijd, vertraging, nieuweVluchtNummerInput, nieuwePrijsNummerInput, id, out VluchtModel flight))
         {
             if (vluchtLogic.Update(flight))
             {
@@ -156,7 +181,7 @@ static class VluchtMenu
     }
 
     private static bool CheckFlight(string vliegtuigModelInput, string vertrekAfkortingInput, string aankomstAfkortingInput,
-        string vertrekDatum, string vertrekTijd, string vertraging, string vluchtNummerInput, int id,
+        string vertrekDatum, string vertrekTijd, string vertraging, string vluchtNummerInput, string prijsNummerInput, int id,
         out VluchtModel flight)
     {
         bool isValid = true;
@@ -191,6 +216,7 @@ static class VluchtMenu
         }
 
         bool hasVluchtNummer = int.TryParse(vluchtNummerInput, out int vluchtNummer);
+        bool hasPrijsNummer = int.TryParse(prijsNummerInput, out int prijsNummer);
         int vliegtuigID = gevondenVliegtuigen.Count == 1 ? gevondenVliegtuigen[0].ID : 0;
         int vertrekLocatie = gevondenVertrekVliegvelden.Count == 1 ? gevondenVertrekVliegvelden[0].ID : 0;
         int aankomstLocatie = gevondenAankomstVliegvelden.Count == 1 ? gevondenAankomstVliegvelden[0].ID : 0;
@@ -220,7 +246,7 @@ static class VluchtMenu
 
         if (!vluchtLogic.IsValidVertrekDatum(vertrekDatum))
         {
-            Console.WriteLine("De vertrekdatum moet geldig zijn en het formaat yyyy-MM-dd hebben.");
+            Console.WriteLine("De vertrekdatum moet geldig zijn en het formaat dd-MM-yyyy hebben.");
             isValid = false;
         }
 
@@ -242,44 +268,16 @@ static class VluchtMenu
             isValid = false;
         }
 
+        if (!hasPrijsNummer || !vluchtLogic.IsValidVluchtNummer(prijsNummer, id))
+        {
+            Console.WriteLine("Voer een uniek vluchtnummer groter dan nul in.");
+            isValid = false;
+        }
+
         flight = new VluchtModel(id, vliegtuigID, vertrekLocatie, aankomstLocatie, vertrekDatum, vertrekTijd, vertraging, vluchtNummer);
         return isValid;
     }
-    private static VluchtModel? ZoekVlucht()
-    {
-        Console.Write("Zoek vlucht op vluchtnummer: ");
-        string zoekterm = Console.ReadLine() ?? "";
 
-        List<VluchtModel> gevonden = vluchtLogic.Zoek(zoekterm);
-
-        if (gevonden.Count == 0)
-        {
-            Console.WriteLine($"Geen vlucht gevonden met \"{zoekterm}\". Controleer de zoekterm en probeer het opnieuw.");
-            return null;
-        }
-
-        if (gevonden.Count == 1)
-        {
-            return gevonden[0];
-        }
-
-        Console.WriteLine("Meerdere vluchten gevonden:");
-        for (int i = 0; i < gevonden.Count; i += 1)
-        {
-            Console.WriteLine($"{i + 1}. Vlucht {gevonden[i].VluchtNummer} op {gevonden[i].VertrekDatum} om {gevonden[i].VertrekTijd}");
-        }
-
-        Console.Write("Kies een nummer: ");
-        string keuze = Console.ReadLine() ?? "";
-
-        if (int.TryParse(keuze, out int nummer) && nummer >= 1 && nummer <= gevonden.Count)
-        {
-            return gevonden[nummer - 1];
-        }
-
-        Console.WriteLine("Ongeldige keuze.");
-        return null;
-    } 
     private static void ToonVlucht(VluchtModel vlucht)
     {
         VliegtuigModel? vliegtuig = vliegtuigLogic.GetById(vlucht.VliegtuigID);

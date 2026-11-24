@@ -3,25 +3,30 @@ static class MijnReserveringen
     static private ReserveringLogic reserveringLogic = new ReserveringLogic();
 
 
-    public static void Start()
+    public static string Start()
     {
         List<ReserveringModel> reserveringen = reserveringLogic.GetMijnReserveringen();
 
-        Console.WriteLine("Mijn reserveringen");
-        Console.WriteLine("");
-
         if (reserveringen.Count == 0)
         {
-            Console.WriteLine("U heeft nog geen reserveringen.");
-            return;
+            return "U heeft nog geen reserveringen.";
         }
 
-        Console.WriteLine("Boekingscode | Vlucht | Status | Aangemaakt op");
-        Console.WriteLine("--------------------------------------------");
+        List<string> feedback = new()
+        {
+            "Mijn reserveringen",
+            "",
+            "Boekingscode | Vlucht | Status | Aangemaakt op",
+            "--------------------------------------------"
+        };
 
         foreach (ReserveringModel reservering in reserveringen)
         {
-            Console.WriteLine(reservering.BoekingsCode + " | " + reservering.VluchtID + " | " + reservering.Status + " | " + reservering.AanmaakDatum);
+            feedback.Add(
+                reservering.BoekingsCode + " | " + reservering.VluchtID + " | " +
+                reservering.Status + " | " + reservering.AanmaakDatum);
         }
+
+        return string.Join(Environment.NewLine, feedback);
     }
 }

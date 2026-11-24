@@ -1,3 +1,5 @@
+using System.Globalization;
+
 public class ReserveringLogic
 {
     private ReserveringAccess _reserveringAccess = new();
@@ -54,7 +56,7 @@ public class ReserveringLogic
             gekozenStoelIds.Add(stoel.ID);
         }
 
-        string nu = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+        string nu = DateTime.Now.ToString("dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture);
 
         ReserveringModel reservering = new ReserveringModel();
         reservering.GebruikersID = gebruiker.Id;
