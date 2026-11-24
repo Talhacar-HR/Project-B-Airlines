@@ -15,7 +15,6 @@ test123
 DEBUGS:
 - Adminmenu stoelemenu weghalen (4)
 - Keuzemenus nummers weghalen
-- Vliegtuigmenu menu updaten en fixen (return values)
 */
 
 StoelLogic stoelLogic = new();

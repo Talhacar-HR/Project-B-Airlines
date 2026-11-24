@@ -65,14 +65,16 @@ static class VliegtuigMenu
         }
     }
 
-    public static void Overzicht()
+    public static string Overzicht()
     {
         List<VliegtuigModel> planes = vliegtuigLogic.GetAll();
         if (planes.Count == 0)
-            Console.WriteLine("Geen vliegtuigen gevonden.");
+            return "Geen vliegtuigen gevonden.";
 
+        string vliegtuigen = "";
         foreach (VliegtuigModel plane in planes)
-            Console.WriteLine($"ID: {plane.ID}, Bagageruimte: {plane.BaggageRuimte}, Model: {plane.Model}, Merk: {plane.Merk}");
+            vliegtuigen += $"ID: {plane.ID}, Bagageruimte: {plane.BaggageRuimte}, Model: {plane.Model}, Merk: {plane.Merk}\n";
+        return vliegtuigen;
     }
 
     public static string Toevoegen()

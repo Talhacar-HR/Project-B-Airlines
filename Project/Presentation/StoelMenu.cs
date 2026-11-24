@@ -54,14 +54,16 @@ static class StoelMenu
         }
     }
 
-    public static void Overzicht()
+    public static string Overzicht()
     {
         List<StoelModel> seats = stoelLogic.GetAll();
         if (seats.Count == 0)
-            Console.WriteLine("Geen stoelen gevonden.");
+            return "Geen stoelen gevonden.";
 
+        string stoelen = "";
         foreach (StoelModel seat in seats)
-            Console.WriteLine($"ID: {seat.ID}, Vliegtuig-ID: {seat.VliegtuigID}, Stoelnummer: {seat.StoelNummer}, Rijnummer: {seat.RijNummer}, Stoelklasse: {seat.StoelKlasse}");
+            stoelen += $"ID: {seat.ID}, Vliegtuig-ID: {seat.VliegtuigID}, Stoelnummer: {seat.StoelNummer}, Rijnummer: {seat.RijNummer}, Stoelklasse: {seat.StoelKlasse}\n";
+        return stoelen;
     }
 
     public static void Toevoegen()
