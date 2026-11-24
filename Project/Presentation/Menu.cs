@@ -135,7 +135,7 @@ static class Menu
     {
         try
         {
-            //Console.Clear();
+            Console.Clear();
         }
         catch (IOException) {}
         Console.WriteLine(@$"

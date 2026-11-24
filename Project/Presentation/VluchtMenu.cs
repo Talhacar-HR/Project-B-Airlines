@@ -63,91 +63,6 @@ static class VluchtMenu
         }
     }
 
-    private static VliegtuigModel? KiesVliegtuig(int? geselecteerdVliegtuigId = null)
-    {
-        List<VliegtuigModel> vliegtuigen = vliegtuigLogic.GetAll();
-        if (vliegtuigen.Count == 0)
-            return null;
-
-        int selectedIndex = 0;
-        if (geselecteerdVliegtuigId.HasValue)
-        {
-            int currentIndex = vliegtuigen.FindIndex(vliegtuig => vliegtuig.ID == geselecteerdVliegtuigId.Value);
-            if (currentIndex >= 0)
-                selectedIndex = currentIndex;
-        }
-
-        while (true)
-        {
-            Menu.PrintTitel();
-            Console.WriteLine("Kies een vliegtuigmodel (pijltjes omhoog/omlaag, Enter bevestigt, Escape annuleert):");
-            for (int i = 0; i < vliegtuigen.Count; i++)
-            {
-                string marker = i == selectedIndex ? "> " : "  ";
-                Console.WriteLine($"{marker}{vliegtuigen[i].Model} ({vliegtuigen[i].Merk})");
-            }
-
-            ConsoleKey key = Console.ReadKey(intercept: true).Key;
-            switch (key)
-            {
-                case ConsoleKey.UpArrow:
-                    selectedIndex = Math.Max(0, selectedIndex - 1);
-                    break;
-                case ConsoleKey.DownArrow:
-                    selectedIndex = Math.Min(vliegtuigen.Count - 1, selectedIndex + 1);
-                    break;
-                case ConsoleKey.Enter:
-                    return vliegtuigen[selectedIndex];
-                case ConsoleKey.Escape:
-                    return null;
-            }
-        }
-    }
-
-    private static VliegveldModel? KiesVliegveld(string titel, int? geselecteerdVliegveldId = null, int? uitgeslotenVliegveldId = null)
-    {
-        List<VliegveldModel> vliegvelden = vliegveldLogic.GetAll();
-        if (uitgeslotenVliegveldId.HasValue)
-            vliegvelden.RemoveAll(vliegveld => vliegveld.ID == uitgeslotenVliegveldId.Value);
-
-        if (vliegvelden.Count == 0)
-            return null;
-
-        int selectedIndex = 0;
-        if (geselecteerdVliegveldId.HasValue)
-        {
-            int currentIndex = vliegvelden.FindIndex(vliegveld => vliegveld.ID == geselecteerdVliegveldId.Value);
-            if (currentIndex >= 0)
-                selectedIndex = currentIndex;
-        }
-
-        while (true)
-        {
-            Menu.PrintTitel();
-            Console.WriteLine($"{titel} (pijltjes omhoog/omlaag, Enter bevestigt, Escape annuleert):");
-            for (int i = 0; i < vliegvelden.Count; i++)
-            {
-                string marker = i == selectedIndex ? "> " : "  ";
-                Console.WriteLine($"{marker}{vliegvelden[i].Naam} - {vliegvelden[i].Stad}, {vliegvelden[i].Land}");
-            }
-
-            ConsoleKey key = Console.ReadKey(intercept: true).Key;
-            switch (key)
-            {
-                case ConsoleKey.UpArrow:
-                    selectedIndex = Math.Max(0, selectedIndex - 1);
-                    break;
-                case ConsoleKey.DownArrow:
-                    selectedIndex = Math.Min(vliegvelden.Count - 1, selectedIndex + 1);
-                    break;
-                case ConsoleKey.Enter:
-                    return vliegvelden[selectedIndex];
-                case ConsoleKey.Escape:
-                    return null;
-            }
-        }
-    }
-
     public static string Overzicht()
     {
         List<VluchtModel> flights = vluchtLogic.GetAll();
@@ -169,16 +84,16 @@ static class VluchtMenu
 
     public static string Toevoegen()
     {
-        VliegtuigModel? gekozenVliegtuig = KiesVliegtuig();
+        VliegtuigModel? gekozenVliegtuig = KeuzeMenu.KiesVliegtuig();
         if (gekozenVliegtuig is null)
             return "Geen vliegtuig gekozen; vlucht niet toegevoegd.";
 
         string vliegtuigModelInput = gekozenVliegtuig.Model;
-        VliegveldModel? vertrekVliegveld = KiesVliegveld("Kies het vertrekvliegveld");
+        VliegveldModel? vertrekVliegveld = KeuzeMenu.KiesVliegveld("Kies het vertrekvliegveld");
         if (vertrekVliegveld is null)
             return "Geen vertrekvliegveld gekozen; vlucht niet toegevoegd.";
 
-        VliegveldModel? aankomstVliegveld = KiesVliegveld(
+        VliegveldModel? aankomstVliegveld = KeuzeMenu.KiesVliegveld(
             "Kies het aankomstvliegveld",
             uitgeslotenVliegveldId: vertrekVliegveld.ID);
         if (aankomstVliegveld is null)
@@ -217,28 +132,11 @@ static class VluchtMenu
 
     public static string Aanpassen()
     {
-        List<VluchtModel> flights = vluchtLogic.GetAll();
-        string vluchtNummerInput = Invoer.VraagTotGeldig(
-            "Vluchtnummer van de vlucht: ",
-            input => int.TryParse(input, out int nummer) && nummer > 0 &&
-                flights.Any(flight => flight.VluchtNummer == nummer),
-            "Voer een bestaand vluchtnummer in.");
-        int.TryParse(vluchtNummerInput, out int vluchtNummer);
-
-        VluchtModel? currentFlight = null;
-        foreach (VluchtModel gevondenVlucht in flights)
-        {
-            if (gevondenVlucht.VluchtNummer == vluchtNummer)
-            {
-                currentFlight = gevondenVlucht;
-                break;
-            }
-        }
-
+        VluchtModel? currentFlight = KeuzeMenu.KiesVlucht();
         if (currentFlight == null)
-        {
-            return $"Er bestaat geen vlucht met vluchtnummer {vluchtNummer}.";
-        }
+            return "Geen vlucht gekozen; vlucht niet aangepast.";
+
+        int vluchtNummer = currentFlight.VluchtNummer;
         int id = currentFlight.ID;
 
         ToonVlucht(currentFlight);
@@ -248,18 +146,18 @@ static class VluchtMenu
         VliegveldModel? currentAankomstVliegveld = vliegveldLogic.GetById(currentFlight.AankomstLocatie);
 
         Console.WriteLine("Kies vertrek- en aankomstvliegveld uit de menus. Laat de overige velden leeg om ze ongewijzigd te laten.");
-        VliegtuigModel? gekozenVliegtuig = KiesVliegtuig(currentVliegtuig?.ID);
+        VliegtuigModel? gekozenVliegtuig = KeuzeMenu.KiesVliegtuig(currentVliegtuig?.ID);
         if (gekozenVliegtuig is null)
             return "Vlucht niet aangepast; er is geen vliegtuig gekozen.";
 
         string vliegtuigModelInput = gekozenVliegtuig.Model;
-        VliegveldModel? vertrekVliegveld = KiesVliegveld(
+        VliegveldModel? vertrekVliegveld = KeuzeMenu.KiesVliegveld(
             "Kies het vertrekvliegveld",
             currentVertrekVliegveld?.ID);
         if (vertrekVliegveld is null)
             return "Vlucht niet aangepast; er is geen vertrekvliegveld gekozen.";
 
-        VliegveldModel? aankomstVliegveld = KiesVliegveld(
+        VliegveldModel? aankomstVliegveld = KeuzeMenu.KiesVliegveld(
             "Kies het aankomstvliegveld",
             currentAankomstVliegveld?.ID,
             vertrekVliegveld.ID);

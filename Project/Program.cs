@@ -15,12 +15,16 @@ test123
 DEBUGS:
 - Keuzemenus nummers weghalen
 - Na kiezen datum en tijd - Er zijn geen beschikbare vluchten gevonden op die datum
-
 - Vluchten toevoegen fout
+
+Vluchten:
+- Overzicht : werkt
+- Toevoegen : werkt
+- Aanpassen : werkt
 */
 
-StoelLogic stoelLogic = new();
 // Stoelen automatisch aanmaken voor de drie vliegtuigen
+StoelLogic stoelLogic = new();
 stoelLogic.SlaStoelenOp(1, "Airbus A330-200");
 stoelLogic.SlaStoelenOp(2, "Boeing 737");
 stoelLogic.SlaStoelenOp(3, "Boeing 787");

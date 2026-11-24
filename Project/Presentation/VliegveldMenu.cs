@@ -102,10 +102,10 @@ static class VliegveldMenu
 
     public static string Aanpassen()
     {
-        VliegveldModel? currentAirport = ZoekVliegveld();
+        VliegveldModel? currentAirport = KeuzeMenu.KiesVliegveld("Kies het vliegveld");
         if (currentAirport is null)
         {
-            return $"Geen vliegveld gevonden. Controleer de zoekterm en probeer het opnieuw.";
+            return "Geen vliegveld gekozen; er is niets aangepast.";
         }
         int id = currentAirport.ID;
 
@@ -179,40 +179,6 @@ static class VliegveldMenu
 
         airport = new VliegveldModel(id, naam, stad, land, afkorting);
         return isValid;
-    }
-    private static VliegveldModel? ZoekVliegveld()
-    {
-        Console.Write("Zoek vliegveld op afkorting: ");
-        string zoekterm = Console.ReadLine() ?? "";
-
-        List<VliegveldModel> gevonden = vliegveldLogic.Zoek(zoekterm);
-
-        if (gevonden.Count == 0)
-        {
-            return null;
-        }
-
-        if (gevonden.Count == 1)
-        {
-            return gevonden[0];
-        }
-
-        Console.WriteLine("Meerdere vliegvelden gevonden:");
-        for (int i = 0; i < gevonden.Count; i += 1)
-        {
-            Console.WriteLine($"{i + 1}. {gevonden[i].Naam} ({gevonden[i].Stad})");
-        }
-
-        Console.Write("Kies een nummer: ");
-        string keuze = Console.ReadLine() ?? "";
-
-        if (int.TryParse(keuze, out int nummer) && nummer >= 1 && nummer <= gevonden.Count)
-        {
-            return gevonden[nummer - 1];
-        }
-
-        Console.WriteLine("Ongeldige keuze.");
-        return null;
     }
     private static void ToonVliegveld(VliegveldModel vliegveld)
     {

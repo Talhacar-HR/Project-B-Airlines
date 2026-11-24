@@ -85,7 +85,7 @@ static class VliegtuigMenu
 
     public static string Aanpassen()
     {
-        VliegtuigModel? currentPlane = ZoekVliegtuig();
+        VliegtuigModel? currentPlane = KeuzeMenu.KiesVliegtuig();
         if (currentPlane is null)
         {
             return "";
@@ -152,42 +152,6 @@ static class VliegtuigMenu
         plane = new VliegtuigModel(id, baggageRuimte, model, merk);
         return isValid;
     }
-    private static VliegtuigModel? ZoekVliegtuig()
-    {
-        Console.Write("Zoek vliegtuig op model: ");
-        string zoekterm = Console.ReadLine() ?? "";
-
-        List<VliegtuigModel> gevonden = vliegtuigLogic.Zoek(zoekterm);
-
-        if (gevonden.Count == 0)
-        {
-            Console.WriteLine($"Geen vliegtuig gevonden met \"{zoekterm}\". Controleer de zoekterm en probeer het opnieuw.");
-            return null;
-        }
-
-        if (gevonden.Count == 1)
-        {
-            return gevonden[0];
-        }
-
-        Console.WriteLine("Meerdere vliegtuigen gevonden:");
-        for (int i = 0; i < gevonden.Count; i += 1)
-        {
-            Console.WriteLine($"{i + 1}. {gevonden[i].Merk} {gevonden[i].Model}");
-        }
-
-        Console.Write("Kies een nummer: ");
-        string keuze = Console.ReadLine() ?? "";
-
-        if (int.TryParse(keuze, out int nummer) && nummer >= 1 && nummer <= gevonden.Count)
-        {
-            return gevonden[nummer - 1];
-        }
-
-        Console.WriteLine("Ongeldige keuze.");
-        return null;
-    }
-
     private static void ToonVliegtuig(VliegtuigModel vliegtuig)
     {
         Console.WriteLine("");
@@ -200,7 +164,7 @@ static class VliegtuigMenu
 
     public static void StoelenAanmaken()
     {
-        VliegtuigModel? vliegtuig = ZoekVliegtuig();
+        VliegtuigModel? vliegtuig = KeuzeMenu.KiesVliegtuig();
         if (vliegtuig is null)
         {
             return;
