@@ -25,8 +25,8 @@ stoelLogic.SlaStoelenOp(1, "Airbus A330-200");
 stoelLogic.SlaStoelenOp(2, "Boeing 737");
 stoelLogic.SlaStoelenOp(3, "Boeing 787");
 
-AccountsLogic accountsLogic = new AccountsLogic();
-accountsLogic.CheckLogin("test@test.com", "test123");
+//AccountsLogic accountsLogic = new AccountsLogic();
+//accountsLogic.CheckLogin("test@test.com", "test123");
 
 Console.WriteLine("Welkom bij Project B Airlines. Als u dit ziet, is er iets fout gegaan met de applicatie.");
 Menu.Start();
