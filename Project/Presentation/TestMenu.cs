@@ -11,7 +11,7 @@ static class TestMenu
         bool menuRunning = true;
         while (menuRunning)
         {
-            Console.Clear();
+            // Console.Clear();
             Console.WriteLine("Which menu would you like to select?");
 
             for (int i = 0; i < menuChoices.Count; i++)

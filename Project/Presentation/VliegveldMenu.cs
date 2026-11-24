@@ -69,20 +69,28 @@ static class VliegveldMenu
 
         string allAirports = "";
         foreach (VliegveldModel airport in airports)
-            allAirports += $"ID: {airport.ID}, Naam: {airport.Naam}, Stad: {airport.Stad}, Land: {airport.Land}, Afkorting: {airport.Afkorting}";
+            allAirports += $"ID: {airport.ID}, Naam: {airport.Naam}, Stad: {airport.Stad}, Land: {airport.Land}, Afkorting: {airport.Afkorting}\n";
         return allAirports;
     }
 
     public static string Toevoegen()
     {
-        Console.Write("Naam: ");
-        string naam = Console.ReadLine() ?? "";
-        Console.Write("Stad: ");
-        string stad = Console.ReadLine() ?? "";
-        Console.Write("Land: ");
-        string land = Console.ReadLine() ?? "";
-        Console.Write("Afkorting: ");
-        string afkorting = Console.ReadLine() ?? "";
+        string naam = Invoer.VraagTotGeldig(
+            "Naam: ",
+            vliegveldLogic.IsValidNaam,
+            "Naam is verplicht.");
+        string stad = Invoer.VraagTotGeldig(
+            "Stad: ",
+            vliegveldLogic.IsValidStad,
+            "Stad is verplicht.");
+        string land = Invoer.VraagTotGeldig(
+            "Land: ",
+            vliegveldLogic.IsValidLand,
+            "Land is verplicht.");
+        string afkorting = Invoer.VraagTotGeldig(
+            "Afkorting: ",
+            vliegveldLogic.IsValidAfkorting,
+            "Afkorting is verplicht.");
 
         if (CheckAirport(0, naam, stad, land, afkorting, out VliegveldModel airport))
         {

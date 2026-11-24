@@ -84,22 +84,40 @@ static class VluchtMenu
 
     public static string Toevoegen()
     {
-        Console.Write("Vliegtuigmodel: ");
-        string vliegtuigModelInput = Console.ReadLine() ?? "";
-        Console.Write("Vertrekvliegveld-afkorting: ");
-        string vertrekAfkortingInput = Console.ReadLine() ?? "";
-        Console.Write("Aankomstvliegveld-afkorting: ");
-        string aankomstAfkortingInput = Console.ReadLine() ?? "";
-        Console.Write("Vertrek datum (dd-MM-yyyy): ");
-        string vertrekDatum = Console.ReadLine() ?? "";
-        Console.Write("Vertrek tijd (HH:mm): ");
-        string vertrekTijd = Console.ReadLine() ?? "";
-        Console.Write("Vertraging (HH:mm): ");
-        string vertraging = Console.ReadLine() ?? "";
-        Console.Write("Vluchtnummer: ");
-        string vluchtNummerInput = Console.ReadLine() ?? "";
-        Console.Write("Prijs: ");
-        string prijsNummerInput = Console.ReadLine() ?? "";
+        Menu.PrintTitel();
+        string vliegtuigModelInput = Invoer.VraagTotGeldig(
+            "Vliegtuigmodel: ",
+            input => vliegtuigLogic.GetAll().Count(vliegtuig =>
+                string.Equals(vliegtuig.Model, input, StringComparison.OrdinalIgnoreCase)) == 1,
+            "Voer een bestaand en uniek vliegtuigmodel in.");
+        string vertrekAfkortingInput = Invoer.VraagTotGeldig(
+            "Vertrekvliegveld-afkorting: ",
+            input => vliegveldLogic.Zoek(input).Count == 1,
+            "Voer een bestaande vertrekvliegveld-afkorting in.");
+        string aankomstAfkortingInput = Invoer.VraagTotGeldig(
+            "Aankomstvliegveld-afkorting: ",
+            input => vliegveldLogic.Zoek(input).Count == 1,
+            "Voer een bestaande aankomstvliegveld-afkorting in.");
+        string vertrekDatum = Invoer.VraagTotGeldig(
+            "Vertrekdatum (dd-MM-yyyy): ",
+            vluchtLogic.IsValidVertrekDatum,
+            "De vertrekdatum moet geldig zijn en het formaat dd-MM-yyyy hebben.");
+        string vertrekTijd = Invoer.VraagTotGeldig(
+            "Vertrektijd (HH:mm): ",
+            vluchtLogic.IsValidVertrekTijd,
+            "De vertrektijd moet geldig zijn en het formaat HH:mm hebben.");
+        string vertraging = Invoer.VraagTotGeldig(
+            "Vertraging (HH:mm): ",
+            vluchtLogic.IsValidVertraging,
+            "De vertraging moet geldig zijn en het formaat HH:mm hebben.");
+        string vluchtNummerInput = Invoer.VraagTotGeldig(
+            "Vluchtnummer: ",
+            input => int.TryParse(input, out int nummer) && vluchtLogic.IsValidVluchtNummer(nummer, 0),
+            "Voer een uniek vluchtnummer groter dan nul in.");
+        string prijsNummerInput = Invoer.VraagTotGeldig(
+            "Prijs: ",
+            input => double.TryParse(input, out double prijs) && double.IsFinite(prijs) && prijs >= 0,
+            "Voer een geldige prijs van nul of hoger in.");
 
         if (CheckFlight(vliegtuigModelInput, vertrekAfkortingInput, aankomstAfkortingInput, vertrekDatum, vertrekTijd, vertraging, vluchtNummerInput, prijsNummerInput, 0, out VluchtModel flight))
         {

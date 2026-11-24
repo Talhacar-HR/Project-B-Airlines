@@ -27,7 +27,7 @@ static class VliegtuigMenu
 
     public static string MenuOptions(string feedback)
     {
-        string[] menuOptions = { "1 - Vliegtuigmodellen", "2 - Toevoegen", "3 - Aanpassen", "0 - Terug" };
+        string[] menuOptions = { "1 - Vliegtuigmodellen Overzicht", "2 - Toevoegen", "3 - Aanpassen", "0 - Terug" };
         int selectedIndex = 0;
 
         while (true)
