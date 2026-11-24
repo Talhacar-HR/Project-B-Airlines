@@ -6,7 +6,8 @@ static class Invoer
     {
         while (true)
         {
-            Console.Write(vraag);
+            Console.WriteLine(vraag);
+            Console.Write("> ");
             string invoer = (Console.ReadLine() ?? "").Trim();
 
             if (controle(invoer))
