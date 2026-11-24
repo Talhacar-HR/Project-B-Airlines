@@ -35,8 +35,10 @@ static class VliegtuigMenu
             Menu.PrintTitel();
 
             if (feedback != "")
+            {
                 Console.WriteLine(feedback);
                 Console.WriteLine("");
+            }
 
             Console.WriteLine("Vliegtuigen beheren");
             for (int i = 0; i < menuOptions.Length; i++)
@@ -85,19 +87,22 @@ static class VliegtuigMenu
 
     public static string Aanpassen()
     {
+        string mijnKeuzes = "";
+
         VliegtuigModel? currentPlane = KeuzeMenu.KiesVliegtuig(aanpassen: true);
         if (currentPlane is null)
         {
             return "";
         }
         int id = currentPlane.ID;
-        ToonVliegtuig(currentPlane);
-        Console.WriteLine("Laat een veld leeg als u de huidige invoer wilt gebruiken.");
 
-        string model = Invoer.VraagTotGeldig(
-            $"Mogelijk nieuw model [{currentPlane.Model}]: ",
-            input => string.IsNullOrWhiteSpace(input) || vliegtuigLogic.IsValidModel(input),
-            "Model is verplicht.");
+        ToonVliegtuig(currentPlane, mijnKeuzes);
+        Console.WriteLine("Laat de overige velden leeg om ze ongewijzigd te laten.");
+
+        VliegtuigModel? gekozenModel = KeuzeMenu.KiesVliegtuig(currentPlane.ID, aanpassen: true);
+        if (gekozenModel is null)
+            return "Vliegtuig niet aangepast; er is geen model gekozen.";
+        string model = gekozenModel.Model;
         string merk = Invoer.VraagTotGeldig(
             $"Mogelijk nieuw merk [{currentPlane.Merk}]: ",
             input => string.IsNullOrWhiteSpace(input) || vliegtuigLogic.IsValidMerk(input),
@@ -108,7 +113,6 @@ static class VliegtuigMenu
                 (int.TryParse(input, out int baggageRuimte) && vliegtuigLogic.IsValidBaggageRuimte(baggageRuimte)),
             "Bagageruimte moet een geldig getal van nul of hoger zijn.");
 
-        if (string.IsNullOrWhiteSpace(model)) model = currentPlane.Model;
         if (string.IsNullOrWhiteSpace(merk)) merk = currentPlane.Merk;
         if (string.IsNullOrWhiteSpace(baggageRuimteInput)) baggageRuimteInput = currentPlane.BaggageRuimte.ToString();
 
@@ -152,14 +156,18 @@ static class VliegtuigMenu
         plane = new VliegtuigModel(id, baggageRuimte, model, merk);
         return isValid;
     }
-    private static void ToonVliegtuig(VliegtuigModel vliegtuig)
+    private static void ToonVliegtuig(VliegtuigModel vliegtuig, string mijnKeuzes)
     {
-        Console.WriteLine("");
+        Menu.PrintTitel();
         Console.WriteLine("Gevonden vliegtuig:");
         Console.WriteLine($"  Merk:         {vliegtuig.Merk}");
         Console.WriteLine($"  Model:        {vliegtuig.Model}");
         Console.WriteLine($"  Bagageruimte: {vliegtuig.BaggageRuimte}");
         Console.WriteLine("");
+        if (mijnKeuzes != "")
+        {
+            Console.WriteLine(mijnKeuzes);
+        }
     }
 
     public static void StoelenAanmaken()

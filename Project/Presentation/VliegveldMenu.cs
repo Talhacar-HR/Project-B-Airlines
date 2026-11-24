@@ -34,8 +34,10 @@ static class VliegveldMenu
             Menu.PrintTitel();
 
             if (feedback != "")
+            {
                 Console.WriteLine(feedback);
                 Console.WriteLine("");
+            }
 
             Console.WriteLine("Vliegvelden beheren");
             for (int i = 0; i < menuOptions.Length; i++)
@@ -75,27 +77,32 @@ static class VliegveldMenu
 
     public static string Toevoegen()
     {
+        string mijnKeuzes = "";
         string naam = Invoer.VraagTotGeldig(
             "Vliegveld naam: ",
             vliegveldLogic.IsValidNaam,
             "Naam is verplicht.");
+        mijnKeuzes += $"Gekozen naam: {naam}\n";
         string stad = Invoer.VraagTotGeldig(
             "Stad: ",
             vliegveldLogic.IsValidStad,
             "Stad is verplicht.");
+        mijnKeuzes += $"Gekozen stad: {stad}\n";
         string land = Invoer.VraagTotGeldig(
             "Land: ",
             vliegveldLogic.IsValidLand,
             "Land is verplicht.");
+        mijnKeuzes += $"Gekozen land: {land}\n";
         string afkorting = Invoer.VraagTotGeldig(
             "Afkorting: ",
             vliegveldLogic.IsValidAfkorting,
             "Afkorting is verplicht.");
+        mijnKeuzes += $"Gekozen afkorting: {afkorting}\n";
 
         if (CheckAirport(0, naam, stad, land, afkorting, out VliegveldModel airport))
         {
             vliegveldLogic.Add(airport);
-            return "Vliegveld toegevoegd.";
+            return $"Vliegveld toegevoegd.";
         }
         return "Vliegveld niet toegevoegd; er ging iets fout.";
     }
@@ -112,7 +119,6 @@ static class VliegveldMenu
         int id = currentAirport.ID;
 
         ToonVliegveld(currentAirport, mijnKeuzes);
-
         string naam = Invoer.VraagTotGeldig(
             $"Mogelijk nieuwe naam [{currentAirport.Naam}]: ",
             input => string.IsNullOrWhiteSpace(input) || vliegveldLogic.IsValidNaam(input),
@@ -205,7 +211,10 @@ static class VliegveldMenu
         Console.WriteLine($"  Land:      {vliegveld.Land}");
         Console.WriteLine($"  Afkorting: {vliegveld.Afkorting}");
         Console.WriteLine("");
-        Console.WriteLine(mijnKeuzes);
-        Console.WriteLine("");
+        if (mijnKeuzes != "")
+        {
+            Console.WriteLine(mijnKeuzes);
+        }
+        Console.WriteLine("Laat de overige velden leeg om ze ongewijzigd te laten.");
     }
 }
