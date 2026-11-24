@@ -15,6 +15,9 @@ test123
 DEBUGS:
 - Keuzemenus nummers weghalen
 - Na kiezen datum en tijd - Er zijn geen beschikbare vluchten gevonden op die datum.
+- Vluchten overzicht fixen
+- Vliegvelden overzicht (return value)
+- Vliegveld toevoegen beter benadrukken
 */
 
 StoelLogic stoelLogic = new();
@@ -22,6 +25,9 @@ StoelLogic stoelLogic = new();
 stoelLogic.SlaStoelenOp(1, "Airbus A330-200");
 stoelLogic.SlaStoelenOp(2, "Boeing 737");
 stoelLogic.SlaStoelenOp(3, "Boeing 787");
+
+AccountsLogic accountsLogic = new AccountsLogic();
+accountsLogic.CheckLogin("admin@admin.com", "adm123");
 
 Console.WriteLine("Welkom bij Project B Airlines. Als u dit ziet, is er iets fout gegaan met de applicatie.");
 Menu.Start();

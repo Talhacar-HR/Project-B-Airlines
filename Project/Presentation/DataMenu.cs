@@ -39,7 +39,8 @@ static class DataMenu
 
         while (true)
         {
-            Console.Clear();
+            Menu.PrintTitel();
+
             Console.WriteLine("Admin beheerdersmenu");
             for (int i = 0; i < menuOptions.Length; i++)
             {
