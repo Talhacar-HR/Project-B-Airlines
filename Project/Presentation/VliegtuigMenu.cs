@@ -10,18 +10,10 @@ static class VliegtuigMenu
         bool menuRunning = true;
         while (menuRunning)
         {
-            Menu.PrintTitel();
-            Console.WriteLine("");
-            string input = MenuOptions();
-            Console.WriteLine("");
-
-            if (feedback != "")
-                Console.WriteLine(feedback);
-                feedback = "";
-                Console.WriteLine("");
+            string input = MenuOptions(feedback);
 
             if (input == "1")
-                StoelMenu.Start();
+                feedback = StoelMenu.Overzicht();
             else if (input == "2")
                 feedback = Toevoegen();
             else if (input == "3")
@@ -33,14 +25,20 @@ static class VliegtuigMenu
         }
     }
 
-    public static string MenuOptions()
+    public static string MenuOptions(string feedback)
     {
-        string[] menuOptions = { "1 - Vliegtuigenmodellen", "2 - Toevoegen", "3 - Aanpassen", "0 - Terug" };
+        string[] menuOptions = { "1 - Vliegtuigmodellen", "2 - Toevoegen", "3 - Aanpassen", "0 - Terug" };
         int selectedIndex = 0;
 
         while (true)
         {
-            Console.Clear();
+            Menu.PrintTitel();
+
+            if (feedback != "")
+                Console.WriteLine(feedback);
+                feedback = "";
+                Console.WriteLine("");
+
             Console.WriteLine("Vliegtuigen beheren");
             for (int i = 0; i < menuOptions.Length; i++)
             {
@@ -49,6 +47,7 @@ static class VliegtuigMenu
             }
 
             ConsoleKey key = Console.ReadKey(intercept: true).Key;
+
             switch (key)
             {
                 case ConsoleKey.UpArrow:
