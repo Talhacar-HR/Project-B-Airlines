@@ -76,7 +76,7 @@ static class VliegveldMenu
     public static string Toevoegen()
     {
         string naam = Invoer.VraagTotGeldig(
-            "Naam: ",
+            "Vliegveld naam: ",
             vliegveldLogic.IsValidNaam,
             "Naam is verplicht.");
         string stad = Invoer.VraagTotGeldig(

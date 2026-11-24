@@ -63,6 +63,91 @@ static class VluchtMenu
         }
     }
 
+    private static VliegtuigModel? KiesVliegtuig(int? geselecteerdVliegtuigId = null)
+    {
+        List<VliegtuigModel> vliegtuigen = vliegtuigLogic.GetAll();
+        if (vliegtuigen.Count == 0)
+            return null;
+
+        int selectedIndex = 0;
+        if (geselecteerdVliegtuigId.HasValue)
+        {
+            int currentIndex = vliegtuigen.FindIndex(vliegtuig => vliegtuig.ID == geselecteerdVliegtuigId.Value);
+            if (currentIndex >= 0)
+                selectedIndex = currentIndex;
+        }
+
+        while (true)
+        {
+            Menu.PrintTitel();
+            Console.WriteLine("Kies een vliegtuigmodel (pijltjes omhoog/omlaag, Enter bevestigt, Escape annuleert):");
+            for (int i = 0; i < vliegtuigen.Count; i++)
+            {
+                string marker = i == selectedIndex ? "> " : "  ";
+                Console.WriteLine($"{marker}{vliegtuigen[i].Model} ({vliegtuigen[i].Merk})");
+            }
+
+            ConsoleKey key = Console.ReadKey(intercept: true).Key;
+            switch (key)
+            {
+                case ConsoleKey.UpArrow:
+                    selectedIndex = Math.Max(0, selectedIndex - 1);
+                    break;
+                case ConsoleKey.DownArrow:
+                    selectedIndex = Math.Min(vliegtuigen.Count - 1, selectedIndex + 1);
+                    break;
+                case ConsoleKey.Enter:
+                    return vliegtuigen[selectedIndex];
+                case ConsoleKey.Escape:
+                    return null;
+            }
+        }
+    }
+
+    private static VliegveldModel? KiesVliegveld(string titel, int? geselecteerdVliegveldId = null, int? uitgeslotenVliegveldId = null)
+    {
+        List<VliegveldModel> vliegvelden = vliegveldLogic.GetAll();
+        if (uitgeslotenVliegveldId.HasValue)
+            vliegvelden.RemoveAll(vliegveld => vliegveld.ID == uitgeslotenVliegveldId.Value);
+
+        if (vliegvelden.Count == 0)
+            return null;
+
+        int selectedIndex = 0;
+        if (geselecteerdVliegveldId.HasValue)
+        {
+            int currentIndex = vliegvelden.FindIndex(vliegveld => vliegveld.ID == geselecteerdVliegveldId.Value);
+            if (currentIndex >= 0)
+                selectedIndex = currentIndex;
+        }
+
+        while (true)
+        {
+            Menu.PrintTitel();
+            Console.WriteLine($"{titel} (pijltjes omhoog/omlaag, Enter bevestigt, Escape annuleert):");
+            for (int i = 0; i < vliegvelden.Count; i++)
+            {
+                string marker = i == selectedIndex ? "> " : "  ";
+                Console.WriteLine($"{marker}{vliegvelden[i].Naam} - {vliegvelden[i].Stad}, {vliegvelden[i].Land}");
+            }
+
+            ConsoleKey key = Console.ReadKey(intercept: true).Key;
+            switch (key)
+            {
+                case ConsoleKey.UpArrow:
+                    selectedIndex = Math.Max(0, selectedIndex - 1);
+                    break;
+                case ConsoleKey.DownArrow:
+                    selectedIndex = Math.Min(vliegvelden.Count - 1, selectedIndex + 1);
+                    break;
+                case ConsoleKey.Enter:
+                    return vliegvelden[selectedIndex];
+                case ConsoleKey.Escape:
+                    return null;
+            }
+        }
+    }
+
     public static string Overzicht()
     {
         List<VluchtModel> flights = vluchtLogic.GetAll();
@@ -84,20 +169,23 @@ static class VluchtMenu
 
     public static string Toevoegen()
     {
-        Menu.PrintTitel();
-        string vliegtuigModelInput = Invoer.VraagTotGeldig(
-            "Vliegtuigmodel: ",
-            input => vliegtuigLogic.GetAll().Count(vliegtuig =>
-                string.Equals(vliegtuig.Model, input, StringComparison.OrdinalIgnoreCase)) == 1,
-            "Voer een bestaand en uniek vliegtuigmodel in.");
-        string vertrekAfkortingInput = Invoer.VraagTotGeldig(
-            "Vertrekvliegveld-afkorting: ",
-            input => vliegveldLogic.Zoek(input).Count == 1,
-            "Voer een bestaande vertrekvliegveld-afkorting in.");
-        string aankomstAfkortingInput = Invoer.VraagTotGeldig(
-            "Aankomstvliegveld-afkorting: ",
-            input => vliegveldLogic.Zoek(input).Count == 1,
-            "Voer een bestaande aankomstvliegveld-afkorting in.");
+        VliegtuigModel? gekozenVliegtuig = KiesVliegtuig();
+        if (gekozenVliegtuig is null)
+            return "Geen vliegtuig gekozen; vlucht niet toegevoegd.";
+
+        string vliegtuigModelInput = gekozenVliegtuig.Model;
+        VliegveldModel? vertrekVliegveld = KiesVliegveld("Kies het vertrekvliegveld");
+        if (vertrekVliegveld is null)
+            return "Geen vertrekvliegveld gekozen; vlucht niet toegevoegd.";
+
+        VliegveldModel? aankomstVliegveld = KiesVliegveld(
+            "Kies het aankomstvliegveld",
+            uitgeslotenVliegveldId: vertrekVliegveld.ID);
+        if (aankomstVliegveld is null)
+            return "Geen aankomstvliegveld gekozen; vlucht niet toegevoegd.";
+
+        string vertrekAfkortingInput = vertrekVliegveld.Afkorting;
+        string aankomstAfkortingInput = aankomstVliegveld.Afkorting;
         string vertrekDatum = Invoer.VraagTotGeldig(
             "Vertrekdatum (dd-MM-yyyy): ",
             vluchtLogic.IsValidVertrekDatum,
@@ -159,20 +247,27 @@ static class VluchtMenu
         VliegveldModel? currentVertrekVliegveld = vliegveldLogic.GetById(currentFlight.VertrekLocatie);
         VliegveldModel? currentAankomstVliegveld = vliegveldLogic.GetById(currentFlight.AankomstLocatie);
 
-        string vliegtuigModelInput = Invoer.VraagTotGeldig(
-            $"Nieuw vliegtuigmodel [{currentVliegtuig?.Model}]: ",
-            input => string.IsNullOrWhiteSpace(input) ||
-                vliegtuigLogic.GetAll().Count(vliegtuig =>
-                    string.Equals(vliegtuig.Model, input, StringComparison.OrdinalIgnoreCase)) == 1,
-            "Voer een bestaand en uniek vliegtuigmodel in.");
-        string vertrekAfkortingInput = Invoer.VraagTotGeldig(
-            $"Nieuwe vertrekvliegveld-afkorting [{currentVertrekVliegveld?.Afkorting}]: ",
-            input => string.IsNullOrWhiteSpace(input) || vliegveldLogic.Zoek(input).Count == 1,
-            "Voer een bestaande vertrekvliegveld-afkorting in.");
-        string aankomstAfkortingInput = Invoer.VraagTotGeldig(
-            $"Nieuwe aankomstvliegveld-afkorting [{currentAankomstVliegveld?.Afkorting}]: ",
-            input => string.IsNullOrWhiteSpace(input) || vliegveldLogic.Zoek(input).Count == 1,
-            "Voer een bestaande aankomstvliegveld-afkorting in.");
+        Console.WriteLine("Kies vertrek- en aankomstvliegveld uit de menus. Laat de overige velden leeg om ze ongewijzigd te laten.");
+        VliegtuigModel? gekozenVliegtuig = KiesVliegtuig(currentVliegtuig?.ID);
+        if (gekozenVliegtuig is null)
+            return "Vlucht niet aangepast; er is geen vliegtuig gekozen.";
+
+        string vliegtuigModelInput = gekozenVliegtuig.Model;
+        VliegveldModel? vertrekVliegveld = KiesVliegveld(
+            "Kies het vertrekvliegveld",
+            currentVertrekVliegveld?.ID);
+        if (vertrekVliegveld is null)
+            return "Vlucht niet aangepast; er is geen vertrekvliegveld gekozen.";
+
+        VliegveldModel? aankomstVliegveld = KiesVliegveld(
+            "Kies het aankomstvliegveld",
+            currentAankomstVliegveld?.ID,
+            vertrekVliegveld.ID);
+        if (aankomstVliegveld is null)
+            return "Vlucht niet aangepast; er is geen aankomstvliegveld gekozen.";
+
+        string vertrekAfkortingInput = vertrekVliegveld.Afkorting;
+        string aankomstAfkortingInput = aankomstVliegveld.Afkorting;
         string vertrekDatum = Invoer.VraagTotGeldig(
             $"Nieuwe vertrekdatum [{currentFlight.VertrekDatum}] (dd-MM-yyyy): ",
             input => string.IsNullOrWhiteSpace(input) || vluchtLogic.IsValidVertrekDatum(input),
@@ -197,8 +292,6 @@ static class VluchtMenu
             "Voer een geldige prijs van nul of hoger in.");
 
         if (string.IsNullOrWhiteSpace(vliegtuigModelInput)) vliegtuigModelInput = currentVliegtuig?.Model ?? "";
-        if (string.IsNullOrWhiteSpace(vertrekAfkortingInput)) vertrekAfkortingInput = currentVertrekVliegveld?.Afkorting ?? "";
-        if (string.IsNullOrWhiteSpace(aankomstAfkortingInput)) aankomstAfkortingInput = currentAankomstVliegveld?.Afkorting ?? "";
         if (string.IsNullOrWhiteSpace(vertrekDatum)) vertrekDatum = currentFlight.VertrekDatum;
         if (string.IsNullOrWhiteSpace(vertrekTijd)) vertrekTijd = currentFlight.VertrekTijd;
         if (string.IsNullOrWhiteSpace(vertraging)) vertraging = currentFlight.Vertraging;

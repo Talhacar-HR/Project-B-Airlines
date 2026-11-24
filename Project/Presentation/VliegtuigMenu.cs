@@ -92,12 +92,8 @@ static class VliegtuigMenu
         }
         int id = currentPlane.ID;
         ToonVliegtuig(currentPlane);
+        Console.WriteLine("Laat een veld leeg als u de huidige invoer wilt gebruiken.");
 
-        string baggageRuimteInput = Invoer.VraagTotGeldig(
-            $"Nieuwe bagageruimte [{currentPlane.BaggageRuimte}]: ",
-            input => string.IsNullOrWhiteSpace(input) ||
-                (int.TryParse(input, out int baggageRuimte) && vliegtuigLogic.IsValidBaggageRuimte(baggageRuimte)),
-            "Bagageruimte moet een geldig getal van nul of hoger zijn.");
         string model = Invoer.VraagTotGeldig(
             $"Nieuw model [{currentPlane.Model}]: ",
             input => string.IsNullOrWhiteSpace(input) || vliegtuigLogic.IsValidModel(input),
@@ -106,10 +102,15 @@ static class VliegtuigMenu
             $"Nieuw merk [{currentPlane.Merk}]: ",
             input => string.IsNullOrWhiteSpace(input) || vliegtuigLogic.IsValidMerk(input),
             "Merk is verplicht.");
+        string baggageRuimteInput = Invoer.VraagTotGeldig(
+            $"Nieuwe bagageruimte [{currentPlane.BaggageRuimte}]: ",
+            input => string.IsNullOrWhiteSpace(input) ||
+                (int.TryParse(input, out int baggageRuimte) && vliegtuigLogic.IsValidBaggageRuimte(baggageRuimte)),
+            "Bagageruimte moet een geldig getal van nul of hoger zijn.");
 
-        if (string.IsNullOrWhiteSpace(baggageRuimteInput)) baggageRuimteInput = currentPlane.BaggageRuimte.ToString();
         if (string.IsNullOrWhiteSpace(model)) model = currentPlane.Model;
         if (string.IsNullOrWhiteSpace(merk)) merk = currentPlane.Merk;
+        if (string.IsNullOrWhiteSpace(baggageRuimteInput)) baggageRuimteInput = currentPlane.BaggageRuimte.ToString();
 
         if (CheckPlane(baggageRuimteInput, model, merk, id, out VliegtuigModel plane))
         {
