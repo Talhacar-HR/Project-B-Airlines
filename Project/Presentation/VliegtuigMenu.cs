@@ -169,6 +169,7 @@ static class VliegtuigMenu
         plane = new VliegtuigModel(id, baggageRuimte, model, merk);
         return isValid;
     }
+
     private static void ToonVliegtuig(VliegtuigModel vliegtuig, string mijnKeuzes)
     {
         Menu.PrintTitel();

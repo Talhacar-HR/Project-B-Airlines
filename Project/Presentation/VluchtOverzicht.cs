@@ -11,14 +11,14 @@ static class FlightOverview
             CreateMenuChoices("land", ""),
             mijnKeuzes);
         if (departureCountry == null) {return "Er zijn geen landen beschikbaar.";}
-        mijnKeuzes += $"Plaats van vertrek: {departureCountry}\n";
+        mijnKeuzes += $"Plaats van vertrek: {departureCountry}";
 
         string? departureCity = SelectMenuChoice(
-            "Kies het vliegveld van vertrek:",
+            "\nKies het vliegveld van vertrek:",
             CreateMenuChoices("vliegveld", departureCountry),
             mijnKeuzes);
         if (departureCity == null) {return $"Er zijn geen steden beschikbaar in {departureCountry}.";}
-        mijnKeuzes += $"\r\n, {departureCity}\n";
+        mijnKeuzes += $", {departureCity}\n";
 
         string? arrivalCountry = SelectMenuChoice(
             "Kies het land van aankomst:",
@@ -28,19 +28,17 @@ static class FlightOverview
         mijnKeuzes += $"Plaats van aankomst: {arrivalCountry}";
 
         string? arrivalCity = SelectMenuChoice(
-            "Kies het vliegveld van aankomst:",
+            "\nKies het vliegveld van aankomst:",
             CreateMenuChoices("vliegveld", arrivalCountry),
             mijnKeuzes);
         if (arrivalCity == null) {return $"Er zijn geen steden beschikbaar in {arrivalCountry}.";}
-        mijnKeuzes += $"\r\n, {arrivalCity}\n";
+        mijnKeuzes += $", {arrivalCity}\n";
 
         List<FlightModel> flights = GetSpecificFlight(
             departureCity,
             arrivalCity,
             mijnKeuzes,
             out string? departureDate);
-        if (departureDate is not null)
-            mijnKeuzes += $"Vertrekdatum: {departureDate}\n";
 
         Menu.PrintTitel();
         Console.WriteLine(mijnKeuzes);
@@ -91,14 +89,15 @@ static class FlightOverview
         }
 
         FlightModel selectedFlight = flights[selectedIndex];
-        mijnKeuzes += $"Gekozen vlucht: {selectedFlight.FlightNumber} - {selectedFlight.DepartureDate} {selectedFlight.DepartureTime}, €{selectedFlight.Price}\n";
+        mijnKeuzes += $"Datum: {selectedFlight.DepartureDate} {selectedFlight.DepartureTime}\n";
+        mijnKeuzes += $"Prijs: €{selectedFlight.Price}";
 
         if (!flightLogic.SelectFlight(selectedFlight.ID))
         {
             return "Deze vlucht is niet beschikbaar.";
         }
 
-        VluchtBoeken.Start(selectedFlight.ID, selectedFlight.FlightNumber);
+        VluchtBoeken.Start(selectedFlight.ID, selectedFlight.FlightNumber, mijnKeuzes);
 
         return $"Uw boeking is voltooid.\n{mijnKeuzes}";
     }

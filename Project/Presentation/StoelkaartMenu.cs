@@ -106,7 +106,7 @@ static class StoelkaartMenu
     private static void ToonPlattegrond(VliegtuigModel vliegtuig, List<PlattegrondRijModel> plattegrond,
         List<int> gekozenStoelIds, int rijIndex, int stoelIndex, string melding)
     {
-        //Console.Clear();
+        Console.Clear();
         Console.WriteLine($"Plattegrond {vliegtuig.Merk} {vliegtuig.Model}  (voorkant vliegtuig = boven)");
         ToonLegenda();
         Console.WriteLine("Pijltjestoetsen = bewegen   Enter = stoel kiezen   Esc = stoppen");

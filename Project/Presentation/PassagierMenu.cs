@@ -2,12 +2,14 @@ static class VluchtBoeken
 {
     static private PassagierLogic passagierLogic = new PassagierLogic();
     static private ReserveringLogic reserveringLogic = new ReserveringLogic();
+    static private string gekozenVlucht = "";
 
-    public static void Start(int vluchtId, long vluchtNummer)
+    public static string Start(int vluchtId, long vluchtNummer, string keuzeVlucht)
     {
         AccountModel? currentAccount = AccountsLogic.CurrentAccount;
+        gekozenVlucht = keuzeVlucht;
 
-        Console.WriteLine($"U heeft vlucht nummer {vluchtNummer} geselecteerd.");
+        ToonPassagier("");
 
         // Hierin komen de gekozen stoelen van alle passagiers
         List<ReserveringsStoelModel> gekozenStoelen = new List<ReserveringsStoelModel>();
@@ -48,30 +50,24 @@ static class VluchtBoeken
         // Geen enkele stoel gekozen, dus ook geen reservering
         if (gekozenStoelen.Count == 0)
         {
-            Console.WriteLine("De reservering is niet gemaakt.");
-            return;
+            return "De reservering is niet gemaakt.";
         }
 
         // Eerst de prijs laten zien, dan pas bevestigen
         PrijsOverzicht.Start(vluchtId, gekozenStoelen);
         if (!VraagBevestiging())
         {
-            Console.WriteLine("De reservering is geannuleerd.");
-            return;
+            return "De reservering is geannuleerd.";
         }
 
         // Reservering bevestigen
-        bool gelukt = reserveringLogic.MaakReservering(vluchtId, gekozenStoelen);
-
-        if (gelukt)
+        if (reserveringLogic.MaakReservering(vluchtId, gekozenStoelen))
         {
-            Console.WriteLine("");
-            Console.WriteLine("Uw reservering is bevestigd!");
-            Console.WriteLine("Uw boekingscode is: " + reserveringLogic.LaatsteBoekingsCode);
+            return $"\nUw reservering is bevestigd!\nUw boekingscode is: {reserveringLogic.LaatsteBoekingsCode}";
         }
         else
         {
-            Console.WriteLine("De reservering is mislukt. Probeer het opnieuw.");
+            return "De reservering is mislukt. Probeer het opnieuw.";
         }
     }
 
@@ -98,18 +94,79 @@ static class VluchtBoeken
     // en opnieuw gevraagd tot het goed is.
     private static PassagierModel VraagPassagier(int? gebruikerId)
     {
-        Console.WriteLine("Vul uw passagiersgegevens in:");
+        string mijnKeuzes = "";
+        ToonPassagier(mijnKeuzes);
+        string naam = Invoer.VraagTotGeldig(
+            "Voornaam: ",
+            passagierLogic.IsValidNaam,
+            "Voornaam is verplicht en mag alleen letters bevatten.");
+        mijnKeuzes += $"Voornaam: {naam}\n";
 
+        ToonPassagier(mijnKeuzes);
+        string achternaam = Invoer.VraagTotGeldig(
+            "Achternaam: ",
+            passagierLogic.IsValidAchternaam,
+            "Achternaam is verplicht en mag alleen letters bevatten.");
+        mijnKeuzes += $"Achternaam: {achternaam}\n";
+
+        ToonPassagier(mijnKeuzes);
+        string email = Invoer.VraagTotGeldig(
+            "E-mailadres: ",
+            passagierLogic.IsValidEmail,
+            "Ongeldig e-mailadres, bijvoorbeeld naam@voorbeeld.nl.");
+        mijnKeuzes += $"E-mailadres: {email}\n";
+
+        ToonPassagier(mijnKeuzes);
+        string paspoortNummer = Invoer.VraagTotGeldig(
+            "Paspoortnummer: ",
+            passagierLogic.IsValidPaspoortNummer,
+            "Het paspoortnummer moet 5-20 letters of cijfers bevatten.");
+        mijnKeuzes += $"Paspoortnummer: {paspoortNummer}\n";
+
+        ToonPassagier(mijnKeuzes);
+        string geboorteDatum = Invoer.VraagTotGeldig(
+            "Geboortedatum (dd-MM-yyyy): ",
+            passagierLogic.IsValidGeboorteDatum,
+            "Ongeldige geboortedatum, gebruik dd-MM-yyyy en een datum in het verleden.");
+        mijnKeuzes += $"Geboortedatum: {geboorteDatum}\n";
+
+        ToonPassagier(mijnKeuzes);
+        string telefoonnummer = Invoer.VraagTotGeldig(
+            "Telefoonnummer: ",
+            passagierLogic.IsValidTelefoonnummer,
+            "Het telefoonnummer moet 7-15 cijfers bevatten.");
+        mijnKeuzes += $"Telefoonnummer: {telefoonnummer}\n";
+
+        ToonPassagier(mijnKeuzes);
+        string paspoortVerloopDatum = Invoer.VraagTotGeldig(
+            "Paspoortverloopdatum (dd-MM-yyyy): ",
+            passagierLogic.IsValidPaspoortVerloopDatum,
+            "Ongeldige verloopdatum, gebruik dd-MM-yyyy en een datum in de toekomst.");
+        mijnKeuzes += $"Paspoortverloopdatum: {paspoortVerloopDatum}\n";
+
+        ToonPassagier(mijnKeuzes);
         return new PassagierModel
         {
             GebruikerID = gebruikerId,
-            Naam = Invoer.VraagTotGeldig("Voornaam: ", passagierLogic.IsValidNaam, "Voornaam is verplicht en mag alleen letters bevatten."),
-            Achternaam = Invoer.VraagTotGeldig("Achternaam: ", passagierLogic.IsValidAchternaam, "Achternaam is verplicht en mag alleen letters bevatten."),
-            Email = Invoer.VraagTotGeldig("E-mailadres: ", passagierLogic.IsValidEmail, "Ongeldig e-mailadres, bijvoorbeeld naam@voorbeeld.nl."),
-            PaspoortNummer = Invoer.VraagTotGeldig("Paspoortnummer: ", passagierLogic.IsValidPaspoortNummer, "Het paspoortnummer moet 5-20 letters of cijfers bevatten."),
-            GeboorteDatum = Invoer.VraagTotGeldig("Geboortedatum (jjjj-mm-dd): ", passagierLogic.IsValidGeboorteDatum, "Ongeldige geboortedatum, gebruik jjjj-mm-dd en een datum in het verleden."),
-            Telefoonnummer = Invoer.VraagTotGeldig("Telefoonnummer: ", passagierLogic.IsValidTelefoonnummer, "Het telefoonnummer moet 7-15 cijfers bevatten."),
-            PaspoortVerloopDatum = Invoer.VraagTotGeldig("Paspoortverloopdatum (jjjj-mm-dd): ", passagierLogic.IsValidPaspoortVerloopDatum, "Ongeldige verloopdatum, gebruik jjjj-mm-dd en een datum in de toekomst.")
+            Naam = naam,
+            Achternaam = achternaam,
+            Email = email,
+            PaspoortNummer = paspoortNummer,
+            GeboorteDatum = geboorteDatum,
+            Telefoonnummer = telefoonnummer,
+            PaspoortVerloopDatum = paspoortVerloopDatum
         };
+    }
+
+    private static void ToonPassagier(string mijnKeuzes)
+    {
+        Menu.PrintTitel();
+        Console.WriteLine("Gekozen vlucht:");
+        Console.WriteLine(gekozenVlucht);
+        if (mijnKeuzes != "")
+        {
+            Console.WriteLine("Nieuwe passagier:");
+            Console.WriteLine(mijnKeuzes);
+        }
     }
 }
