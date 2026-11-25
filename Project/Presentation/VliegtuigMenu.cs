@@ -1,7 +1,6 @@
 static class VliegtuigMenu
 {
     static private VliegtuigLogic vliegtuigLogic = new VliegtuigLogic();
-    static private StoelkaartLogic stoelkaartLogic = new StoelkaartLogic();
 
     public static void Start()
     {
@@ -183,23 +182,5 @@ static class VliegtuigMenu
             Console.WriteLine("Gekozen wijzigingen:");
             Console.WriteLine(mijnKeuzes);
         }
-    }
-
-    public static void StoelenAanmaken()
-    {
-        VliegtuigModel? vliegtuig = KeuzeMenu.KiesVliegtuig();
-        if (vliegtuig is null)
-        {
-            return;
-        }
-
-        if (stoelkaartLogic.GetIndeling(vliegtuig.Model).Length == 0)
-        {
-            Console.WriteLine($"Er is geen plattegrond voor model {vliegtuig.Model}.");
-            return;
-        }
-
-        int aantal = stoelkaartLogic.MaakStoelenAan(vliegtuig);
-        Console.WriteLine($"{aantal} stoelen aangemaakt voor {vliegtuig.Merk} {vliegtuig.Model}.");
     }
 }

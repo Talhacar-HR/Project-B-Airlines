@@ -36,64 +36,77 @@ public sealed class PlattegrondTests
             connection.Execute("INSERT INTO ReserveringsStoel (PassagierID, ReserveringID, StoelID) VALUES (1, 1, 2)");
         }
     }
-
     [TestMethod]
-    [DataRow("737-800", 198)]
-    [DataRow("A330-200", 347)]
-    [DataRow("787-9", 243)]
-    public void MaakStoelLijst_ElkVliegtuig_JuistAantalStoelen(string model, int verwachtAantal)
+    [DataRow("Airbus A330-200")]
+    [DataRow("Boeing 737")]
+    [DataRow("Boeing 787")]
+    public void GetPlattegrond_ElkVliegtuig_AlleStoelenUitDatabase(string model)
     {
-        StoelkaartLogic logic = new StoelkaartLogic();
-
-        List<StoelModel> stoelen = logic.MaakStoelLijst(1, model);
-
-        Assert.AreEqual(verwachtAantal, stoelen.Count);
-    }
-
-
-    [TestMethod]
-    public void GetIndeling_DrieVliegtuigen_ZijnVerschillend()
-    {
-        StoelkaartLogic logic = new StoelkaartLogic();
-
-        string letters737 = logic.GetIndeling("737-800")[0].Letters;
-        string letters330 = logic.GetIndeling("A330-200")[1].Letters;
-        string letters787 = logic.GetIndeling("787-9")[1].Letters;
-
-        Assert.AreEqual("ABC DEF", letters737);
-        Assert.AreEqual("AC DFG HK", letters330);
-        Assert.AreEqual("ABC DEF JKL", letters787);
-    }
-
-
-    [TestMethod]
-    public void GetIndeling_OnbekendModel_LegeLijst()
-    {
-        StoelkaartLogic logic = new StoelkaartLogic();
-
-        IndelingStoelenModel[] indeling = logic.GetIndeling("Dummy Test");
-
-        Assert.AreEqual(0, indeling.Length);
-    }
-
-
-    [TestMethod]
-    public void MaakStoelLijst_Gangpad_GeenStoel()
-    {
-        StoelkaartLogic logic = new StoelkaartLogic();
-
-        List<StoelModel> stoelen = logic.MaakStoelLijst(1, "737-800");
-
-        List<string> rij1 = new List<string>();
-        foreach (StoelModel stoel in stoelen)
+        using (SqliteConnection connection = new SqliteConnection(_connectionString))
         {
-            if (stoel.RijNummer == "1")
-            {
-                rij1.Add(stoel.StoelNummer);
-            }
+            connection.Execute("UPDATE Vliegtuig SET Model = @Model WHERE ID = 1", new { Model = model });
         }
+        new StoelLogic().SlaStoelenOp(1, model);
+        StoelkaartLogic logic = new StoelkaartLogic();
 
-        CollectionAssert.AreEqual(new List<string> { "1A", "1B", "1C", "1D", "1E", "1F" }, rij1);
+        List<PlattegrondRijModel> plattegrond = logic.GetPlattegrond(7);
+
+        int aantalOpScherm = 0;
+        foreach (PlattegrondRijModel rij in plattegrond)
+        {
+            aantalOpScherm += rij.Stoelen.Count;
+        }
+        int aantalInDatabase = logic.GetStoelenVoorVlucht(7).Count;
+
+        Assert.AreEqual(aantalInDatabase, aantalOpScherm);
+    }
+
+
+    [TestMethod]
+    [DataRow("Boeing 737", "ABC DEF")]
+    [DataRow("Airbus A330-200", "ABC DFG HJK")]
+    [DataRow("Boeing 787", "ABC DEF JKL")]
+    [DataRow("Dummy Test", "")]
+    public void GetKolommen_Model_JuisteKolommen(string model, string verwacht)
+    {
+        StoelkaartLogic logic = new StoelkaartLogic();
+
+        string kolommen = logic.GetKolommen(model);
+
+        Assert.AreEqual(verwacht, kolommen);
+    }
+
+
+    [TestMethod]
+    public void GetPlattegrond_Gangpad_GeenStoel()
+    {
+        StoelkaartLogic logic = new StoelkaartLogic();
+
+        List<PlattegrondRijModel> plattegrond = logic.GetPlattegrond(7);
+
+        Assert.AreEqual("ABC DEF", plattegrond[0].Letters);
+        foreach (PlattegrondStoelModel plattegrondStoel in plattegrond[0].Stoelen)
+        {
+            Assert.IsFalse(plattegrondStoel.Stoel.StoelNummer.Contains(" "));
+        }
+    }
+
+
+    [TestMethod]
+    public void GetRijNummers_Stoelen_GesorteerdEnUniek()
+    {
+        StoelkaartLogic logic = new StoelkaartLogic();
+        List<StoelModel> stoelen = new List<StoelModel>
+        {
+            new StoelModel(1, 1, "10A", "10", 1),
+            new StoelModel(2, 1, "2A", "2", 1),
+            new StoelModel(3, 1, "2B", "2", 1),
+            new StoelModel(4, 1, "1A", "1", 1)
+        };
+
+        List<int> rijNummers = logic.GetRijNummers(stoelen);
+
+        CollectionAssert.AreEqual(new List<int> { 1, 2, 10 }, rijNummers);
     }
 
 
@@ -117,12 +130,12 @@ public sealed class PlattegrondTests
     public void ZoekStoel_KleineLetters_StoelGevonden()
     {
         StoelkaartLogic logic = new StoelkaartLogic();
-        List<StoelModel> stoelen = logic.MaakStoelLijst(1, "737-800");
+        List<StoelModel> stoelen = logic.GetStoelenVoorVlucht(7);
 
-        StoelModel? stoel = logic.ZoekStoel(stoelen, " 12c ");
+        StoelModel? stoel = logic.ZoekStoel(stoelen, " 1c ");
 
         Assert.IsNotNull(stoel);
-        Assert.AreEqual("12C", stoel.StoelNummer);
+        Assert.AreEqual("1C", stoel.StoelNummer);
     }
 
 
@@ -130,7 +143,7 @@ public sealed class PlattegrondTests
     public void ZoekStoel_BestaatNiet_Null()
     {
         StoelkaartLogic logic = new StoelkaartLogic();
-        List<StoelModel> stoelen = logic.MaakStoelLijst(1, "737-800");
+        List<StoelModel> stoelen = logic.GetStoelenVoorVlucht(7);
 
         StoelModel? stoel = logic.ZoekStoel(stoelen, "99Z");
 
@@ -176,9 +189,13 @@ public sealed class PlattegrondTests
     [TestMethod]
     public void GetPlattegrond_VliegtuigZonderIndeling_LegePlattegrond()
     {
+        using (SqliteConnection connection = new SqliteConnection(_connectionString))
+        {
+            connection.Execute("UPDATE Vliegtuig SET Model = 'Dummy Test' WHERE ID = 1");
+        }
         StoelkaartLogic logic = new StoelkaartLogic();
 
-        List<PlattegrondRijModel> plattegrond = logic.GetPlattegrond(2);
+        List<PlattegrondRijModel> plattegrond = logic.GetPlattegrond(7);
 
         Assert.AreEqual(0, plattegrond.Count);
     }

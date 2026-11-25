@@ -1,94 +1,28 @@
 public class StoelkaartLogic
 {
-    private StoelAccess _stoelAccess = new();
     private ReserveringAccess _reserveringAccess = new();
     private VluchtLogic _vluchtLogic = new();
     private VliegtuigLogic _vliegtuigLogic = new();
     private ReserveringLogic _reserveringLogic = new();
 
-    private static IndelingStoelenModel[] _indeling737 =
-    {
-        new IndelingStoelenModel(1, 33, "ABC DEF", 1)
-    };
-
-    private static IndelingStoelenModel[] _indeling330 =
-    {
-        new IndelingStoelenModel(1, 3, "AC DG HK", 3),
-        new IndelingStoelenModel(4, 50, "AC DFG HK", 1)
-    };
-
-    private static IndelingStoelenModel[] _indeling787 =
-    {
-        new IndelingStoelenModel(1, 6, "AB DE KL", 2),
-        new IndelingStoelenModel(16, 38, "ABC DEF JKL", 1)
-    };
-
-    public IndelingStoelenModel[] GetIndeling(string model)
+    public string GetKolommen(string model)
     {
         if (model.Contains("737"))
         {
-            return _indeling737;
+            return "ABC DEF";
         }
 
         if (model.Contains("330"))
         {
-            return _indeling330;
+            return "ABC DFG HJK";
         }
 
         if (model.Contains("787"))
         {
-            return _indeling787;
+            return "ABC DEF JKL";
         }
 
-        return new IndelingStoelenModel[0];
-    }
-
-    public List<StoelModel> MaakStoelLijst(int vliegtuigId, string model)
-    {
-        List<StoelModel> stoelen = new List<StoelModel>();
-
-        foreach (IndelingStoelenModel sectie in GetIndeling(model))
-        {
-            for (int rij = sectie.VanRij; rij <= sectie.TotRij; rij += 1)
-            {
-                foreach (char letter in sectie.Letters)
-                {
-                    if (letter == ' ')
-                    {
-                        continue;
-                    }
-
-                    string stoelNummer = rij.ToString() + letter;
-                    stoelen.Add(new StoelModel(0, vliegtuigId, stoelNummer, rij.ToString(), sectie.StoelKlasse));
-                }
-            }
-        }
-
-        return stoelen;
-    }
-
-    public int MaakStoelenAan(VliegtuigModel vliegtuig)
-    {
-        List<string> bestaandeNummers = new List<string>();
-        foreach (StoelModel stoel in _stoelAccess.GetAll())
-        {
-            if (stoel.VliegtuigID == vliegtuig.ID)
-            {
-                bestaandeNummers.Add(stoel.StoelNummer);
-            }
-        }
-
-        int aantalToegevoegd = 0;
-        foreach (StoelModel nieuweStoel in MaakStoelLijst(vliegtuig.ID, vliegtuig.Model))
-        {
-            if (!bestaandeNummers.Contains(nieuweStoel.StoelNummer))
-            {
-                _stoelAccess.Add(nieuweStoel);
-                aantalToegevoegd += 1;
-            }
-        }
-
-        return aantalToegevoegd;
+        return "";
     }
 
     public VliegtuigModel? GetVliegtuigVoorVlucht(int vluchtId)
@@ -142,6 +76,22 @@ public class StoelkaartLogic
         return "vrij";
     }
 
+    public List<int> GetRijNummers(List<StoelModel> stoelen)
+    {
+        List<int> rijNummers = new List<int>();
+
+        foreach (StoelModel stoel in stoelen)
+        {
+            if (int.TryParse(stoel.RijNummer, out int rijNummer) && !rijNummers.Contains(rijNummer))
+            {
+                rijNummers.Add(rijNummer);
+            }
+        }
+
+        rijNummers.Sort();
+        return rijNummers;
+    }
+
     public List<PlattegrondRijModel> GetPlattegrond(int vluchtId)
     {
         List<PlattegrondRijModel> plattegrond = new List<PlattegrondRijModel>();
@@ -152,40 +102,43 @@ public class StoelkaartLogic
             return plattegrond;
         }
 
+        string kolommen = GetKolommen(vliegtuig.Model);
+        if (kolommen == "")
+        {
+            return plattegrond;
+        }
+
         List<StoelModel> stoelen = GetStoelenVoorVlucht(vluchtId);
 
-        foreach (IndelingStoelenModel sectie in GetIndeling(vliegtuig.Model))
+        foreach (int rij in GetRijNummers(stoelen))
         {
-            for (int rij = sectie.VanRij; rij <= sectie.TotRij; rij += 1)
+            PlattegrondRijModel plattegrondRij = new PlattegrondRijModel(rij, kolommen);
+
+            foreach (char letter in kolommen)
             {
-                PlattegrondRijModel plattegrondRij = new PlattegrondRijModel(rij, sectie.Letters);
-
-                foreach (char letter in sectie.Letters)
+                if (letter == ' ')
                 {
-                    if (letter == ' ')
-                    {
-                        continue;
-                    }
-
-                    StoelModel? stoel = ZoekStoel(stoelen, rij.ToString() + letter);
-                    if (stoel == null)
-                    {
-                        continue;
-                    }
-
-                    string status = "Beschikbaar";
-                    if (_reserveringLogic.IsStoelBezet(vluchtId, stoel.ID))
-                    {
-                        status = "Bezet";
-                    }
-
-                    plattegrondRij.Stoelen.Add(new PlattegrondStoelModel(stoel, status));
+                    continue;
                 }
 
-                if (plattegrondRij.Stoelen.Count > 0)
+                StoelModel? stoel = ZoekStoel(stoelen, rij.ToString() + letter);
+                if (stoel == null)
                 {
-                    plattegrond.Add(plattegrondRij);
+                    continue;
                 }
+
+                string status = "Beschikbaar";
+                if (_reserveringLogic.IsStoelBezet(vluchtId, stoel.ID))
+                {
+                    status = "Bezet";
+                }
+
+                plattegrondRij.Stoelen.Add(new PlattegrondStoelModel(stoel, status));
+            }
+
+            if (plattegrondRij.Stoelen.Count > 0)
+            {
+                plattegrond.Add(plattegrondRij);
             }
         }
 
