@@ -41,25 +41,6 @@ public sealed class InvoerTests
     }
 
     [TestMethod]
-    [DataRow("15-12-2030", true)] // goed, in de toekomst
-    [DataRow("2030-12-15", false)] // verkeerde volgorde
-    [DataRow("32-01-2030", false)] // dag bestaat niet
-    [DataRow("15-13-2030", false)] // maand bestaat niet
-    [DataRow("01-01-2020", false)] // verleden
-    [DataRow("abc", false)] // geen datum
-    public void IsValidZoekDatum_Invoer_JuisteUitkomst(string datum, bool verwacht)
-    {
-        // Arrange
-        FlightLogic logic = new();
-
-        // Act
-        bool uitkomst = logic.IsValidZoekDatum(datum);
-
-        // Assert
-        Assert.AreEqual(verwacht, uitkomst);
-    }
-
-    [TestMethod]
     public void IsValidPassagier_AlleGegevensGoed_True()
     {
         // Arrange

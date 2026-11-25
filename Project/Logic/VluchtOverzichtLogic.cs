@@ -67,15 +67,6 @@ public class FlightLogic
         return GetDepartureMoment(flight2).CompareTo(GetDepartureMoment(flight1));
     }
 
-    // Zoekdatum in Nederlands formaat (dd-MM-yyyy), niet in het verleden
-    public bool IsValidZoekDatum(string datum)
-    {
-        if (!DateOnly.TryParseExact(datum, "dd-MM-yyyy", out DateOnly zoekDatum))
-            return false;
-
-        return zoekDatum >= DateOnly.FromDateTime(DateTime.Today);
-    }
-
     public List<FlightModel> FlightFilter(string departureDate, string origin, string destination)
     {
         List<FlightModel> availableFlights = GetAvailableFlights();
