@@ -41,6 +41,21 @@ public sealed class InvoerTests
     }
 
     [TestMethod]
+    [DataRow("admin@admin.com", false)] // bestaat al
+    [DataRow("bestaatniet123@test.nl", true)] // nog vrij
+    public void IsEmailBeschikbaar_Email_JuisteUitkomst(string email, bool verwacht)
+    {
+        // Arrange
+        UserLogic logic = new();
+
+        // Act
+        bool uitkomst = logic.IsEmailBeschikbaar(email);
+
+        // Assert
+        Assert.AreEqual(verwacht, uitkomst);
+    }
+
+    [TestMethod]
     public void IsValidPassagier_AlleGegevensGoed_True()
     {
         // Arrange
